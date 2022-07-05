@@ -16,6 +16,7 @@ dias_semana = ("Lunes","Martes","Miercoles","Jueves","Viernes","Sabado","Domingo
 ultimahora = datetime.strptime('23:59:59', '%H:%M:%S').time()
 primerahora = datetime.strptime('00:00:00', '%H:%M:%S').time()
 token=os.environ.get("TOKEN_BOT")
+bot = telebot.TeleBot(token, parse_mode=None)
 total=0
 CONTRATO=os.environ.get("CONTRATO")
 
@@ -320,9 +321,9 @@ while True:
             port=os.environ.get("PORT")
         )
         cursor = conn.cursor()
-        bot = telebot.TeleBot(token, parse_mode=None)
         bot.infinity_polling()
         bot.stop_polling()
+        bot = telebot.TeleBot(token, parse_mode=None)
         
 
 
