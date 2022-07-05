@@ -19,6 +19,8 @@ token=os.environ.get("TOKEN_BOT")
 bot = telebot.TeleBot(token, parse_mode=None)
 total=0
 CONTRATO=os.environ.get("CONTRATO")
+conn = None
+cursor = None
 
 razon1=os.environ.get("RAZON_BOT1")
 razon2=os.environ.get("RAZON_BOT2")
@@ -328,14 +330,14 @@ while True:
 
 
     except (Exception, psycopg2.Error) as error:
-        #print("fallo en hacer las consultas")
+        print("fallo en hacer las consultas")
         total=0
 
     finally:
+        print("se ha cerrado la conexion a la base de datos")
         if conn:
             cursor.close()
             conn.close()
-            #print("se ha cerrado la conexion a la base de datos")
             total=0
 
 
