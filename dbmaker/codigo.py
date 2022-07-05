@@ -4,8 +4,9 @@ import time
 from dotenv import load_dotenv
 from pathlib import Path
 
-dotenv_path = Path('../.env.maker')
+dotenv_path = Path('../.env.manager')
 load_dotenv(dotenv_path=dotenv_path)
+
 connlocal = None
 cursorlocal=None
 total=0
@@ -22,11 +23,11 @@ while True:
         #con esto se apunta a la base de datos local
         print('aqui')
         connlocal = psycopg2.connect(
-            database="tesis", 
-            user="tesis", 
-            password="tesis", 
-            host="0.0.0.0", 
-            port="5432"
+            database=os.environ.get("DATABASE"), 
+            user=os.environ.get("USERDB"), 
+            password=os.environ.get("PASSWORD"), 
+            host=os.environ.get("HOST"), 
+            port=os.environ.get("PORT")
         )
         cursorlocal = connlocal.cursor()
         print('llego')
