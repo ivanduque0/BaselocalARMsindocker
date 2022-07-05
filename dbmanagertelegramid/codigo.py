@@ -5,7 +5,7 @@ import time
 from dotenv import load_dotenv
 from pathlib import Path
 
-dotenv_path = Path('../.env.manager')
+dotenv_path = Path('/BaselocalARMsindocker/.env.manager')
 load_dotenv(dotenv_path=dotenv_path)
 CONTRATO=os.environ.get("CONTRATO")
 connlocal = None
