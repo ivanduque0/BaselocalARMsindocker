@@ -2,7 +2,11 @@ import psycopg2
 import os
 import subprocess
 import time
+from dotenv import load_dotenv
+from pathlib import Path
 
+dotenv_path = Path('../.env.manager')
+load_dotenv(dotenv_path=dotenv_path)
 CONTRATO=os.environ.get("CONTRATO")
 connlocal = None
 connheroku = None
