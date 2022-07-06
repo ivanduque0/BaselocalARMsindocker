@@ -99,12 +99,8 @@ esto debido a que cuando corre directamente desde /etc/rc.local al parecer no se
 tiene acceso a la ruta
 
 para hacer que el script corra al iniciar la orangepi
-
 se debe editar el archivo /etc/rc.local y se debe 
 escribir 
 /usr/local/bin/python3.7 /BaselocalARMsindocker/archivoboot.py
-
-
-
 
 se debe clonar el repositiorio con los codigo en la carpeta raiz
