@@ -83,7 +83,7 @@ while True:
                 t1=time.perf_counter()
 
     except (Exception, psycopg2.Error) as error:
-        #print("fallo en hacer las consultas")
+        print("fallo en hacer las consultas")
         if connlocal:
             cursorlocal.close()
             connlocal.close()
@@ -91,10 +91,10 @@ while True:
             cursorheroku.close()
             connheroku.close()
     finally:
+        print("se ha cerrado la conexion a la base de datos")
         if connlocal:
             cursorlocal.close()
             connlocal.close()
         if connheroku:
             cursorheroku.close()
             connheroku.close()
-            #print("se ha cerrado la conexion a la base de datos")
