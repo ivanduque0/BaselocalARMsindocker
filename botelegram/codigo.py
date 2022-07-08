@@ -323,9 +323,8 @@ while True:
             port=os.environ.get("PORT")
         )
         cursor = conn.cursor()
-        bot.infinity_polling()
+        bot.polling(skip_pending=True)
         bot.stop_polling()
-        bot = telebot.TeleBot(token, parse_mode=None)
         
 
 
