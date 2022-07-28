@@ -58,7 +58,7 @@ while True:
                 nro_int_local = len(interacciones_local)
                 nro_int_heroku = len(interacciones_heroku)
 
-                if nro_int_local > nro_int_heroku and total>1:
+                if nro_int_local > nro_int_heroku:
 
                     
 
