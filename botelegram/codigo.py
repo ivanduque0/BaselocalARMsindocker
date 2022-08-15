@@ -21,7 +21,7 @@ total=0
 CONTRATO=os.environ.get("CONTRATO")
 conn = None
 cursor = None
-
+TIMEOUT=int(os.environ.get("TIMEOUT"))
 razon1=os.environ.get("RAZON_BOT1")
 razon2=os.environ.get("RAZON_BOT2")
 razon3=os.environ.get("RAZON_BOT3")
@@ -337,7 +337,7 @@ while True:
             port=os.environ.get("PORT")
         )
         cursor = conn.cursor()
-        bot.polling(skip_pending=True)
+        bot.polling(skip_pending=True, timeout=TIMEOUT)
         bot.stop_polling()
         
 
