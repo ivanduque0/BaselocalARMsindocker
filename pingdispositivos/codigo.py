@@ -1,7 +1,6 @@
 import psycopg2
 import os
 import time
-from datetime import datetime
 from ping3 import ping
 from pathlib import Path
 from dotenv import load_dotenv

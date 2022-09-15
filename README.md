@@ -17,22 +17,22 @@ cd Python-3.7.3
 sudo ./configure --enable-optimizations
 sudo make altinstall
 
-poder instalar con pip
+poder instalar con pip en el usuario actual
 pip3.7 install package_name --user
 
 instalar psycopg2
 sudo apt-get install libpq-dev
-pip3.7 install psycopg2 --user
+sudo pip3.7 install psycopg2 
 
 instalar pytelegrambotapi
 ver su repositorio de github o desde pypi
-pip3.7 install pyTelegramBotAPI --user
+sudo pip3.7 install pyTelegramBotAPI 
 
 instalar python-dotenv
-pip3.7 install python-dotenv --user
+sudo pip3.7 install python-dotenv 
 
 instalar ping3
-pip3.7 install ping3 --user
+sudo pip3.7 install ping3 
 
 ----------------------------------
 

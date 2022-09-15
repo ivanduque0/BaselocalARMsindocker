@@ -245,7 +245,7 @@ while True:
                     listausuariosheroku=[]
                     listausuarioslocal=[]
                 etapa=4
-                
+
             if etapa==4:
                 cursorlocal.execute('SELECT * FROM web_dispositivos')
                 dispositivos_local= cursorlocal.fetchall()
@@ -263,7 +263,7 @@ while True:
                             estado=dispositivolocal[2]
                             cursorheroku.execute('''INSERT INTO web_dispositivos (dispositivo, descripcion, estado, contrato_id)
                             VALUES (%s, %s, %s, %s);''', (dispositivo, descripcion, estado, CONTRATO))
-                            connlocal.commit()
+                            connheroku.commit()
                 else:
                     tz = pytz.timezone('America/Caracas')
                     caracas_now = datetime.now(tz)
