@@ -288,7 +288,7 @@ while True:
                             estado=dispositivolocal[2]
                             cursorheroku.execute('UPDATE web_dispositivos SET estado=%s, fecha=%s, hora=%s WHERE dispositivo=%s AND descripcion=%s AND contrato_id=%s;', 
                             (estado,fechaahora,horaahora, dispositivo, descripcion, CONTRATO))
-                            connlocal.commit()
+                            connheroku.commit()
                 etapa=0
 
 
