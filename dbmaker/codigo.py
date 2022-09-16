@@ -10,6 +10,8 @@ connlocal = None
 cursorlocal=None
 total=0
 
+SERVIDOR_LOCAL=os.environ.get('URL_SERVIDOR')
+
 ######################################
 #############ACCESOS###################
 #######################################
@@ -23,7 +25,7 @@ descripcion_acceso2=os.environ.get('RAZON_BOT2')
 descripcion_acceso3=os.environ.get('RAZON_BOT3')
 descripcion_acceso4=os.environ.get('RAZON_BOT4')
 
-dispositivos=[acceso1, acceso2, acceso3, acceso4,       
+dispositivos=[acceso1, acceso2, acceso3, acceso4, SERVIDOR_LOCAL      
       
              ]
 
@@ -31,6 +33,7 @@ dispositivos_dict ={acceso1:descripcion_acceso1,
                     acceso2:descripcion_acceso2, 
                     acceso3:descripcion_acceso3, 
                     acceso4:descripcion_acceso4, 
+                    SERVIDOR_LOCAL:'SERVIDOR LOCAL',
                     
                     }
 
