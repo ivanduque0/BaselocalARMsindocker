@@ -4,6 +4,7 @@ import subprocess
 import time
 import pytz
 from datetime import datetime
+from ping3 import ping
 from dotenv import load_dotenv
 from pathlib import Path
 
@@ -22,6 +23,23 @@ fechahoy=None
 fechaayer=None
 diasacumulados=[]
 etapa=0
+total_ping = 0
+TIEMPO_PING=int(os.environ.get('TIEMPO_PING'))
+
+######################################
+#############ACCESOS###################
+#######################################
+acceso1=os.environ.get('URL_ACCESO1')
+acceso2=os.environ.get('URL_ACCESO2')
+acceso3=os.environ.get('URL_ACCESO3')
+acceso4=os.environ.get('URL_ACCESO4')
+SERVIDOR_LOCAL=os.environ.get('URL_SERVIDOR')
+
+dispositivos=[acceso1, acceso2, acceso3, acceso4,SERVIDOR_LOCAL 
+
+              ]
+
+intentos=[0,0,0,0,0]
 
 while True:
     
@@ -46,8 +64,27 @@ while True:
         connuri = conn_info.stdout.decode('utf-8').strip()
         connheroku = psycopg2.connect(connuri)
         cursorheroku = connheroku.cursor()
-
+        t1_ping=time.perf_counter()
         while True:
+            t2_ping=time.perf_counter()
+            total_ping=t2_ping-t1_ping
+
+            if total_ping > TIEMPO_PING:
+                for dispositivo in dispositivos:
+                    intentos_tabla=dispositivos.index(dispositivo)
+                    if dispositivo:
+                        longitud_url=len(dispositivo)
+                        ping_dispositivo = ping(dispositivo[7:longitud_url])
+                        if ping_dispositivo:
+                            cursorlocal.execute('UPDATE web_dispositivos SET estado=1 WHERE dispositivo=%s', (dispositivo,))
+                            connlocal.commit()
+                            intentos[intentos_tabla]=0
+                        else:
+                            intentos[intentos_tabla]=intentos[intentos_tabla]+1
+                            if intentos[intentos_tabla] >= 4:
+                                cursorlocal.execute('UPDATE web_dispositivos SET estado=0 WHERE dispositivo=%s', (dispositivo,))
+                                connlocal.commit()
+                t1_ping=time.perf_counter()
 
             if etapa==0:
                 tz = pytz.timezone('America/Caracas')
