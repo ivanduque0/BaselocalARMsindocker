@@ -200,7 +200,6 @@ if __name__ == "__main__":
             )
             cursor = conn.cursor()
             webServer.serve_forever()
-            print("fallo")
         except (Exception, psycopg2.Error, KeyboardInterrupt) as error:
             print("fallo en hacer las consultas")
             total=0
