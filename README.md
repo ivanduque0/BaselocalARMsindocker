@@ -44,7 +44,7 @@ configurarlo de esta forma en IPV4
 
 IPv4 CONFIGURATION 
 <Manual>
-Addresses 192.168.0.125/24
+Addresses 192.168.0.195/24
 <Add...>
 Gateway 192.168.0.1
 DNS servers 8.8.8.8
