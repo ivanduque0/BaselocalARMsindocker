@@ -34,6 +34,23 @@ sudo pip3.7 install python-dotenv
 instalar ping3
 sudo pip3.7 install ping3 
 
+-----------------------------------------
+CONFIGURAR EL WIFI Y HACERLO ESTATICO
+
+entrar al administrador
+sudo nmtui
+
+configurarlo de esta forma en IPV4
+
+IPv4 CONFIGURATION 
+<Manual>
+Addresses 192.168.0.125/24
+<Add...>
+Gateway 192.168.0.1
+DNS servers 8.8.8.8
+<Add...>
+Search domains <Add...>
+
 ----------------------------------
 
 instalar nodejs

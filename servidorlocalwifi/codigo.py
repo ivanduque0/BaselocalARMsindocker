@@ -5,10 +5,17 @@ import os
 import pytz
 from datetime import datetime
 import urllib.request
+from dotenv import load_dotenv
+from pathlib import Path
+
+dotenv_path = Path('/BaselocalARMsindocker/.env.manager')
+load_dotenv(dotenv_path=dotenv_path)
+
 
 hostName = '0.0.0.0'
 serverPort = 43157
-
+conn = None
+cursor = None
 dias_semana = ("Lunes","Martes","Miercoles","Jueves","Viernes","Sabado","Domingo")
 ultimahora = datetime.strptime('23:59:59', '%H:%M:%S').time()
 primerahora = datetime.strptime('00:00:00', '%H:%M:%S').time()
