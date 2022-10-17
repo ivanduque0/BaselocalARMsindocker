@@ -37,10 +37,10 @@ acceso2=os.environ.get('URL_ACCESO2')
 acceso3=os.environ.get('URL_ACCESO3')
 acceso4=os.environ.get('URL_ACCESO4')
 
-captahuella1=os.environ.get('URL_HUELLA1')
-captahuella2=os.environ.get('URL_HUELLA2')
-captahuella3=os.environ.get('URL_HUELLA3')
-captahuella4=os.environ.get('URL_HUELLA4')
+captahuella1=os.environ.get('URL_CAPTAHUELLA1')
+captahuella2=os.environ.get('URL_CAPTAHUELLA2')
+captahuella3=os.environ.get('URL_CAPTAHUELLA3')
+captahuella4=os.environ.get('URL_CAPTAHUELLA4')
 
 dispositivos=[acceso1, acceso2, acceso3, acceso4,
               captahuella1, captahuella2, captahuella3, captahuella4
@@ -368,7 +368,7 @@ while True:
                         except ValueError:
                             for captahuella in dispositivos[4:]:
                                 if captahuella:
-                                    id_suprema = huellas_local[1]
+                                    id_suprema = huellas_local[0][1]
                                     id_suprema_hex = (id_suprema).to_bytes(4, byteorder='big').hex()
                                     id_suprema_hex = id_suprema_hex[6:]+id_suprema_hex[4:6]+id_suprema_hex[2:4]+id_suprema_hex[0:2]
                                     try:
