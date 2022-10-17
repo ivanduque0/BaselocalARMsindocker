@@ -425,13 +425,14 @@ while True:
                                         if peticion.getcode() == 200:
                                             cursorheroku.execute('UPDATE web_huellas SET id_suprema=%s WHERE template=%s', (id_suprema, template))
                                             connheroku.commit()
-                                            cursorlocal.execute('''INSERT INTO web_huellas (id_suprema, cedula, template)
-                                            VALUES (%s, %s, %s)''', (id_suprema, cedula, template))
-                                            connlocal.commit()
+                                            
                                     except:
                                         print("fallo al conectar con la esp8266")
                                     finally:
                                         pass
+                            cursorlocal.execute('''INSERT INTO web_huellas (id_suprema, cedula, template)
+                            VALUES (%s, %s, %s)''', (id_suprema, cedula, template))
+                            connlocal.commit()
                                         
 
 
