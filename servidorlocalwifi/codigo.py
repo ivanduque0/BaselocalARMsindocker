@@ -88,8 +88,8 @@ class MyServer(BaseHTTPRequestHandler):
             # self.wfile.write(bytes(f"{self.path[1::]}", "utf-8"))
 
             id_usuario, acceso_solicitud, _ = peticion
-            print(id_usuario)
-            print(acceso_solicitud)
+            #print(id_usuario)
+            #print(acceso_solicitud)
 
             diasusuario = []
             etapadia=0
