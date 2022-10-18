@@ -102,6 +102,11 @@ class MyServer(BaseHTTPRequestHandler):
 
     def do_POST(self):
         peticion=self.path[1::].split("/")
+
+        if len(peticion) == 2 and peticion[1] == "noregistrado":
+            acceso_solicitud, _ = peticion
+            aperturadenegada(cursor, conn, acceso_solicitud)
+
         if len(peticion) == 3 and peticion[2] == "seguricel_wifi_activo":
             self.send_response(200)
             self.send_header("Content-type", "utf-8")
