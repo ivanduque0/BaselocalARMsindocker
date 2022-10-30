@@ -41,12 +41,17 @@ captahuella1=os.environ.get('URL_CAPTAHUELLA1')
 captahuella2=os.environ.get('URL_CAPTAHUELLA2')
 captahuella3=os.environ.get('URL_CAPTAHUELLA3')
 captahuella4=os.environ.get('URL_CAPTAHUELLA4')
+# captahuella5=os.environ.get('URL_CAPTAHUELLA5')
+# captahuella6=os.environ.get('URL_CAPTAHUELLA6')
+# captahuella7=os.environ.get('URL_CAPTAHUELLA7')
+# captahuella8=os.environ.get('URL_CAPTAHUELLA8')
 
 dispositivos=[acceso1, acceso2, acceso3, acceso4,
-              captahuella1, captahuella2, captahuella3, captahuella4
+              captahuella1, captahuella2, captahuella3, captahuella4,
+              # captahuella5, captahuella6, captahuella7, captahuella8
               ]
 
-intentos=[0,0,0,0,0]
+intentos=[0,0,0,0,0,0,0,0]
 
 while True:
     
@@ -349,32 +354,34 @@ while True:
                 if nro_huellas_local > nro_huellas_heroku:
 
                     for usuario in huellas_heroku:
-                        cedula=usuario[0]
+                        template=usuario[0]
                         try:
-                            listahuellasheroku.index(cedula)
+                            listahuellasheroku.index(template)
                         except ValueError:
-                            listahuellasheroku.append(cedula)
+                            listahuellasheroku.append(template)
                     
                     for usuario in huellas_local:
-                        cedula=usuario[0]
+                        template=usuario[0]
                         try:
-                            listahuellaslocal.index(cedula)
+                            listahuellaslocal.index(template)
                         except ValueError:
-                            listahuellaslocal.append(cedula)
+                            listahuellaslocal.append(template)
 
-                    for usuario in listahuellaslocal:
+                    for templateEnLista in listahuellaslocal:
                         try:
-                            listahuellasheroku.index(usuario)
+                            listahuellasheroku.index(templateEnLista)
                         except ValueError:
                             for captahuella in dispositivos[4:]:
                                 if captahuella:
-                                    id_suprema = huellas_local[0][1]
+                                    cursorlocal.execute('SELECT id_suprema FROM web_huellas where template=%s', (templateEnLista,))
+                                    huella_local= cursorlocal.fetchall()
+                                    id_suprema = huella_local[0][0]
                                     id_suprema_hex = (id_suprema).to_bytes(4, byteorder='big').hex()
                                     id_suprema_hex = id_suprema_hex[6:]+id_suprema_hex[4:6]+id_suprema_hex[2:4]+id_suprema_hex[0:2]
                                     try:
                                         peticion = urllib.request.urlopen(url=f'{captahuella}/quitar/{id_suprema_hex}', timeout=3)
                                         if peticion.getcode() == 200:
-                                            cursorlocal.execute('DELETE FROM web_huellas WHERE template=%s', (usuario,))
+                                            cursorlocal.execute('DELETE FROM web_huellas WHERE template=%s', (templateEnLista,))
                                             connlocal.commit()
                                     except:
                                         print("fallo al conectar con la esp8266")
@@ -387,24 +394,24 @@ while True:
                 if nro_huellas_heroku > nro_huellas_local:
 
                     for usuario in huellas_heroku:
-                        cedula=usuario[0]
+                        template=usuario[0]
                         try:
-                            listahuellasheroku.index(cedula)
+                            listahuellasheroku.index(template)
                         except ValueError:
-                            listahuellasheroku.append(cedula)
+                            listahuellasheroku.append(template)
                     
                     for usuario in huellas_local:
-                        cedula=usuario[0]
+                        template=usuario[0]
                         try:
-                            listahuellaslocal.index(cedula)
+                            listahuellaslocal.index(template)
                         except ValueError:
-                            listahuellaslocal.append(cedula)
+                            listahuellaslocal.append(template)
 
-                    for usuario in listahuellasheroku:
+                    for templateEnLista in listahuellasheroku:
                         try:
-                            listahuellaslocal.index(usuario)
+                            listahuellaslocal.index(templateEnLista)
                         except ValueError:
-                            cursorheroku.execute('SELECT id_suprema, cedula, template FROM web_huellas where template=%s', (usuario,))
+                            cursorheroku.execute('SELECT id_suprema, cedula, template FROM web_huellas where template=%s', (templateEnLista,))
                             huella_heroku= cursorheroku.fetchall()
                             id_suprema=huella_heroku[0][0]
                             cedula=huella_heroku[0][1]
@@ -414,8 +421,12 @@ while True:
                                 largest_id_suprema= cursorlocal.fetchall()
                                 if not largest_id_suprema:
                                     id_suprema = 1
+                                    cursorheroku.execute('UPDATE web_huellas SET id_suprema=%s WHERE template=%s', (id_suprema, template))
+                                    connheroku.commit()
                                 else:
                                     id_suprema=largest_id_suprema[0][0]+1
+                                    cursorheroku.execute('UPDATE web_huellas SET id_suprema=%s WHERE template=%s', (id_suprema, template))
+                                    connheroku.commit()
                             for captahuella in dispositivos[4:]:
                                 if captahuella:
                                     id_suprema_hex = (id_suprema).to_bytes(4, byteorder='big').hex()
@@ -423,23 +434,15 @@ while True:
                                     try:
                                         peticion = urllib.request.urlopen(url=f'{captahuella}/anadir/{id_suprema_hex}/{template}', timeout=3)
                                         if peticion.getcode() == 200:
-                                            cursorheroku.execute('UPDATE web_huellas SET id_suprema=%s WHERE template=%s', (id_suprema, template))
-                                            connheroku.commit()
-                                            
+                                            cursorlocal.execute('''INSERT INTO web_huellas (id_suprema, cedula, template)
+                                            VALUES (%s, %s, %s)''', (id_suprema, cedula, template))
+                                            connlocal.commit()       
                                     except:
                                         print("fallo al conectar con la esp8266")
                                     finally:
                                         pass
-                            cursorlocal.execute('''INSERT INTO web_huellas (id_suprema, cedula, template)
-                            VALUES (%s, %s, %s)''', (id_suprema, cedula, template))
-                            connlocal.commit()
-                                        
-
-
-
                     listahuellasheroku=[]
                     listahuellaslocal=[]
-    
                 etapa=0
 
 
