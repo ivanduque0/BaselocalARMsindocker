@@ -33,11 +33,19 @@ captahuella1=os.environ.get('URL_CAPTAHUELLA1')
 captahuella2=os.environ.get('URL_CAPTAHUELLA2')
 captahuella3=os.environ.get('URL_CAPTAHUELLA3')
 captahuella4=os.environ.get('URL_CAPTAHUELLA4')
+# captahuella5=os.environ.get('URL_CAPTAHUELLA5')
+# captahuella6=os.environ.get('URL_CAPTAHUELLA6')
+# captahuella7=os.environ.get('URL_CAPTAHUELLA7')
+# captahuella8=os.environ.get('URL_CAPTAHUELLA8')
 
 descripcion_captahuella1=os.environ.get('RAZON_CAPTAHUELLA1')
 descripcion_captahuella2=os.environ.get('RAZON_CAPTAHUELLA2')
 descripcion_captahuella3=os.environ.get('RAZON_CAPTAHUELLA3')
 descripcion_captahuella4=os.environ.get('RAZON_CAPTAHUELLA4')
+# descripcion_captahuella5=os.environ.get('RAZON_CAPTAHUELLA5')
+# descripcion_captahuella6=os.environ.get('RAZON_CAPTAHUELLA6')
+# descripcion_captahuella7=os.environ.get('RAZON_CAPTAHUELLA7')
+# descripcion_captahuella8=os.environ.get('RAZON_CAPTAHUELLA8')
 
 ######################################
 ################RFID###################
@@ -47,11 +55,19 @@ rfid1=os.environ.get('URL_RFID1')
 rfid2=os.environ.get('URL_RFID2')
 rfid3=os.environ.get('URL_RFID3')
 rfid4=os.environ.get('URL_RFID4')
+# rfid5=os.environ.get('URL_RFID5')
+# rfid6=os.environ.get('URL_RFID6')
+# rfid7=os.environ.get('URL_RFID7')
+# rfid8=os.environ.get('URL_RFID8')
 
 descripcion_rfid1=os.environ.get('RAZON_RFID1')
 descripcion_rfid2=os.environ.get('RAZON_RFID2')
 descripcion_rfid3=os.environ.get('RAZON_RFID3')
 descripcion_rfid4=os.environ.get('RAZON_RFID4')
+# descripcion_rfid5=os.environ.get('RAZON_RFID5')
+# descripcion_rfid6=os.environ.get('RAZON_RFID6')
+# descripcion_rfid7=os.environ.get('RAZON_RFID7')
+# descripcion_rfid8=os.environ.get('RAZON_RFID8')
 
 dispositivos=[acceso1, acceso2, acceso3, acceso4,
               captahuella1, captahuella2, captahuella3, captahuella4, 
