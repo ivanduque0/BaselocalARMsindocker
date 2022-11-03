@@ -20,10 +20,14 @@ acceso2=os.environ.get('URL_ACCESO2')
 acceso3=os.environ.get('URL_ACCESO3')
 acceso4=os.environ.get('URL_ACCESO4')
 
-descripcion_acceso1=os.environ.get('RAZON_BOT1')
-descripcion_acceso2=os.environ.get('RAZON_BOT2')
-descripcion_acceso3=os.environ.get('RAZON_BOT3')
-descripcion_acceso4=os.environ.get('RAZON_BOT4')
+descripcion_acceso1=os.environ.get('RAZON_TELEFONO1')
+descripcion_acceso2=os.environ.get('RAZON_TELEFONO2')
+descripcion_acceso3=os.environ.get('RAZON_TELEFONO3')
+descripcion_acceso4=os.environ.get('RAZON_TELEFONO4')
+
+######################################
+#############CAPTAHUELLAS#############
+#######################################
 
 captahuella1=os.environ.get('URL_CAPTAHUELLA1')
 captahuella2=os.environ.get('URL_CAPTAHUELLA2')
@@ -35,8 +39,24 @@ descripcion_captahuella2=os.environ.get('RAZON_CAPTAHUELLA2')
 descripcion_captahuella3=os.environ.get('RAZON_CAPTAHUELLA3')
 descripcion_captahuella4=os.environ.get('RAZON_CAPTAHUELLA4')
 
-dispositivos=[acceso1, acceso2, acceso3, acceso4,captahuella1, captahuella2, captahuella3, captahuella4, SERVIDOR_LOCAL      
-      
+######################################
+################RFID###################
+#######################################
+
+rfid1=os.environ.get('URL_RFID1')
+rfid2=os.environ.get('URL_RFID2')
+rfid3=os.environ.get('URL_RFID3')
+rfid4=os.environ.get('URL_RFID4')
+
+descripcion_rfid1=os.environ.get('RAZON_RFID1')
+descripcion_rfid2=os.environ.get('RAZON_RFID2')
+descripcion_rfid3=os.environ.get('RAZON_RFID3')
+descripcion_rfid4=os.environ.get('RAZON_RFID4')
+
+dispositivos=[acceso1, acceso2, acceso3, acceso4,
+              captahuella1, captahuella2, captahuella3, captahuella4, 
+              rfid1, rfid2, rfid3, rfid4,
+              SERVIDOR_LOCAL
              ]
 
 dispositivos_dict ={acceso1:descripcion_acceso1, 
@@ -47,6 +67,10 @@ dispositivos_dict ={acceso1:descripcion_acceso1,
                     captahuella2:descripcion_captahuella2, 
                     captahuella3:descripcion_captahuella3, 
                     captahuella4:descripcion_captahuella4, 
+                    rfid1:descripcion_rfid1, 
+                    rfid2:descripcion_rfid2, 
+                    rfid3:descripcion_rfid3, 
+                    rfid4:descripcion_rfid4,
                     SERVIDOR_LOCAL:'SERVIDOR LOCAL',
                     
                     }
@@ -76,6 +100,7 @@ while True:
         cursorlocal.execute('CREATE TABLE IF NOT EXISTS dias_acumulados (fecha varchar(150))')
         cursorlocal.execute('CREATE TABLE IF NOT EXISTS web_dispositivos (dispositivo varchar(150), descripcion varchar(150), estado varchar(150))')
         cursorlocal.execute('CREATE TABLE IF NOT EXISTS web_huellas (id_suprema integer, cedula varchar(150), template text)')
+        cursorlocal.execute('CREATE TABLE IF NOT EXISTS web_tagsrfid (epc text, cedula varchar(150))')
         #cursorlocal.execute('CREATE TABLE IF NOT EXISTS led (onoff integer, acceso integer)')
         connlocal.commit()
         

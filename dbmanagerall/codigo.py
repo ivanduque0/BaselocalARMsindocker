@@ -37,6 +37,10 @@ acceso2=os.environ.get('URL_ACCESO2')
 acceso3=os.environ.get('URL_ACCESO3')
 acceso4=os.environ.get('URL_ACCESO4')
 
+######################################
+#############CAPTAHUELLAS#############
+#######################################
+
 captahuella1=os.environ.get('URL_CAPTAHUELLA1')
 captahuella2=os.environ.get('URL_CAPTAHUELLA2')
 captahuella3=os.environ.get('URL_CAPTAHUELLA3')
@@ -46,12 +50,27 @@ captahuella4=os.environ.get('URL_CAPTAHUELLA4')
 # captahuella7=os.environ.get('URL_CAPTAHUELLA7')
 # captahuella8=os.environ.get('URL_CAPTAHUELLA8')
 
+######################################
+################RFID###################
+#######################################
+
+rfid1=os.environ.get('URL_RFID1')
+rfid2=os.environ.get('URL_RFID2')
+rfid3=os.environ.get('URL_RFID3')
+rfid4=os.environ.get('URL_RFID4')
+# rfid5=os.environ.get('URL_RFID5')
+# rfid6=os.environ.get('URL_RFID6')
+# rfid7=os.environ.get('URL_RFID7')
+# rfid8=os.environ.get('URL_RFID8')
+
 dispositivos=[acceso1, acceso2, acceso3, acceso4,
               captahuella1, captahuella2, captahuella3, captahuella4,
-              # captahuella5, captahuella6, captahuella7, captahuella8
+              # captahuella5, captahuella6, captahuella7, captahuella8,
+              rfid1, rfid2, rfid3, rfid4,
+              # rfid5, rfid6, rfid7, rfid8
               ]
 
-intentos=[0,0,0,0,0,0,0,0]
+intentos=[0,0,0,0,0,0,0,0,0,0,0,0]
 
 while True:
     
@@ -443,6 +462,38 @@ while True:
                                         pass
                     listahuellasheroku=[]
                     listahuellaslocal=[]
+                etapa=6
+
+            if etapa==6:
+                cursorlocal.execute('SELECT epc, cedula FROM web_tagsrfid')
+                tags_local= cursorlocal.fetchall()
+
+                cursorheroku.execute('SELECT epc, cedula FROM web_tagsrfid where contrato_id=%s', (CONTRATO,))
+                tags_heroku= cursorheroku.fetchall()
+
+                nro_tags_local = len(tags_local)
+                nro_tags_heroku = len(tags_heroku)
+
+                if nro_tags_heroku > nro_tags_local:
+                    for tagherokuiterar in tags_heroku:
+                        try:
+                            tags_local.index(tagherokuiterar)
+                        except ValueError:
+                            epc=tagherokuiterar[0]
+                            cedula=tagherokuiterar[1]
+                            cursorlocal.execute('''INSERT INTO web_tagsrfid (epc, cedula)
+                            VALUES (%s, %s);''', (epc, cedula))
+                            connlocal.commit()
+
+                if nro_tags_local > nro_tags_heroku:
+                    for taglocaliterar in tags_local:
+                        try:
+                            tags_heroku.index(taglocaliterar)
+                        except ValueError:
+                            epc=taglocaliterar[0]
+                            cedula=taglocaliterar[1]
+                            cursorlocal.execute('DELETE FROM web_tagsrfid WHERE epc=%s AND cedula=%s',(epc, cedula))
+                            connlocal.commit()
                 etapa=0
 
 
