@@ -68,11 +68,10 @@ dispositivos_dict ={acceso1:descripcion_acceso1,
                     captahuella3:descripcion_captahuella3, 
                     captahuella4:descripcion_captahuella4, 
                     rfid1:descripcion_rfid1, 
-                    rfid2:descripcion_rfid2, 
-                    rfid3:descripcion_rfid3, 
+                    rfid2:descripcion_rfid2,
+                    rfid3:descripcion_rfid3,
                     rfid4:descripcion_rfid4,
-                    SERVIDOR_LOCAL:'SERVIDOR LOCAL',
-                    
+                    SERVIDOR_LOCAL:'SERVIDOR LOCAL'
                     }
 
 while True:
