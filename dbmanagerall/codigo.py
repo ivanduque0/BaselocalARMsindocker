@@ -371,7 +371,6 @@ while True:
 
                 nro_huellas_local = len(huellas_local)
                 nro_huellas_heroku = len(huellas_heroku)
-                nro_captahuellas = len(dispositivos[4:8])
                 #cuando se van a eliminar huellas
                 if nro_huellas_local > nro_huellas_heroku:
 
@@ -395,21 +394,21 @@ while True:
                         except ValueError:
                             nroCaptahuellasSinHuella=0
                             captahuella_actual=0
+                            cursorlocal.execute('SELECT id_suprema FROM web_huellas where template=%s', (templateEnLista,))
+                            huella_local= cursorlocal.fetchall()
+                            id_suprema = huella_local[0][0]
+                            id_suprema_hex = (id_suprema).to_bytes(4, byteorder='big').hex()
+                            id_suprema_hex = id_suprema_hex[6:]+id_suprema_hex[4:6]+id_suprema_hex[2:4]+id_suprema_hex[0:2]
                             for captahuella in dispositivos[4:8]:
                                 if captahuella:
                                     captahuella_actual=captahuella_actual+1
-                                    cursorlocal.execute('SELECT id_suprema FROM web_huellas where template=%s', (templateEnLista,))
-                                    huella_local= cursorlocal.fetchall()
-                                    id_suprema = huella_local[0][0]
-                                    id_suprema_hex = (id_suprema).to_bytes(4, byteorder='big').hex()
-                                    id_suprema_hex = id_suprema_hex[6:]+id_suprema_hex[4:6]+id_suprema_hex[2:4]+id_suprema_hex[0:2]
                                     try:
                                         peticion = urllib.request.urlopen(url=f'{captahuella}/quitar/{id_suprema_hex}', timeout=3)
                                         if peticion.getcode() == 200:
                                             nroCaptahuellasSinHuella=nroCaptahuellasSinHuella+1
                                     except:
                                         print(f"fallo al conectar con la esp8266 con la ip:{captahuella}")
-                            if nroCaptahuellasSinHuella == nro_captahuellas and captahuella_actual == nro_captahuellas:
+                            if nroCaptahuellasSinHuella == captahuella_actual:
                                 cursorlocal.execute('DELETE FROM web_huellas WHERE template=%s', (templateEnLista,))
                                 connlocal.commit()
                     listahuellasheroku=[]
@@ -457,19 +456,19 @@ while True:
                             id_suprema_hex = (id_suprema).to_bytes(4, byteorder='big').hex()
                             id_suprema_hex = id_suprema_hex[6:]+id_suprema_hex[4:6]+id_suprema_hex[2:4]+id_suprema_hex[0:2]
                             for captahuella in dispositivos[4:8]:
-                                captahuella_actual=captahuella_actual+1
                                 if captahuella:
+                                    captahuella_actual=captahuella_actual+1
                                     try:
                                         peticion = urllib.request.urlopen(url=f'{captahuella}/anadir/{id_suprema_hex}/{template}', timeout=3)
                                         if peticion.getcode() == 200:
                                             nroCaptahuellasConHuella=nroCaptahuellasConHuella+1
                                     except:
                                         print(f"fallo al conectar con la esp8266 con la ip:{captahuella}")
-                            if nroCaptahuellasConHuella == nro_captahuellas and captahuella_actual == nro_captahuellas:
+                            if nroCaptahuellasConHuella == captahuella_actual:
                                 cursorlocal.execute('''INSERT INTO web_huellas (id_suprema, cedula, template)
                                 VALUES (%s, %s, %s)''', (id_suprema, cedula, template))
                                 connlocal.commit()
-                            elif captahuella_actual == nro_captahuellas and nroCaptahuellasConHuella < nro_captahuellas and nroCaptahuellasConHuella != 0:
+                            elif captahuella_actual != nroCaptahuellasConHuella and nroCaptahuellasConHuella != 0:
                                 for captahuella in dispositivos[4:8]:
                                     try:
                                         peticion = urllib.request.urlopen(url=f'{captahuella}/quitar/{id_suprema_hex}', timeout=3)
