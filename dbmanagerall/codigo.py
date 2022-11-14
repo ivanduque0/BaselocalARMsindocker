@@ -483,7 +483,7 @@ while True:
                                         if captahuella:
                                             captahuella_actual=captahuella_actual+1
                                             try:
-                                                peticion = urllib.request.urlopen(url=f'{captahuella}/anadir/{id_suprema_hex}/{template}', timeout=3)
+                                                peticion = urllib.request.urlopen(url=f'{captahuella}/anadir/{id_suprema_hex}/{template}0A', timeout=3)
                                                 if peticion.getcode() == 200:
                                                     nroCaptahuellasConHuella=nroCaptahuellasConHuella+1
                                             except:
