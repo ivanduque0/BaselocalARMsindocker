@@ -113,8 +113,7 @@ while True:
 
         while True:
 
-            resp = requests.get(url=URL)
-            aperturas_solicitadas = resp.json()
+            aperturas_solicitadas = requests.get(url=URL, auth=('mobile_access', 'S3gur1c3l_mobile@')).json()
             if len(aperturas_solicitadas):
                 tz = pytz.timezone('America/Caracas')
                 caracas_now = datetime.now(tz)
