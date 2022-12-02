@@ -592,6 +592,19 @@ while True:
                             cedula=taglocaliterar[1]
                             cursorlocal.execute('DELETE FROM web_tagsrfid WHERE epc=%s AND cedula=%s',(epc, cedula))
                             connlocal.commit()
+                etapa=7
+
+            if etapa==7:
+                cursorlocal.execute('SELECT id, estado FROM solicitud_aperturas')
+                aperturas_local= cursorlocal.fetchall()
+                if aperturas_local:
+                    for aperturalocal in aperturas_local:
+                        if aperturalocal[1] == 1:
+                            idapertura=aperturalocal[0]
+                            cursorheroku.execute('DELETE FROM web_apertura WHERE id=%s', (idapertura,))
+                            connheroku.commit()
+                            cursorlocal.execute('DELETE FROM solicitud_aperturas WHERE id=%s', (idapertura,))
+                            connlocal.commit()
                 etapa=0
 
 
