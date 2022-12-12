@@ -3,24 +3,23 @@ import os
 import subprocess
 import time
 import pytz
-from datetime import datetime, date, time
+from datetime import datetime
 from ping3 import ping
 import urllib.request
 from dotenv import load_dotenv
 from pathlib import Path
-import requests
 
 dotenv_path = Path('/BaselocalARMsindocker/.env.manager')
 load_dotenv(dotenv_path=dotenv_path)
 CONTRATO=os.environ.get("CONTRATO")
-URL_API=os.environ.get("URL_API")
 maximo_dias_acumular=int(os.environ.get("DIAS_ACUMULAR"))
+connuri=os.environ.get("POSTGRES_URI")
 connlocal = None
 connheroku = None
 cursorheroku=None
 cursorlocal=None
 listausuariosheroku=[]
-listaUsuariosLocal=[]
+listausuarioslocal=[]
 listahuellasheroku=[]
 listahuellaslocal=[]
 listaempleadosseguricel=[]
@@ -101,6 +100,12 @@ while True:
         )
         cursorlocal = connlocal.cursor()
         
+        if not connuri:
+            conn_info = subprocess.run(["heroku", "config:get", "DATABASE_URL", "-a", 'tesis-reconocimiento-facial'], stdout = subprocess.PIPE)
+            connuri = conn_info.stdout.decode('utf-8').strip()
+        
+        connheroku = psycopg2.connect(connuri)
+        cursorheroku = connheroku.cursor()
         t1_ping=time.perf_counter()
         while True:
             t2_ping=time.perf_counter()
@@ -147,40 +152,26 @@ while True:
 
                 cursorlocal.execute('SELECT * FROM web_interacciones where contrato=%s and fecha=%s', (CONTRATO,fechahoy))
                 interacciones_local= cursorlocal.fetchall()
-            
-                request_json = requests.get(url=f'{URL_API}obtenerinteraccionesapi/{CONTRATO}/{fechahoy}/', auth=('27488274', 'CkretoxDxdxdXd'), timeout=3).json()
-
-                listaLogsServidor=[]
-                for consultajson in request_json:
-                    objetofecha= date.fromisoformat(consultajson['fecha'])
-                    objetohora=time.fromisoformat(consultajson['hora'])
-                    tuplaLogIndividual=(consultajson['nombre'],objetofecha,objetohora,consultajson['razon'],consultajson['contrato'],consultajson['cedula'])
-                    listaLogsServidor.append(tuplaLogIndividual)
+                cursorheroku.execute('SELECT nombre, fecha, hora, razon, contrato, cedula FROM web_interacciones where contrato=%s and fecha=%s', (CONTRATO,fechahoy))
+                interacciones_heroku= cursorheroku.fetchall()
 
                 nro_int_local = len(interacciones_local)
-                nro_int_servidor = len(listaLogsServidor)
+                nro_int_heroku = len(interacciones_heroku)
 
-                if nro_int_local != nro_int_servidor:
+                if nro_int_local != nro_int_heroku:
 
                     for interaccion in interacciones_local:
                         try:
-                            listaLogsServidor.index(interaccion)
+                            interacciones_heroku.index(interaccion)
                         except ValueError:
                             nombre=interaccion[0]
                             fecha=interaccion[1]
                             hora=interaccion[2]
                             razon=interaccion[3]
                             cedula=interaccion[5]
-                            anadirLogJson = {
-                                "nombre": nombre,
-                                "fecha": fecha,
-                                "hora": hora,
-                                "razon": razon,
-                                "contrato": CONTRATO,
-                                "cedula": cedula
-                            }
-                            requests.post(url=f'{URL_API}registrarinteraccionesapi/', 
-                            json=anadirLogJson, auth=('27488274', 'CkretoxDxdxdXd'), timeout=3)
+                            cursorheroku.execute('''INSERT INTO web_interacciones (nombre, fecha, hora, razon, contrato, cedula)
+                            VALUES (%s, %s, %s, %s, %s, %s);''', (nombre, fecha, hora, razon, CONTRATO, cedula))
+                            connheroku.commit()
                     
                     nombre=None
                     fecha=None
@@ -194,63 +185,52 @@ while True:
                 cursorlocal.execute('SELECT * FROM web_usuarios')
                 usuarios_local= cursorlocal.fetchall()
 
-                request_json = requests.get(url=f'{URL_API}obtenerusuariosapi/{CONTRATO}/', auth=('27488274', 'CkretoxDxdxdXd'), timeout=3).json()
+                cursorheroku.execute('SELECT cedula FROM web_usuarios where contrato_id=%s or contrato_id=%s', (CONTRATO,'SEGURICEL'))
+                usuarios_heroku= cursorheroku.fetchall()
 
-                usuariosServidor=[]
-                for consultajson in request_json:
-                    tuplaUsuarioIndividual=(consultajson['cedula'],)
-                    usuariosServidor.append(tuplaUsuarioIndividual)
 
-                if len(usuariosServidor) == len(usuarios_local):
-                    for usuario in usuarios_local:
-                        cedula=usuario[0]
-                        try:
-                            listaUsuariosLocal.index(cedula)
-                        except ValueError:
-                            listaUsuariosLocal.append(cedula)
+                for usuario in usuarios_local:
+                    cedula=usuario[0]
+                    try:
+                        listausuarioslocal.index(cedula)
+                    except ValueError:
+                        listausuarioslocal.append(cedula)
+                
+                for usuario in listausuarioslocal:
+                    cursorheroku.execute('SELECT entrada, salida, cedula, dia FROM web_horariospermitidos WHERE cedula=%s and (contrato_id=%s or contrato_id=%s)',(usuario,CONTRATO,'SEGURICEL'))
+                    diasheroku= cursorheroku.fetchall()
                     
-                    for usuario in listaUsuariosLocal:
+                    cursorlocal.execute('SELECT * FROM web_horariospermitidos WHERE cedula_id=%s',(usuario,))
+                    diaslocal= cursorlocal.fetchall()
 
-                        request_json = requests.get(url=f'{URL_API}obtenerhorariosapi/{CONTRATO}/{usuario}', auth=('27488274', 'CkretoxDxdxdXd'), timeout=3).json()
+                    if len(diasheroku) > 0 and len(diasheroku) > len(diaslocal):
+                        for diasherokuiterar in diasheroku:
+                            try:
+                                diaslocal.index(diasherokuiterar)
+                            except ValueError:
+                                entrada=diasherokuiterar[0]
+                                salida=diasherokuiterar[1]
+                                cedula=diasherokuiterar[2]
+                                dia=diasherokuiterar[3]
+                                cursorlocal.execute('''INSERT INTO web_horariospermitidos (entrada, salida, cedula_id, dia)
+                                VALUES (%s, %s, %s, %s);''', (entrada, salida, cedula, dia))
+                                connlocal.commit()
 
-                        horariosServidor=[]
-                        for consultajson in request_json:
-                            entradaObjetohora=time.fromisoformat(consultajson['entrada'])
-                            salidaObjetohora=time.fromisoformat(consultajson['salida'])
-                            TuplaHorarioIndividual=(entradaObjetohora,salidaObjetohora,consultajson['cedula'],consultajson['dia'],)
-                            horariosServidor.append(TuplaHorarioIndividual)
-                        
-                        cursorlocal.execute('SELECT * FROM web_horariospermitidos WHERE cedula_id=%s',(usuario,))
-                        horariosLocal= cursorlocal.fetchall()
-
-                        if len(horariosServidor) > 0 and len(horariosServidor) > len(horariosLocal):
-                            for horario in horariosServidor:
-                                try:
-                                    horariosLocal.index(horario)
-                                except ValueError:
-                                    entrada=horario[0]
-                                    salida=horario[1]
-                                    cedula=horario[2]
-                                    dia=horario[3]
-                                    cursorlocal.execute('''INSERT INTO web_horariospermitidos (entrada, salida, cedula_id, dia)
-                                    VALUES (%s, %s, %s, %s);''', (entrada, salida, cedula, dia))
-                                    connlocal.commit()
-
-                        if len(horariosLocal) > len(horariosServidor):
-                            for horariosLocaliterar in horariosLocal:
-                                try:
-                                    horariosServidor.index(horariosLocaliterar)
-                                except ValueError:
-                                    entrada=horariosLocaliterar[0]
-                                    salida=horariosLocaliterar[1]
-                                    cedula=horariosLocaliterar[2]
-                                    dia=horariosLocaliterar[3]
-                                    cursorlocal.execute('DELETE FROM web_horariospermitidos WHERE entrada=%s AND salida=%s AND cedula_id=%s AND dia=%s',(entrada, salida, cedula, dia))
-                                    connlocal.commit()
-                    horariosLocal=[]
-                    horariosServidor=[]
-                    listausuariosheroku=[]
-                    listaUsuariosLocal=[]
+                    if len(diaslocal) > len(diasheroku):
+                        for diaslocaliterar in diaslocal:
+                            try:
+                                diasheroku.index(diaslocaliterar)
+                            except ValueError:
+                                entrada=diaslocaliterar[0]
+                                salida=diaslocaliterar[1]
+                                cedula=diaslocaliterar[2]
+                                dia=diaslocaliterar[3]
+                                cursorlocal.execute('DELETE FROM web_horariospermitidos WHERE entrada=%s AND salida=%s AND cedula_id=%s AND dia=%s',(entrada, salida, cedula, dia))
+                                connlocal.commit()
+                diaslocal=[]
+                diasheroku=[]
+                listausuariosheroku=[]
+                listausuarioslocal=[]
                 etapa=2
 
             if etapa==2:
@@ -258,18 +238,14 @@ while True:
                 cursorlocal.execute('SELECT cedula, telegram_id FROM web_usuarios')
                 usuarios_local= cursorlocal.fetchall()
 
-                request_json = requests.get(url=f'{URL_API}obtenerusuariosapi/{CONTRATO}/', auth=('27488274', 'CkretoxDxdxdXd'), timeout=3).json()
-
-                usuariosServidor=[]
-                for consultajson in request_json:
-                    tuplaUsuarioIndividual=(consultajson['cedula'],consultajson['telegram_id'],)
-                    usuariosServidor.append(tuplaUsuarioIndividual)
+                cursorheroku.execute('SELECT cedula, telegram_id FROM web_usuarios where contrato_id=%s or contrato_id=%s', (CONTRATO,'SEGURICEL'))
+                usuarios_heroku= cursorheroku.fetchall()
                 
                 nro_usu_local = len(usuarios_local)
-                nro_usu_servidor = len(usuariosServidor)
+                nro_usu_heroku = len(usuarios_heroku)
             
-                if nro_usu_servidor == nro_usu_local:
-                    for usuario in usuariosServidor:
+                if nro_usu_heroku == nro_usu_local:
+                    for usuario in usuarios_heroku:
                         try:
                             usuarios_local.index(usuario)
                         except ValueError:
@@ -284,36 +260,32 @@ while True:
                 cursorlocal.execute('SELECT * FROM web_usuarios')
                 usuarios_local= cursorlocal.fetchall()
 
-                request_json = requests.get(url=f'{URL_API}obtenerusuariosapi/{CONTRATO}/', auth=('27488274', 'CkretoxDxdxdXd'), timeout=3).json()
-
-                usuariosServidor=[]
-                for consultajson in request_json:
-                    tuplaUsuarioIndividual=(consultajson['cedula'],)
-                    usuariosServidor.append(tuplaUsuarioIndividual)
+                cursorheroku.execute('SELECT cedula FROM web_usuarios where contrato_id=%s or contrato_id=%s', (CONTRATO,'SEGURICEL'))
+                usuarios_heroku= cursorheroku.fetchall()
 
                 nro_usu_local = len(usuarios_local)
-                nro_usu_servidor = len(usuariosServidor)
+                nro_usu_heroku = len(usuarios_heroku)
             
                 #cuando se va a eliminar un usuario
-                if nro_usu_local > nro_usu_servidor:
+                if nro_usu_local > nro_usu_heroku:
 
-                    for usuario in usuariosServidor:
+                    for usuario in usuarios_heroku:
                         cedula=usuario[0]
                         try:
-                            listaUsuariosServidor.index(cedula)
+                            listausuariosheroku.index(cedula)
                         except ValueError:
-                            listaUsuariosServidor.append(cedula)
+                            listausuariosheroku.append(cedula)
                     
                     for usuario in usuarios_local:
                         cedula=usuario[0]
                         try:
-                            listaUsuariosLocal.index(cedula)
+                            listausuarioslocal.index(cedula)
                         except ValueError:
-                            listaUsuariosLocal.append(cedula)
+                            listausuarioslocal.append(cedula)
 
-                    for usuario in listaUsuariosLocal:
+                    for usuario in listausuarioslocal:
                         try:
-                            listaUsuariosServidor.index(usuario)
+                            listausuariosheroku.index(usuario)
                         except ValueError:
                             cursorlocal.execute('SELECT id_suprema FROM web_huellas where cedula=%s', (usuario,))
                             huellas_local= cursorlocal.fetchall()
@@ -342,102 +314,84 @@ while True:
                                 cursorlocal.execute('DELETE FROM web_usuarios WHERE cedula=%s', (usuario,))
                                 cursorlocal.execute('DELETE FROM web_horariospermitidos WHERE cedula_id=%s', (usuario,))
                                 connlocal.commit()
-                    listaUsuariosServidor=[]
-                    listaUsuariosLocal=[]
+                    listausuariosheroku=[]
+                    listausuarioslocal=[]
 
                 # cuando se va a agregar usuarios
-                if nro_usu_servidor > nro_usu_local:
+                if nro_usu_heroku > nro_usu_local:
 
-                    for usuario in usuariosServidor:
+                    for usuario in usuarios_heroku:
                         cedula=usuario[0]
                         try:
-                            listaUsuariosServidor.index(cedula)
+                            listausuariosheroku.index(cedula)
                         except ValueError:
-                            listaUsuariosServidor.append(cedula)
+                            listausuariosheroku.append(cedula)
                     
                     for usuario in usuarios_local:
                         cedula=usuario[0]
                         try:
-                            listaUsuariosLocal.index(cedula)
+                            listausuarioslocal.index(cedula)
                         except ValueError:
-                            listaUsuariosLocal.append(cedula)
+                            listausuarioslocal.append(cedula)
 
-                    for usuario in listaUsuariosServidor:
+                    for usuario in listausuariosheroku:
                         try:
-                            listaUsuariosLocal.index(usuario)
+                            listausuarioslocal.index(usuario)
                         except ValueError:
-                            
-                            request_json = requests.get(url=f'{URL_API}usuarioindividualapi/{CONTRATO}/{usuario}/', auth=('27488274', 'CkretoxDxdxdXd'), timeout=3).json()
-
-                            usuariosServidor=[]
-                            for consultajson in request_json:
-                                tuplaUsuarioIndividual=(consultajson['cedula'],consultajson['nombre'],)
-                                usuariosServidor.append(tuplaUsuarioIndividual)
-                            cedula=usuariosServidor[0][0]
-                            nombre=usuariosServidor[0][1]
+                            cursorheroku.execute('SELECT cedula, nombre FROM web_usuarios where cedula=%s and (contrato_id=%s or contrato_id=%s)', (usuario, CONTRATO, 'SEGURICEL'))
+                            usuario_heroku= cursorheroku.fetchall()
+                            cedula=usuario_heroku[0][0]
+                            nombre=usuario_heroku[0][1]
                             cursorlocal.execute('''INSERT INTO web_usuarios (cedula, nombre)
                             VALUES (%s, %s)''', (cedula, nombre))
                             connlocal.commit()
-                    listaUsuariosServidor=[]
-                    listaUsuariosLocal=[]
+                    listausuariosheroku=[]
+                    listausuarioslocal=[]
                 etapa=4
 
             if etapa==4:
                 cursorlocal.execute('SELECT * FROM web_dispositivos')
                 dispositivos_local= cursorlocal.fetchall()
 
-                request_json = requests.get(url=f'{URL_API}obtenerdispositivosapi/{CONTRATO}/', auth=('27488274', 'CkretoxDxdxdXd'), timeout=3).json()
+                cursorheroku.execute('SELECT dispositivo, descripcion, estado FROM web_dispositivos where contrato_id=%s', (CONTRATO,))
+                dispositivos_heroku= cursorheroku.fetchall()
 
-                dispositivosServidor=[]
-                for consultajson in request_json:
-                    tuplaDispositivoIndividual=(consultajson['dispositivo'],consultajson['descripcion'], consultajson['estado'],)
-                    dispositivosServidor.append(tuplaDispositivoIndividual)
-
-                if len(dispositivosServidor) != len(dispositivos_local):
-                    # cursorheroku.execute('''DELETE FROM web_dispositivos * WHERE contrato_id=%s''', (CONTRATO,))
-                    # connheroku.commit()
-                    # cursorheroku.execute('SELECT dispositivo, descripcion, estado FROM web_dispositivos where contrato_id=%s', (CONTRATO,))
-                    # dispositivosServidor= cursorheroku.fetchall()
-                    # for dispositivolocal in dispositivos_local:
-                    #     try:
-                    #         dispositivosServidor.index(dispositivolocal)
-                    #     except ValueError:
-                    #         tz = pytz.timezone('America/Caracas')
-                    #         caracas_now = datetime.now(tz)
-                    #         fechaahora=str(caracas_now)[:10]
-                    #         hora=str(caracas_now)[11:19]
-                    #         horaahora = datetime.strptime(hora, '%H:%M:%S').time()
-                    #         dispositivo=dispositivolocal[0]
-                    #         descripcion=dispositivolocal[1]
-                    #         estado=dispositivolocal[2]
-                    #         cursorheroku.execute('''INSERT INTO web_dispositivos (dispositivo, descripcion, estado, contrato_id, fecha, hora)
-                    #         VALUES (%s, %s, %s, %s, %s, %s);''', (dispositivo, descripcion, estado, CONTRATO, fechaahora, horaahora))
-                    #         connheroku.commit()
-                    pass
-                else:
+                if len(dispositivos_heroku) != len(dispositivos_local):
+                    cursorheroku.execute('''DELETE FROM web_dispositivos * WHERE contrato_id=%s''', (CONTRATO,))
+                    connheroku.commit()
+                    cursorheroku.execute('SELECT dispositivo, descripcion, estado FROM web_dispositivos where contrato_id=%s', (CONTRATO,))
+                    dispositivos_heroku= cursorheroku.fetchall()
                     for dispositivolocal in dispositivos_local:
                         try:
-                            dispositivosServidor.index(dispositivolocal)
+                            dispositivos_heroku.index(dispositivolocal)
                         except ValueError:
                             tz = pytz.timezone('America/Caracas')
                             caracas_now = datetime.now(tz)
-                            fecha=str(caracas_now)[:10]
+                            fechaahora=str(caracas_now)[:10]
                             hora=str(caracas_now)[11:19]
+                            horaahora = datetime.strptime(hora, '%H:%M:%S').time()
                             dispositivo=dispositivolocal[0]
                             descripcion=dispositivolocal[1]
                             estado=dispositivolocal[2]
-
-                            cambiarEstadoDispositivoJson = {
-                                "dispositivo": dispositivo,
-                                "descripcion": descripcion,
-                                "estado": estado,
-                                "fecha": fecha,
-                                "hora": hora,
-                                "contrato": CONTRATO
-                            }
-                            requests.post(url=f'{URL_API}/actualizardispositivosapi/{CONTRATO}/{dispositivo}/', 
-                            json=anadirLogJson, auth=('27488274', 'CkretoxDxdxdXd'), timeout=3)
-                    
+                            cursorheroku.execute('''INSERT INTO web_dispositivos (dispositivo, descripcion, estado, contrato_id, fecha, hora)
+                            VALUES (%s, %s, %s, %s, %s, %s);''', (dispositivo, descripcion, estado, CONTRATO, fechaahora, horaahora))
+                            connheroku.commit()
+                else:
+                    for dispositivolocal in dispositivos_local:
+                        try:
+                            dispositivos_heroku.index(dispositivolocal)
+                        except ValueError:
+                            tz = pytz.timezone('America/Caracas')
+                            caracas_now = datetime.now(tz)
+                            fechaahora=str(caracas_now)[:10]
+                            hora=str(caracas_now)[11:19]
+                            horaahora = datetime.strptime(hora, '%H:%M:%S').time()
+                            dispositivo=dispositivolocal[0]
+                            descripcion=dispositivolocal[1]
+                            estado=dispositivolocal[2]
+                            cursorheroku.execute('UPDATE web_dispositivos SET estado=%s, fecha=%s, hora=%s WHERE dispositivo=%s AND descripcion=%s AND contrato_id=%s;', 
+                            (estado,fechaahora,horaahora, dispositivo, descripcion, CONTRATO))
+                            connheroku.commit()
                 etapa=5
             
             if etapa==5:
@@ -445,25 +399,20 @@ while True:
                 cursorlocal.execute('SELECT * FROM web_usuarios')
                 usuarios_local= cursorlocal.fetchall()
 
-                request_json = requests.get(url=f'{URL_API}obtenerusuariosapi/{CONTRATO}/', auth=('27488274', 'CkretoxDxdxdXd'), timeout=3).json()
+                cursorheroku.execute('SELECT cedula FROM web_usuarios where contrato_id=%s or contrato_id=%s', (CONTRATO,'SEGURICEL'))
+                usuarios_heroku= cursorheroku.fetchall()
 
-                usuariosServidor=[]
-                empleados_seguricel=[]
-                for consultajson in request_json:
-                    tuplaUsuarioIndividual=(consultajson['cedula'],)
-                    if consultajson['contrato'] == 'SEGURICEL':
-                        empleados_seguricel.append(tuplaUsuarioIndividual)
-                    else:
-                        usuariosServidor.append(tuplaUsuarioIndividual)
+                cursorheroku.execute('SELECT cedula FROM web_usuarios where contrato_id=%s', ('SEGURICEL',))
+                empleados_seguricel= cursorheroku.fetchall()
                 
                 for usuario in usuarios_local:
                     cedula=usuario[0]
                     try:
-                        listaUsuariosLocal.index(cedula)
+                        listausuarioslocal.index(cedula)
                     except ValueError:
-                        listaUsuariosLocal.append(cedula)
+                        listausuarioslocal.append(cedula)
 
-                for usuario in usuariosServidor:
+                for usuario in usuarios_heroku:
                     cedula=usuario[0]
                     try:
                         listausuariosheroku.index(cedula)
@@ -477,25 +426,21 @@ while True:
                     except ValueError:
                         listaempleadosseguricel.append(cedula)
                 
-                if len(usuarios_local) == len(usuariosServidor):
+                if len(usuarios_local) == len(usuarios_heroku):
 
-                    for usuario_local in listaUsuariosLocal:
+                    for usuario_local in listausuarioslocal:
                         cursorlocal.execute('SELECT template, id_suprema FROM web_huellas where cedula=%s', (usuario_local,))
                         huellas_local= cursorlocal.fetchall()
 
-                        request_json = requests.get(url=f'{URL_API}obtenerhuellasapi/{usuario_local}/', auth=('27488274', 'CkretoxDxdxdXd'), timeout=3).json()
-
-                        huellasServidor=[]
-                        for consultajson in request_json:
-                            tuplaHuellaIndividual=(consultajson['template'],consultajson['id_suprema'],)
-                            huellasServidor.append(tuplaHuellaIndividual)
+                        cursorheroku.execute('SELECT template, id_suprema FROM web_huellas where cedula=%s', (usuario_local,))
+                        huellas_heroku= cursorheroku.fetchall()
 
                         nro_huellas_local = len(huellas_local)
-                        nro_huellas_servidor = len(huellasServidor)
+                        nro_huellas_heroku = len(huellas_heroku)
                         #cuando se van a eliminar huellas
-                        if nro_huellas_local > nro_huellas_servidor:
+                        if nro_huellas_local > nro_huellas_heroku:
 
-                            for usuario in huellasServidor:
+                            for usuario in huellas_heroku:
                                 template=usuario[0]
                                 try:
                                     listahuellasheroku.index(template)
@@ -536,9 +481,9 @@ while True:
                             listahuellaslocal=[]
 
                         # cuando se van a agregar huellas
-                        if nro_huellas_servidor > nro_huellas_local:
+                        if nro_huellas_heroku > nro_huellas_local:
 
-                            for usuario in huellasServidor:
+                            for usuario in huellas_heroku:
                                 template=usuario[0]
                                 try:
                                     listahuellasheroku.index(template)
@@ -556,15 +501,11 @@ while True:
                                 try:
                                     listahuellaslocal.index(templateEnLista)
                                 except ValueError:
-                                    request_json = requests.get(url=f'{URL_API}obtenerhuellasportemplateapi/{templateEnLista}/', auth=('27488274', 'CkretoxDxdxdXd'), timeout=3).json()
-
-                                    huellaServidor=[]
-                                    for consultajson in request_json:
-                                        tuplaHuellaIndividual=(consultajson['id_suprema'],consultajson['cedula'],consultajson['template'],)
-                                        huellaServidor.append(tuplaHuellaIndividual)
-                                    id_suprema=huellaServidor[0][0]
-                                    cedula=huellaServidor[0][1]
-                                    template=huellaServidor[0][2]
+                                    cursorheroku.execute('SELECT id_suprema, cedula, template FROM web_huellas where template=%s', (templateEnLista,))
+                                    huella_heroku= cursorheroku.fetchall()
+                                    id_suprema=huella_heroku[0][0]
+                                    cedula=huella_heroku[0][1]
+                                    template=huella_heroku[0][2]
                                     nroCaptahuellasConHuella=0
                                     captahuella_actual=0
                                     IdSupremaContador=0 #esto lo uso para ver si hay id de suprema disponibles
@@ -617,7 +558,7 @@ while True:
                             listahuellasheroku=[]
                             listahuellaslocal=[]
                 listausuariosheroku=[]
-                listaUsuariosLocal=[]
+                listausuarioslocal=[]
                 listaempleadosseguricel=[]
                 etapa=6
 
