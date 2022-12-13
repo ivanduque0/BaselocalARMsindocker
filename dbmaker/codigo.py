@@ -71,6 +71,16 @@ captahuella7=os.environ.get('URL_CAPTAHUELLA7')
 captahuella8=os.environ.get('URL_CAPTAHUELLA8')
 captahuella9=os.environ.get('URL_CAPTAHUELLA9')
 captahuella10=os.environ.get('URL_CAPTAHUELLA10')
+captahuella11=os.environ.get('URL_CAPTAHUELLA11')
+captahuella12=os.environ.get('URL_CAPTAHUELLA12')
+captahuella13=os.environ.get('URL_CAPTAHUELLA13')
+captahuella14=os.environ.get('URL_CAPTAHUELLA14')
+captahuella15=os.environ.get('URL_CAPTAHUELLA15')
+captahuella16=os.environ.get('URL_CAPTAHUELLA16')
+captahuella17=os.environ.get('URL_CAPTAHUELLA17')
+captahuella18=os.environ.get('URL_CAPTAHUELLA18')
+captahuella19=os.environ.get('URL_CAPTAHUELLA19')
+captahuella20=os.environ.get('URL_CAPTAHUELLA20')
 
 descripcion_captahuella1=os.environ.get('RAZON_CAPTAHUELLA1')
 descripcion_captahuella2=os.environ.get('RAZON_CAPTAHUELLA2')
@@ -82,6 +92,16 @@ descripcion_captahuella7=os.environ.get('RAZON_CAPTAHUELLA7')
 descripcion_captahuella8=os.environ.get('RAZON_CAPTAHUELLA8')
 descripcion_captahuella9=os.environ.get('RAZON_CAPTAHUELLA9')
 descripcion_captahuella10=os.environ.get('RAZON_CAPTAHUELLA10')
+descripcion_captahuella11=os.environ.get('RAZON_CAPTAHUELLA11')
+descripcion_captahuella12=os.environ.get('RAZON_CAPTAHUELLA12')
+descripcion_captahuella13=os.environ.get('RAZON_CAPTAHUELLA13')
+descripcion_captahuella14=os.environ.get('RAZON_CAPTAHUELLA14')
+descripcion_captahuella15=os.environ.get('RAZON_CAPTAHUELLA15')
+descripcion_captahuella16=os.environ.get('RAZON_CAPTAHUELLA16')
+descripcion_captahuella17=os.environ.get('RAZON_CAPTAHUELLA17')
+descripcion_captahuella18=os.environ.get('RAZON_CAPTAHUELLA18')
+descripcion_captahuella19=os.environ.get('RAZON_CAPTAHUELLA19')
+descripcion_captahuella20=os.environ.get('RAZON_CAPTAHUELLA20')
 
 ######################################
 ################RFID###################
@@ -97,6 +117,16 @@ rfid7=os.environ.get('URL_RFID7')
 rfid8=os.environ.get('URL_RFID8')
 rfid9=os.environ.get('URL_RFID9')
 rfid10=os.environ.get('URL_RFID10')
+rfid11=os.environ.get('URL_RFID11')
+rfid12=os.environ.get('URL_RFID12')
+rfid13=os.environ.get('URL_RFID13')
+rfid14=os.environ.get('URL_RFID14')
+rfid15=os.environ.get('URL_RFID15')
+rfid16=os.environ.get('URL_RFID16')
+rfid17=os.environ.get('URL_RFID17')
+rfid18=os.environ.get('URL_RFID18')
+rfid19=os.environ.get('URL_RFID19')
+rfid20=os.environ.get('URL_RFID20')
 
 descripcion_rfid1=os.environ.get('RAZON_RFID1')
 descripcion_rfid2=os.environ.get('RAZON_RFID2')
@@ -108,6 +138,16 @@ descripcion_rfid7=os.environ.get('RAZON_RFID7')
 descripcion_rfid8=os.environ.get('RAZON_RFID8')
 descripcion_rfid9=os.environ.get('RAZON_RFID9')
 descripcion_rfid10=os.environ.get('RAZON_RFID10')
+descripcion_rfid11=os.environ.get('RAZON_RFID11')
+descripcion_rfid12=os.environ.get('RAZON_RFID12')
+descripcion_rfid13=os.environ.get('RAZON_RFID13')
+descripcion_rfid14=os.environ.get('RAZON_RFID14')
+descripcion_rfid15=os.environ.get('RAZON_RFID15')
+descripcion_rfid16=os.environ.get('RAZON_RFID16')
+descripcion_rfid17=os.environ.get('RAZON_RFID17')
+descripcion_rfid18=os.environ.get('RAZON_RFID18')
+descripcion_rfid19=os.environ.get('RAZON_RFID19')
+descripcion_rfid20=os.environ.get('RAZON_RFID20')
 
 dispositivos=[captahuella1, captahuella2, captahuella3, captahuella4, captahuella5,
               captahuella6, captahuella7, captahuella8, captahuella9, captahuella10,
@@ -126,6 +166,16 @@ dispositivos_dict= {captahuella1:descripcion_captahuella1,
                     captahuella8:descripcion_captahuella8, 
                     captahuella9:descripcion_captahuella9, 
                     captahuella10:descripcion_captahuella10,
+                    captahuella11:descripcion_captahuella11, 
+                    captahuella12:descripcion_captahuella12, 
+                    captahuella13:descripcion_captahuella13, 
+                    captahuella14:descripcion_captahuella14, 
+                    captahuella15:descripcion_captahuella15,
+                    captahuella16:descripcion_captahuella16, 
+                    captahuella17:descripcion_captahuella17, 
+                    captahuella18:descripcion_captahuella18, 
+                    captahuella19:descripcion_captahuella19, 
+                    captahuella20:descripcion_captahuella20,
                     rfid1:descripcion_rfid1, 
                     rfid2:descripcion_rfid2,
                     rfid3:descripcion_rfid3,
@@ -136,6 +186,16 @@ dispositivos_dict= {captahuella1:descripcion_captahuella1,
                     rfid8:descripcion_rfid8,
                     rfid9:descripcion_rfid9,
                     rfid10:descripcion_rfid10,
+                    rfid11:descripcion_rfid11, 
+                    rfid12:descripcion_rfid12,
+                    rfid13:descripcion_rfid13,
+                    rfid14:descripcion_rfid14,
+                    rfid15:descripcion_rfid15,
+                    rfid16:descripcion_rfid16, 
+                    rfid17:descripcion_rfid17,
+                    rfid18:descripcion_rfid18,
+                    rfid19:descripcion_rfid19,
+                    rfid20:descripcion_rfid20,
                     SERVIDOR_LOCAL:'SERVIDOR LOCAL'
                     }
 

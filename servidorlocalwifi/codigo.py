@@ -32,6 +32,17 @@ razon7=os.environ.get("RAZON_TELEFONO7")
 razon8=os.environ.get("RAZON_TELEFONO8")
 razon9=os.environ.get("RAZON_TELEFONO9")
 razon10=os.environ.get("RAZON_TELEFONO10")
+razon11=os.environ.get("RAZON_TELEFONO11")
+razon12=os.environ.get("RAZON_TELEFONO12")
+razon13=os.environ.get("RAZON_TELEFONO13")
+razon14=os.environ.get("RAZON_TELEFONO14")
+razon15=os.environ.get("RAZON_TELEFONO15")
+razon16=os.environ.get("RAZON_TELEFONO16")
+razon17=os.environ.get("RAZON_TELEFONO17")
+razon18=os.environ.get("RAZON_TELEFONO18")
+razon19=os.environ.get("RAZON_TELEFONO19")
+razon20=os.environ.get("RAZON_TELEFONO20")
+
 
 razonhuella1=os.environ.get("RAZON_CAPTAHUELLA1")
 razonhuella2=os.environ.get("RAZON_CAPTAHUELLA2")
@@ -43,6 +54,16 @@ razonhuella7=os.environ.get("RAZON_CAPTAHUELLA7")
 razonhuella8=os.environ.get("RAZON_CAPTAHUELLA8")
 razonhuella9=os.environ.get("RAZON_CAPTAHUELLA9")
 razonhuella10=os.environ.get("RAZON_CAPTAHUELLA10")
+razonhuella11=os.environ.get("RAZON_CAPTAHUELLA11")
+razonhuella12=os.environ.get("RAZON_CAPTAHUELLA12")
+razonhuella13=os.environ.get("RAZON_CAPTAHUELLA13")
+razonhuella14=os.environ.get("RAZON_CAPTAHUELLA14")
+razonhuella15=os.environ.get("RAZON_CAPTAHUELLA15")
+razonhuella16=os.environ.get("RAZON_CAPTAHUELLA16")
+razonhuella17=os.environ.get("RAZON_CAPTAHUELLA17")
+razonhuella18=os.environ.get("RAZON_CAPTAHUELLA18")
+razonhuella19=os.environ.get("RAZON_CAPTAHUELLA19")
+razonhuella20=os.environ.get("RAZON_CAPTAHUELLA20")
 
 razonrfid1=os.environ.get("RAZON_RFID1")
 razonrfid2=os.environ.get("RAZON_RFID2")
@@ -54,6 +75,16 @@ razonrfid7=os.environ.get("RAZON_RFID7")
 razonrfid8=os.environ.get("RAZON_RFID8")
 razonrfid9=os.environ.get("RAZON_RFID9")
 razonrfid10=os.environ.get("RAZON_RFID10")
+razonrfid11=os.environ.get("RAZON_RFID11")
+razonrfid12=os.environ.get("RAZON_RFID12")
+razonrfid13=os.environ.get("RAZON_RFID13")
+razonrfid14=os.environ.get("RAZON_RFID14")
+razonrfid15=os.environ.get("RAZON_RFID15")
+razonrfid16=os.environ.get("RAZON_RFID16")
+razonrfid17=os.environ.get("RAZON_RFID17")
+razonrfid18=os.environ.get("RAZON_RFID18")
+razonrfid19=os.environ.get("RAZON_RFID19")
+razonrfid20=os.environ.get("RAZON_RFID20")
 
 acceso1=os.environ.get('URL_ACCESO1')
 acceso2=os.environ.get('URL_ACCESO2')
@@ -82,13 +113,19 @@ accesodict = {'1':acceso1, '2':acceso2, '3':acceso3, '4':acceso4, '5':acceso5,
                 '16':acceso16, '17':acceso17, '18':acceso18, '19':acceso19, '20':acceso20
                 }
 razondict = {'1':razon1, '2':razon2, '3':razon3, '4':razon4, '5':razon5,
-            '6':razon6, '7':razon7, '8':razon8, '9':razon9, '10':razon10}
+            '6':razon6, '7':razon7, '8':razon8, '9':razon9, '10':razon10,
+            '11':razon11, '12':razon12, '13':razon13, '14':razon14, '15':razon15,
+                '16':razon16, '17':razon17, '18':razon18, '19':razon19, '20':razon20}
 
 razondicthuellas = {'1':razonhuella1, '2':razonhuella2, '3':razonhuella3, '4':razonhuella4,  '5':razonhuella5,
-                    '6':razonhuella6, '7':razonhuella7, '8':razonhuella8, '9':razonhuella9,  '10':razonhuella10}
+                    '6':razonhuella6, '7':razonhuella7, '8':razonhuella8, '9':razonhuella9,  '10':razonhuella10,
+                    '11':razonhuella11, '12':razonhuella12, '13':razonhuella13, '14':razonhuella14, '15':razonhuella15,
+                    '16':razonhuella16, '17':razonhuella17, '18':razonhuella18, '19':razonhuella19, '20':razonhuella20}
 
 razondictrfids = {'1':razonrfid1, '2':razonrfid2, '3':razonrfid3, '4':razonrfid4, '5':razonrfid5,
-                    '6':razonrfid6, '7':razonrfid7, '8':razonrfid8, '9':razonrfid9, '10':razonrfid10}
+                    '6':razonrfid6, '7':razonrfid7, '8':razonrfid8, '9':razonrfid9, '10':razonrfid10,
+                    '11':razonrfid11, '12':razonrfid12, '13':razonrfid13, '14':razonrfid14, '15':razonrfid15,
+                    '16':razonrfid16, '17':razonrfid17, '18':razonrfid18, '19':razonrfid19, '20':razonrfid20}
 
 def aperturaconcedida(nombref, fechaf, horaf, contratof, cedulaf, cursorf, connf, acceso):
 
