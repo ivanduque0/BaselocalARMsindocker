@@ -19,11 +19,43 @@ acceso1=os.environ.get('URL_ACCESO1')
 acceso2=os.environ.get('URL_ACCESO2')
 acceso3=os.environ.get('URL_ACCESO3')
 acceso4=os.environ.get('URL_ACCESO4')
+acceso5=os.environ.get('URL_ACCESO5')
+acceso6=os.environ.get('URL_ACCESO6')
+acceso7=os.environ.get('URL_ACCESO7')
+acceso8=os.environ.get('URL_ACCESO8')
+acceso9=os.environ.get('URL_ACCESO9')
+acceso10=os.environ.get('URL_ACCESO10')
+acceso11=os.environ.get('URL_ACCESO11')
+acceso12=os.environ.get('URL_ACCESO12')
+acceso13=os.environ.get('URL_ACCESO13')
+acceso14=os.environ.get('URL_ACCESO14')
+acceso15=os.environ.get('URL_ACCESO15')
+acceso16=os.environ.get('URL_ACCESO16')
+acceso17=os.environ.get('URL_ACCESO17')
+acceso18=os.environ.get('URL_ACCESO18')
+acceso19=os.environ.get('URL_ACCESO19')
+acceso20=os.environ.get('URL_ACCESO20')
 
 descripcion_acceso1=os.environ.get('RAZON_ACCESO1')
 descripcion_acceso2=os.environ.get('RAZON_ACCESO2')
 descripcion_acceso3=os.environ.get('RAZON_ACCESO3')
 descripcion_acceso4=os.environ.get('RAZON_ACCESO4')
+descripcion_acceso5=os.environ.get('RAZON_ACCESO5')
+descripcion_acceso6=os.environ.get('RAZON_ACCESO6')
+descripcion_acceso7=os.environ.get('RAZON_ACCESO7')
+descripcion_acceso8=os.environ.get('RAZON_ACCESO8')
+descripcion_acceso9=os.environ.get('RAZON_ACCESO9')
+descripcion_acceso10=os.environ.get('RAZON_ACCESO10')
+descripcion_acceso11=os.environ.get('RAZON_ACCESO11')
+descripcion_acceso12=os.environ.get('RAZON_ACCESO12')
+descripcion_acceso13=os.environ.get('RAZON_ACCESO13')
+descripcion_acceso14=os.environ.get('RAZON_ACCESO14')
+descripcion_acceso15=os.environ.get('RAZON_ACCESO15')
+descripcion_acceso16=os.environ.get('RAZON_ACCESO16')
+descripcion_acceso17=os.environ.get('RAZON_ACCESO17')
+descripcion_acceso18=os.environ.get('RAZON_ACCESO18')
+descripcion_acceso19=os.environ.get('RAZON_ACCESO19')
+descripcion_acceso20=os.environ.get('RAZON_ACCESO20')
 
 ######################################
 #############CAPTAHUELLAS#############
@@ -33,19 +65,23 @@ captahuella1=os.environ.get('URL_CAPTAHUELLA1')
 captahuella2=os.environ.get('URL_CAPTAHUELLA2')
 captahuella3=os.environ.get('URL_CAPTAHUELLA3')
 captahuella4=os.environ.get('URL_CAPTAHUELLA4')
-# captahuella5=os.environ.get('URL_CAPTAHUELLA5')
-# captahuella6=os.environ.get('URL_CAPTAHUELLA6')
-# captahuella7=os.environ.get('URL_CAPTAHUELLA7')
-# captahuella8=os.environ.get('URL_CAPTAHUELLA8')
+captahuella5=os.environ.get('URL_CAPTAHUELLA5')
+captahuella6=os.environ.get('URL_CAPTAHUELLA6')
+captahuella7=os.environ.get('URL_CAPTAHUELLA7')
+captahuella8=os.environ.get('URL_CAPTAHUELLA8')
+captahuella9=os.environ.get('URL_CAPTAHUELLA9')
+captahuella10=os.environ.get('URL_CAPTAHUELLA10')
 
 descripcion_captahuella1=os.environ.get('RAZON_CAPTAHUELLA1')
 descripcion_captahuella2=os.environ.get('RAZON_CAPTAHUELLA2')
 descripcion_captahuella3=os.environ.get('RAZON_CAPTAHUELLA3')
 descripcion_captahuella4=os.environ.get('RAZON_CAPTAHUELLA4')
-# descripcion_captahuella5=os.environ.get('RAZON_CAPTAHUELLA5')
-# descripcion_captahuella6=os.environ.get('RAZON_CAPTAHUELLA6')
-# descripcion_captahuella7=os.environ.get('RAZON_CAPTAHUELLA7')
-# descripcion_captahuella8=os.environ.get('RAZON_CAPTAHUELLA8')
+descripcion_captahuella5=os.environ.get('RAZON_CAPTAHUELLA5')
+descripcion_captahuella6=os.environ.get('RAZON_CAPTAHUELLA6')
+descripcion_captahuella7=os.environ.get('RAZON_CAPTAHUELLA7')
+descripcion_captahuella8=os.environ.get('RAZON_CAPTAHUELLA8')
+descripcion_captahuella9=os.environ.get('RAZON_CAPTAHUELLA9')
+descripcion_captahuella10=os.environ.get('RAZON_CAPTAHUELLA10')
 
 ######################################
 ################RFID###################
@@ -55,40 +91,103 @@ rfid1=os.environ.get('URL_RFID1')
 rfid2=os.environ.get('URL_RFID2')
 rfid3=os.environ.get('URL_RFID3')
 rfid4=os.environ.get('URL_RFID4')
-# rfid5=os.environ.get('URL_RFID5')
-# rfid6=os.environ.get('URL_RFID6')
-# rfid7=os.environ.get('URL_RFID7')
-# rfid8=os.environ.get('URL_RFID8')
+rfid5=os.environ.get('URL_RFID5')
+rfid6=os.environ.get('URL_RFID6')
+rfid7=os.environ.get('URL_RFID7')
+rfid8=os.environ.get('URL_RFID8')
+rfid9=os.environ.get('URL_RFID9')
+rfid10=os.environ.get('URL_RFID10')
 
 descripcion_rfid1=os.environ.get('RAZON_RFID1')
 descripcion_rfid2=os.environ.get('RAZON_RFID2')
 descripcion_rfid3=os.environ.get('RAZON_RFID3')
 descripcion_rfid4=os.environ.get('RAZON_RFID4')
-# descripcion_rfid5=os.environ.get('RAZON_RFID5')
-# descripcion_rfid6=os.environ.get('RAZON_RFID6')
-# descripcion_rfid7=os.environ.get('RAZON_RFID7')
-# descripcion_rfid8=os.environ.get('RAZON_RFID8')
+descripcion_rfid5=os.environ.get('RAZON_RFID5')
+descripcion_rfid6=os.environ.get('RAZON_RFID6')
+descripcion_rfid7=os.environ.get('RAZON_RFID7')
+descripcion_rfid8=os.environ.get('RAZON_RFID8')
+descripcion_rfid9=os.environ.get('RAZON_RFID9')
+descripcion_rfid10=os.environ.get('RAZON_RFID10')
 
-dispositivos=[acceso1, acceso2, acceso3, acceso4,
-              captahuella1, captahuella2, captahuella3, captahuella4, 
-              rfid1, rfid2, rfid3, rfid4,
+dispositivos=[captahuella1, captahuella2, captahuella3, captahuella4, captahuella5,
+              captahuella6, captahuella7, captahuella8, captahuella9, captahuella10,
+              rfid1, rfid2, rfid3, rfid4, rfid5,
+              rfid6, rfid7, rfid8, rfid9, rfid10,
               SERVIDOR_LOCAL
              ]
 
-dispositivos_dict ={acceso1:descripcion_acceso1, 
-                    acceso2:descripcion_acceso2, 
-                    acceso3:descripcion_acceso3, 
-                    acceso4:descripcion_acceso4, 
-                    captahuella1:descripcion_captahuella1, 
+dispositivos_dict= {captahuella1:descripcion_captahuella1, 
                     captahuella2:descripcion_captahuella2, 
                     captahuella3:descripcion_captahuella3, 
                     captahuella4:descripcion_captahuella4, 
+                    captahuella5:descripcion_captahuella5,
+                    captahuella6:descripcion_captahuella6, 
+                    captahuella7:descripcion_captahuella7, 
+                    captahuella8:descripcion_captahuella8, 
+                    captahuella9:descripcion_captahuella9, 
+                    captahuella10:descripcion_captahuella10,
                     rfid1:descripcion_rfid1, 
                     rfid2:descripcion_rfid2,
                     rfid3:descripcion_rfid3,
                     rfid4:descripcion_rfid4,
+                    rfid5:descripcion_rfid5,
+                    rfid6:descripcion_rfid6, 
+                    rfid7:descripcion_rfid7,
+                    rfid8:descripcion_rfid8,
+                    rfid9:descripcion_rfid9,
+                    rfid10:descripcion_rfid10,
                     SERVIDOR_LOCAL:'SERVIDOR LOCAL'
                     }
+
+accesos_dispositivos=[acceso1, acceso2, acceso3, acceso4,
+                      acceso5, acceso6, acceso7, acceso8,
+                      acceso9, acceso10, acceso11, acceso12,
+                      acceso13, acceso14, acceso15, acceso16,
+                      acceso17, acceso18, acceso19, acceso20]
+
+accesos_dispositivos_dict ={acceso1:descripcion_acceso1, 
+                            acceso2:descripcion_acceso2, 
+                            acceso3:descripcion_acceso3, 
+                            acceso4:descripcion_acceso4,
+                            acceso5:descripcion_acceso5, 
+                            acceso6:descripcion_acceso6, 
+                            acceso7:descripcion_acceso7, 
+                            acceso8:descripcion_acceso8,
+                            acceso9:descripcion_acceso9, 
+                            acceso10:descripcion_acceso10, 
+                            acceso11:descripcion_acceso11, 
+                            acceso12:descripcion_acceso12,
+                            acceso13:descripcion_acceso13, 
+                            acceso14:descripcion_acceso14, 
+                            acceso15:descripcion_acceso15, 
+                            acceso16:descripcion_acceso16,
+                            acceso17:descripcion_acceso17, 
+                            acceso18:descripcion_acceso18, 
+                            acceso19:descripcion_acceso19, 
+                            acceso20:descripcion_acceso20
+                            }
+
+accesos_dict = {acceso1:"1", 
+                acceso2:"2", 
+                acceso3:"3", 
+                acceso4:"4",
+                acceso5:"5", 
+                acceso6:"6", 
+                acceso7:"7", 
+                acceso8:"8",
+                acceso9:"9", 
+                acceso10:"10", 
+                acceso11:"11", 
+                acceso12:"12",
+                acceso13:"13", 
+                acceso14:"14", 
+                acceso15:"15", 
+                acceso16:"16",
+                acceso17:"17", 
+                acceso18:"18", 
+                acceso19:"19", 
+                acceso20:"20"
+                }
 
 while True:
     
@@ -131,8 +230,19 @@ while True:
                         estado = '1'
                     else:
                         estado = '0'
-                    cursorlocal.execute('INSERT INTO web_dispositivos values(%s, %s, %s)',(dispositivo, descripcion, estado))
+                    cursorlocal.execute('INSERT INTO web_dispositivos values(%s, %s, %s, %s)',(dispositivo, descripcion, estado, ""))
                     connlocal.commit()
+            
+            for dispositivoAcceso in accesos_dispositivos:
+                if dispositivoAcceso:
+                    descripcion = accesos_dispositivos_dict[dispositivoAcceso]
+                    acceso = accesos_dict[dispositivo]
+                    estado = '0'
+                    cursorlocal.execute('INSERT INTO web_dispositivos values(%s, %s, %s, %s)',(dispositivoAcceso, descripcion, estado, acceso))
+                    connlocal.commit()
+
+
+                    
         
         # cursorlocal.execute('SELECT*FROM led')
         # tablaled= cursorlocal.fetchall()
