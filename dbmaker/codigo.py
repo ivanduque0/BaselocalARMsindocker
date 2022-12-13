@@ -151,8 +151,12 @@ descripcion_rfid20=os.environ.get('RAZON_RFID20')
 
 dispositivos=[captahuella1, captahuella2, captahuella3, captahuella4, captahuella5,
               captahuella6, captahuella7, captahuella8, captahuella9, captahuella10,
+              captahuella11, captahuella12, captahuella3, captahuella14, captahuella15,
+              captahuella16, captahuella17, captahuella18, captahuella19, captahuella20,
               rfid1, rfid2, rfid3, rfid4, rfid5,
               rfid6, rfid7, rfid8, rfid9, rfid10,
+              rfid11, rfid12, rfid13, rfid14, rfid15,
+              rfid16, rfid17, rfid18, rfid19, rfid20,
               SERVIDOR_LOCAL
              ]
 
@@ -296,7 +300,7 @@ while True:
             for dispositivoAcceso in accesos_dispositivos:
                 if dispositivoAcceso:
                     descripcion = accesos_dispositivos_dict[dispositivoAcceso]
-                    acceso = accesos_dict[dispositivo]
+                    acceso = accesos_dict[dispositivoAcceso]
                     estado = '0'
                     cursorlocal.execute('INSERT INTO web_dispositivos values(%s, %s, %s, %s)',(dispositivoAcceso, descripcion, estado, acceso))
                     connlocal.commit()

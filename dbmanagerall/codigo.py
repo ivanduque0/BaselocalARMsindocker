@@ -1,7 +1,7 @@
 import psycopg2
 import os
 import subprocess
-import time
+import time as tm
 import pytz
 from datetime import datetime, date, time
 from ping3 import ping
@@ -132,9 +132,9 @@ intentos=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 
 while True:
     
-    t1=time.perf_counter()
+    t1=tm.perf_counter()
     while total<=5:
-        t2=time.perf_counter()
+        t2=tm.perf_counter()
         total=t2-t1
     total=0
     try:
@@ -149,9 +149,9 @@ while True:
         )
         cursorlocal = connlocal.cursor()
         
-        t1_ping=time.perf_counter()
+        t1_ping=tm.perf_counter()
         while True:
-            t2_ping=time.perf_counter()
+            t2_ping=tm.perf_counter()
             total_ping=t2_ping-t1_ping
 
             if total_ping > TIEMPO_PING:
@@ -169,7 +169,7 @@ while True:
                             if intentos[intentos_tabla] >= 4:
                                 cursorlocal.execute('UPDATE web_dispositivos SET estado=0 WHERE dispositivo=%s', (dispositivo,))
                                 connlocal.commit()
-                t1_ping=time.perf_counter()
+                t1_ping=tm.perf_counter()
 
             if etapa==0:
                 tz = pytz.timezone('America/Caracas')
