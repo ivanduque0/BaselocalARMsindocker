@@ -506,7 +506,7 @@ while True:
                                     "hora": hora,
                                     "contrato": CONTRATO
                                 }
-                                requests.put(url=f'{URL_API}actualizardispositivosapi/{CONTRATO}/{dispositivo}/', 
+                                requests.put(url=f'{URL_API}actualizardispositivosapi/{CONTRATO}/{dispositivo[7:]}/', 
                                 json=cambiarEstadoDispositivoJson, auth=('27488274', 'CkretoxDxdxdXd'), timeout=3)
                 except:
                     print("fallo en la etapa 4")   
