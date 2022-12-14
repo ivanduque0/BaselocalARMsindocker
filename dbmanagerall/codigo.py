@@ -525,8 +525,7 @@ while True:
                         tuplaUsuarioIndividual=(consultajson['cedula'],)
                         if consultajson['contrato'] == 'SEGURICEL':
                             empleados_seguricel.append(tuplaUsuarioIndividual)
-                        else:
-                            usuariosServidor.append(tuplaUsuarioIndividual)
+                        usuariosServidor.append(tuplaUsuarioIndividual)
                     
                     for usuario in usuarios_local:
                         cedula=usuario[0]
