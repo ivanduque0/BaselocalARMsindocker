@@ -19,9 +19,9 @@ connlocal = None
 connheroku = None
 cursorheroku=None
 cursorlocal=None
-listausuariosheroku=[]
+listaUsuariosServidor=[]
 listaUsuariosLocal=[]
-listahuellasheroku=[]
+listaHuellasServidor=[]
 listahuellaslocal=[]
 listaempleadosseguricel=[]
 total=0
@@ -300,7 +300,7 @@ while True:
                                         connlocal.commit()
                         horariosLocal=[]
                         horariosServidor=[]
-                        listausuariosheroku=[]
+                        listaUsuariosServidor=[]
                         listaUsuariosLocal=[]
                 except requests.exceptions.ConnectionError:
                     print("fallo en la etapa 1")
@@ -538,9 +538,9 @@ while True:
                     for usuario in usuariosServidor:
                         cedula=usuario[0]
                         try:
-                            listausuariosheroku.index(cedula)
+                            listaUsuariosServidor.index(cedula)
                         except ValueError:
-                            listausuariosheroku.append(cedula)
+                            listaUsuariosServidor.append(cedula)
                     
                     for empleado_seguricel in empleados_seguricel:
                         cedula=empleado_seguricel[0]
@@ -570,9 +570,9 @@ while True:
                                 for usuario in huellasServidor:
                                     template=usuario[0]
                                     try:
-                                        listahuellasheroku.index(template)
+                                        listaHuellasServidor.index(template)
                                     except ValueError:
-                                        listahuellasheroku.append(template)
+                                        listaHuellasServidor.append(template)
                                 
                                 for usuario in huellas_local:
                                     template=usuario[0]
@@ -583,7 +583,7 @@ while True:
 
                                 for templateEnLista in listahuellaslocal:
                                     try:
-                                        listahuellasheroku.index(templateEnLista)
+                                        listaHuellasServidor.index(templateEnLista)
                                     except ValueError:
                                         nroCaptahuellasSinHuella=0
                                         captahuella_actual=0
@@ -604,7 +604,7 @@ while True:
                                         if nroCaptahuellasSinHuella == captahuella_actual:
                                             cursorlocal.execute('DELETE FROM web_huellas WHERE template=%s', (templateEnLista,))
                                             connlocal.commit()
-                                listahuellasheroku=[]
+                                listaHuellasServidor=[]
                                 listahuellaslocal=[]
 
                             # cuando se van a agregar huellas
@@ -613,9 +613,9 @@ while True:
                                 for usuario in huellasServidor:
                                     template=usuario[0]
                                     try:
-                                        listahuellasheroku.index(template)
+                                        listaHuellasServidor.index(template)
                                     except ValueError:
-                                        listahuellasheroku.append(template)
+                                        listaHuellasServidor.append(template)
                                 
                                 for usuario in huellas_local:
                                     template=usuario[0]
@@ -624,7 +624,7 @@ while True:
                                     except ValueError:
                                         listahuellaslocal.append(template)
 
-                                for templateEnLista in listahuellasheroku:
+                                for templateEnLista in listaHuellasServidor:
                                     try:
                                         listahuellaslocal.index(templateEnLista)
                                     except ValueError:
@@ -715,9 +715,9 @@ while True:
                                                         pass
                                                 except:
                                                     print(f"fallo al conectar con la esp8266 con la ip:{captahuella}")
-                                listahuellasheroku=[]
+                                listaHuellasServidor=[]
                                 listahuellaslocal=[]
-                    listausuariosheroku=[]
+                    listaUsuariosServidor=[]
                     listaUsuariosLocal=[]
                     listaempleadosseguricel=[]
                 except requests.exceptions.ConnectionError:
