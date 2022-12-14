@@ -483,7 +483,7 @@ while True:
                                         "fecha": fecha,
                                         "hora": hora
                                     }
-                                    requests.get(url=f'{URL_API}/registrardispositivosapi/', 
+                                    requests.post(url=f'{URL_API}registrardispositivosapi/', 
                                     json=agregarDispositivoJson, auth=('27488274', 'CkretoxDxdxdXd'), timeout=3)
                     else:
                         for dispositivolocal in dispositivos_local:
@@ -506,7 +506,7 @@ while True:
                                     "hora": hora,
                                     "contrato": CONTRATO
                                 }
-                                requests.put(url=f'{URL_API}/actualizardispositivosapi/{CONTRATO}/{dispositivo}/', 
+                                requests.put(url=f'{URL_API}actualizardispositivosapi/{CONTRATO}/{dispositivo}/', 
                                 json=cambiarEstadoDispositivoJson, auth=('27488274', 'CkretoxDxdxdXd'), timeout=3)
                 except:
                     print("fallo en la etapa 4")   
@@ -660,7 +660,7 @@ while True:
                                                         "mano": mano,
                                                         "contrato": CONTRATO
                                                     }
-                                                    requests.put(url=f'{URL_API}/obtenerhuellasportemplateapi/{template}/', 
+                                                    requests.put(url=f'{URL_API}obtenerhuellasportemplateapi/{template}/', 
                                                     json=agregarIdSupremaJson, auth=('27488274', 'CkretoxDxdxdXd'), timeout=3)
                                             else:
                                                 for id_suprema_local in ids_suprema_local:
@@ -676,7 +676,7 @@ while True:
                                                                 "mano": mano,
                                                                 "contrato": CONTRATO
                                                             }
-                                                            requests.put(url=f'{URL_API}/obtenerhuellasportemplateapi/{template}/', 
+                                                            requests.put(url=f'{URL_API}obtenerhuellasportemplateapi/{template}/', 
                                                             json=agregarIdSupremaJson, auth=('27488274', 'CkretoxDxdxdXd'), timeout=3)
                                                         break
                                                 if nro_ids_suprema_local == IdSupremaContador:
@@ -690,7 +690,7 @@ while True:
                                                             "mano": mano,
                                                             "contrato": CONTRATO
                                                         }
-                                                        requests.put(url=f'{URL_API}/obtenerhuellasportemplateapi/{template}/', 
+                                                        requests.put(url=f'{URL_API}obtenerhuellasportemplateapi/{template}/', 
                                                         json=agregarIdSupremaJson, auth=('27488274', 'CkretoxDxdxdXd'), timeout=3)
                                         id_suprema_hex = (id_suprema).to_bytes(4, byteorder='big').hex()
                                         id_suprema_hex = id_suprema_hex[6:]+id_suprema_hex[4:6]+id_suprema_hex[2:4]+id_suprema_hex[0:2]
