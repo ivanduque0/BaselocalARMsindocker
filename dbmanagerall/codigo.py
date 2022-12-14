@@ -222,8 +222,8 @@ while True:
                                 cedula=interaccion[5]
                                 anadirLogJson = {
                                     "nombre": nombre,
-                                    "fecha": fecha,
-                                    "hora": hora,
+                                    "fecha": fecha.isoformat(),
+                                    "hora": hora.isoformat(),
                                     "razon": razon,
                                     "contrato": CONTRATO,
                                     "cedula": cedula
