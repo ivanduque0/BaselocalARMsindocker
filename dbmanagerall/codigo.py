@@ -236,7 +236,7 @@ while True:
                         hora=None
                         razon=None
                         cedula=None
-                except requests.exceptions.ConnectionError:
+                except:# requests.exceptions.ConnectionError:
                     print("fallo en la etapa 0")
                 etapa=1
 
@@ -302,7 +302,7 @@ while True:
                         horariosServidor=[]
                         listaUsuariosServidor=[]
                         listaUsuariosLocal=[]
-                except requests.exceptions.ConnectionError:
+                except:# requests.exceptions.ConnectionError:
                     print("fallo en la etapa 1")
                 etapa=2
 
@@ -330,7 +330,7 @@ while True:
                                 telegram_id=usuario[1]
                                 cursorlocal.execute("UPDATE web_usuarios SET telegram_id=%s WHERE cedula=%s", (telegram_id,cedula))
                                 connlocal.commit()
-                except requests.exceptions.ConnectionError:
+                except:# requests.exceptions.ConnectionError:
                     print("fallo en la etapa 2")
                 etapa=3
 
@@ -435,7 +435,7 @@ while True:
                                 connlocal.commit()
                         listaUsuariosServidor=[]
                         listaUsuariosLocal=[]
-                except requests.exceptions.ConnectionError:
+                except:# requests.exceptions.ConnectionError:
                     print("fallo en la etapa 3")
                 etapa=4
 
@@ -508,7 +508,7 @@ while True:
                                 }
                                 requests.put(url=f'{URL_API}actualizardispositivosapi/{CONTRATO}/{dispositivo[7:]}/', 
                                 json=cambiarEstadoDispositivoJson, auth=('27488274', 'CkretoxDxdxdXd'), timeout=3)
-                except requests.exceptions.ConnectionError:
+                except:# requests.exceptions.ConnectionError:
                     print("fallo en la etapa 4")   
                 etapa=5
             
@@ -720,7 +720,7 @@ while True:
                     listaUsuariosServidor=[]
                     listaUsuariosLocal=[]
                     listaempleadosseguricel=[]
-                except requests.exceptions.ConnectionError:
+                except:# requests.exceptions.ConnectionError:
                     print("fallo en la etapa 5")
                 etapa=6
 
@@ -759,7 +759,7 @@ while True:
                                 cedula=taglocaliterar[1]
                                 cursorlocal.execute('DELETE FROM web_tagsrfid WHERE epc=%s AND cedula=%s',(epc, cedula))
                                 connlocal.commit()
-                except requests.exceptions.ConnectionError:
+                except:# requests.exceptions.ConnectionError:
                     print("fallo en la etapa 6")
                 etapa=7
 
@@ -775,7 +775,7 @@ while True:
                                 if request_json.status_code == 200:
                                     cursorlocal.execute('DELETE FROM solicitud_aperturas WHERE id=%s', (idapertura,))
                                     connlocal.commit()
-                            except requests.exceptions.ConnectionError:
+                            except:# requests.exceptions.ConnectionError:
                                 print("fallo en la etapa 7")
                 etapa=0
 
