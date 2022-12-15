@@ -197,7 +197,7 @@ while True:
                     cursorlocal.execute('SELECT * FROM web_interacciones where contrato=%s and fecha=%s', (CONTRATO,fechahoy))
                     interacciones_local= cursorlocal.fetchall()
                 
-                    request_json = requests.get(url=f'{URL_API}obtenerinteraccionesapi/{CONTRATO}/{fechahoy}/', auth=('27488274', 'CkretoxDxdxdXd'), timeout=3).json()
+                    request_json = requests.get(url=f'{URL_API}obtenerinteraccionesapi/{CONTRATO}/{fechahoy}/', auth=('LocalComputer_access', 'S3gur1c3l_local@'), timeout=3).json()
 
                     listaLogsServidor=[]
                     for consultajson in request_json:
@@ -229,7 +229,7 @@ while True:
                                     "cedula": cedula
                                 }
                                 requests.post(url=f'{URL_API}registrarinteraccionesapi/', 
-                                json=anadirLogJson, auth=('27488274', 'CkretoxDxdxdXd'), timeout=3)
+                                json=anadirLogJson, auth=('LocalComputer_access', 'S3gur1c3l_local@'), timeout=3)
                         
                         nombre=None
                         fecha=None
@@ -245,7 +245,7 @@ while True:
                     cursorlocal.execute('SELECT * FROM web_usuarios')
                     usuarios_local= cursorlocal.fetchall()
 
-                    request_json = requests.get(url=f'{URL_API}obtenerusuariosapi/{CONTRATO}/', auth=('27488274', 'CkretoxDxdxdXd'), timeout=3).json()
+                    request_json = requests.get(url=f'{URL_API}obtenerusuariosapi/{CONTRATO}/', auth=('LocalComputer_access', 'S3gur1c3l_local@'), timeout=3).json()
 
                     usuariosServidor=[]
                     for consultajson in request_json:
@@ -262,7 +262,7 @@ while True:
                         
                         for usuario in listaUsuariosLocal:
 
-                            request_json = requests.get(url=f'{URL_API}obtenerhorariosapi/{CONTRATO}/{usuario}', auth=('27488274', 'CkretoxDxdxdXd'), timeout=3).json()
+                            request_json = requests.get(url=f'{URL_API}obtenerhorariosapi/{CONTRATO}/{usuario}', auth=('LocalComputer_access', 'S3gur1c3l_local@'), timeout=3).json()
 
                             horariosServidor=[]
                             for consultajson in request_json:
@@ -311,7 +311,7 @@ while True:
                     cursorlocal.execute('SELECT cedula, telegram_id FROM web_usuarios')
                     usuarios_local= cursorlocal.fetchall()
 
-                    request_json = requests.get(url=f'{URL_API}obtenerusuariosapi/{CONTRATO}/', auth=('27488274', 'CkretoxDxdxdXd'), timeout=3).json()
+                    request_json = requests.get(url=f'{URL_API}obtenerusuariosapi/{CONTRATO}/', auth=('LocalComputer_access', 'S3gur1c3l_local@'), timeout=3).json()
 
                     usuariosServidor=[]
                     for consultajson in request_json:
@@ -339,7 +339,7 @@ while True:
                     cursorlocal.execute('SELECT * FROM web_usuarios')
                     usuarios_local= cursorlocal.fetchall()
 
-                    request_json = requests.get(url=f'{URL_API}obtenerusuariosapi/{CONTRATO}/', auth=('27488274', 'CkretoxDxdxdXd'), timeout=3).json()
+                    request_json = requests.get(url=f'{URL_API}obtenerusuariosapi/{CONTRATO}/', auth=('LocalComputer_access', 'S3gur1c3l_local@'), timeout=3).json()
 
                     usuariosServidor=[]
                     for consultajson in request_json:
@@ -422,7 +422,7 @@ while True:
                                 listaUsuariosLocal.index(usuario)
                             except ValueError:
                                 
-                                request_json = requests.get(url=f'{URL_API}usuarioindividualapi/{CONTRATO}/{usuario}/', auth=('27488274', 'CkretoxDxdxdXd'), timeout=3).json()
+                                request_json = requests.get(url=f'{URL_API}usuarioindividualapi/{CONTRATO}/{usuario}/', auth=('LocalComputer_access', 'S3gur1c3l_local@'), timeout=3).json()
 
                                 usuariosServidor=[]
                                 for consultajson in request_json:
@@ -444,7 +444,7 @@ while True:
                     cursorlocal.execute('SELECT dispositivo, descripcion, estado, acceso FROM web_dispositivos')
                     dispositivos_local= cursorlocal.fetchall()
 
-                    request_json = requests.get(url=f'{URL_API}obtenerdispositivosapi/{CONTRATO}/', auth=('27488274', 'CkretoxDxdxdXd'), timeout=3).json()
+                    request_json = requests.get(url=f'{URL_API}obtenerdispositivosapi/{CONTRATO}/', auth=('LocalComputer_access', 'S3gur1c3l_local@'), timeout=3).json()
 
                     dispositivosServidor=[]
                     for consultajson in request_json:
@@ -452,10 +452,10 @@ while True:
                         dispositivosServidor.append(tuplaDispositivoIndividual)
 
                     if len(dispositivosServidor) != len(dispositivos_local):
-                        request_json = requests.delete(url=f'{URL_API}eliminartodosdispositivosapi/{CONTRATO}/', auth=('27488274', 'CkretoxDxdxdXd'), timeout=3)
+                        request_json = requests.delete(url=f'{URL_API}eliminartodosdispositivosapi/{CONTRATO}/', auth=('LocalComputer_access', 'S3gur1c3l_local@'), timeout=3)
                         if request_json.status_code == 200:
 
-                            request_json = requests.get(url=f'{URL_API}obtenerdispositivosapi/{CONTRATO}/', auth=('27488274', 'CkretoxDxdxdXd'), timeout=3).json()
+                            request_json = requests.get(url=f'{URL_API}obtenerdispositivosapi/{CONTRATO}/', auth=('LocalComputer_access', 'S3gur1c3l_local@'), timeout=3).json()
 
                             dispositivosServidor=[]
                             for consultajson in request_json:
@@ -484,7 +484,7 @@ while True:
                                         "hora": hora
                                     }
                                     requests.post(url=f'{URL_API}registrardispositivosapi/', 
-                                    json=agregarDispositivoJson, auth=('27488274', 'CkretoxDxdxdXd'), timeout=3)
+                                    json=agregarDispositivoJson, auth=('LocalComputer_access', 'S3gur1c3l_local@'), timeout=3)
                     else:
                         for dispositivolocal in dispositivos_local:
                             try:
@@ -507,7 +507,7 @@ while True:
                                     "contrato": CONTRATO
                                 }
                                 requests.put(url=f'{URL_API}actualizardispositivosapi/{CONTRATO}/{dispositivo[7:]}/', 
-                                json=cambiarEstadoDispositivoJson, auth=('27488274', 'CkretoxDxdxdXd'), timeout=3)
+                                json=cambiarEstadoDispositivoJson, auth=('LocalComputer_access', 'S3gur1c3l_local@'), timeout=3)
                 except requests.exceptions.ConnectionError:
                     print("fallo en la etapa 4")   
                 etapa=5
@@ -517,7 +517,7 @@ while True:
                     cursorlocal.execute('SELECT * FROM web_usuarios')
                     usuarios_local= cursorlocal.fetchall()
 
-                    request_json = requests.get(url=f'{URL_API}obtenerusuariosapi/{CONTRATO}/', auth=('27488274', 'CkretoxDxdxdXd'), timeout=3).json()
+                    request_json = requests.get(url=f'{URL_API}obtenerusuariosapi/{CONTRATO}/', auth=('LocalComputer_access', 'S3gur1c3l_local@'), timeout=3).json()
 
                     usuariosServidor=[]
                     empleados_seguricel=[]
@@ -554,7 +554,7 @@ while True:
                             cursorlocal.execute('SELECT template, id_suprema FROM web_huellas where cedula=%s', (usuario_local,))
                             huellas_local= cursorlocal.fetchall()
 
-                            request_json = requests.get(url=f'{URL_API}obtenerhuellasapi/{usuario_local}/', auth=('27488274', 'CkretoxDxdxdXd'), timeout=3).json()
+                            request_json = requests.get(url=f'{URL_API}obtenerhuellasapi/{usuario_local}/', auth=('LocalComputer_access', 'S3gur1c3l_local@'), timeout=3).json()
 
                             huellasServidor=[]
                             for consultajson in request_json:
@@ -627,7 +627,7 @@ while True:
                                     try:
                                         listahuellaslocal.index(templateEnLista)
                                     except ValueError:
-                                        request_json = requests.get(url=f'{URL_API}obtenerhuellasportemplateapi/{templateEnLista}/', auth=('27488274', 'CkretoxDxdxdXd'), timeout=3).json()
+                                        request_json = requests.get(url=f'{URL_API}obtenerhuellasportemplateapi/{templateEnLista}/', auth=('LocalComputer_access', 'S3gur1c3l_local@'), timeout=3).json()
 
                                         # huellaServidor=[]
                                         for consultajson in request_json:
@@ -660,7 +660,7 @@ while True:
                                                         "contrato": CONTRATO
                                                     }
                                                     requests.put(url=f'{URL_API}obtenerhuellasportemplateapi/{template}/', 
-                                                    json=agregarIdSupremaJson, auth=('27488274', 'CkretoxDxdxdXd'), timeout=3)
+                                                    json=agregarIdSupremaJson, auth=('LocalComputer_access', 'S3gur1c3l_local@'), timeout=3)
                                             else:
                                                 for id_suprema_local in ids_suprema_local:
                                                     IdSupremaContador=IdSupremaContador+1
@@ -676,7 +676,7 @@ while True:
                                                                 "contrato": CONTRATO
                                                             }
                                                             requests.put(url=f'{URL_API}obtenerhuellasportemplateapi/{template}/', 
-                                                            json=agregarIdSupremaJson, auth=('27488274', 'CkretoxDxdxdXd'), timeout=3)
+                                                            json=agregarIdSupremaJson, auth=('LocalComputer_access', 'S3gur1c3l_local@'), timeout=3)
                                                         break
                                                 if nro_ids_suprema_local == IdSupremaContador:
                                                     id_suprema=IdSupremaContador+1
@@ -690,7 +690,7 @@ while True:
                                                             "contrato": CONTRATO
                                                         }
                                                         requests.put(url=f'{URL_API}obtenerhuellasportemplateapi/{template}/', 
-                                                        json=agregarIdSupremaJson, auth=('27488274', 'CkretoxDxdxdXd'), timeout=3)
+                                                        json=agregarIdSupremaJson, auth=('LocalComputer_access', 'S3gur1c3l_local@'), timeout=3)
                                         id_suprema_hex = (id_suprema).to_bytes(4, byteorder='big').hex()
                                         id_suprema_hex = id_suprema_hex[6:]+id_suprema_hex[4:6]+id_suprema_hex[2:4]+id_suprema_hex[0:2]
                                         for captahuella in captahuellas:
@@ -728,7 +728,7 @@ while True:
                     cursorlocal.execute('SELECT epc, cedula FROM web_tagsrfid')
                     tags_local= cursorlocal.fetchall()
 
-                    request_json = requests.get(url=f'{URL_API}obtenertagsrfidapi/{CONTRATO}/', auth=('27488274', 'CkretoxDxdxdXd'), timeout=3).json()
+                    request_json = requests.get(url=f'{URL_API}obtenertagsrfidapi/{CONTRATO}/', auth=('LocalComputer_access', 'S3gur1c3l_local@'), timeout=3).json()
 
                     tagsServidor=[]
                     for consultajson in request_json:
@@ -770,7 +770,7 @@ while True:
                         if aperturalocal[1] == 1:
                             idapertura=aperturalocal[0]
                             try:
-                                request_json = requests.delete(url=f'{URL_API}eliminarsolicitudesaperturaapi/{idapertura}/', auth=('27488274', 'CkretoxDxdxdXd'), timeout=3)
+                                request_json = requests.delete(url=f'{URL_API}eliminarsolicitudesaperturaapi/{idapertura}/', auth=('LocalComputer_access', 'S3gur1c3l_local@'), timeout=3)
                                 if request_json.status_code == 200:
                                     cursorlocal.execute('DELETE FROM solicitud_aperturas WHERE id=%s', (idapertura,))
                                     connlocal.commit()

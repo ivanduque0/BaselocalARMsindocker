@@ -373,8 +373,9 @@ while True:
                             dispositivo=dispositivolocal[0]
                             descripcion=dispositivolocal[1]
                             estado=dispositivolocal[2]
-                            cursorheroku.execute('''INSERT INTO web_dispositivos (dispositivo, descripcion, estado, contrato_id, fecha, hora)
-                            VALUES (%s, %s, %s, %s, %s, %s);''', (dispositivo, descripcion, estado, CONTRATO, fechaahora, horaahora))
+                            acceso=dispositivolocal[3]
+                            cursorheroku.execute('''INSERT INTO web_dispositivos (dispositivo, descripcion, estado, contrato_id, fecha, hora, acceso)
+                            VALUES (%s, %s, %s, %s, %s, %s, %s);''', (dispositivo, descripcion, estado, CONTRATO, fechaahora, horaahora, acceso))
                             connheroku.commit()
                 else:
                     for dispositivolocal in dispositivos_local:
