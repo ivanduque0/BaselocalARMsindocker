@@ -137,6 +137,8 @@ while True:
         t2=tm.perf_counter()
         total=t2-t1
     total=0
+    t1=0
+    t2=0
     try:
         
         #con esto se apunta a la base de datos local
