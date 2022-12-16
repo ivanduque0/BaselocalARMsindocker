@@ -94,6 +94,16 @@ captahuella7=os.environ.get('URL_CAPTAHUELLA7')
 captahuella8=os.environ.get('URL_CAPTAHUELLA8')
 captahuella9=os.environ.get('URL_CAPTAHUELLA9')
 captahuella10=os.environ.get('URL_CAPTAHUELLA10')
+captahuella11=os.environ.get('URL_CAPTAHUELLA11')
+captahuella12=os.environ.get('URL_CAPTAHUELLA12')
+captahuella13=os.environ.get('URL_CAPTAHUELLA13')
+captahuella14=os.environ.get('URL_CAPTAHUELLA14')
+captahuella15=os.environ.get('URL_CAPTAHUELLA15')
+captahuella16=os.environ.get('URL_CAPTAHUELLA16')
+captahuella17=os.environ.get('URL_CAPTAHUELLA17')
+captahuella18=os.environ.get('URL_CAPTAHUELLA18')
+captahuella19=os.environ.get('URL_CAPTAHUELLA19')
+captahuella20=os.environ.get('URL_CAPTAHUELLA20')
 
 ######################################
 ################RFID###################
@@ -109,6 +119,16 @@ rfid7=os.environ.get('URL_RFID7')
 rfid8=os.environ.get('URL_RFID8')
 rfid9=os.environ.get('URL_RFID9')
 rfid10=os.environ.get('URL_RFID10')
+rfid11=os.environ.get('URL_RFID11')
+rfid12=os.environ.get('URL_RFID12')
+rfid13=os.environ.get('URL_RFID13')
+rfid14=os.environ.get('URL_RFID14')
+rfid15=os.environ.get('URL_RFID15')
+rfid16=os.environ.get('URL_RFID16')
+rfid17=os.environ.get('URL_RFID17')
+rfid18=os.environ.get('URL_RFID18')
+rfid19=os.environ.get('URL_RFID19')
+rfid20=os.environ.get('URL_RFID20')
 
 dispositivos=[
             acceso1, acceso2, acceso3, acceso4,
@@ -118,16 +138,23 @@ dispositivos=[
             acceso17, acceso18, acceso19, acceso20,
             captahuella1, captahuella2, captahuella3, captahuella4,
             captahuella5, captahuella6, captahuella7, captahuella8,
-            captahuella9, captahuella10,
+            captahuella9, captahuella10, captahuella11, captahuella12,
+            captahuella13, captahuella14, captahuella15, captahuella16,
+            captahuella17, captahuella18, captahuella19, captahuella20, 
             rfid1, rfid2, rfid3, rfid4, rfid5,
             rfid6, rfid7, rfid8, rfid9, rfid10,
+            rfid11, rfid12, rfid13, rfid14, rfid15,
+            rfid16, rfid17, rfid18, rfid19, rfid20,
             ]
 
 captahuellas=[captahuella1, captahuella2, captahuella3, captahuella4, captahuella5,
               captahuella6, captahuella7, captahuella8, captahuella9, captahuella10,
+              captahuella11, captahuella12, captahuella13, captahuella14, captahuella15,
+              captahuella16, captahuella17, captahuella18, captahuella19, captahuella20, 
               ]
 
 intentos=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
           0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 
 while True:
