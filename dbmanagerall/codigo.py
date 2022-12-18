@@ -526,17 +526,7 @@ while True:
                                 dispositivo=dispositivolocal[0]
                                 descripcion=dispositivolocal[1]
                                 estado=dispositivolocal[2]
-
-                                cambiarEstadoDispositivoJson = {
-                                    "dispositivo": dispositivo,
-                                    "descripcion": descripcion,
-                                    "estado": estado,
-                                    "fecha": fecha,
-                                    "hora": hora,
-                                    "contrato": CONTRATO
-                                }
-                                requests.put(url=f'{URL_API}actualizardispositivosapi/{CONTRATO}/{dispositivo[7:]}/', 
-                                json=cambiarEstadoDispositivoJson, auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
+                                requests.put(url=f'{URL_API}actualizardispositivosapi/{CONTRATO}/{dispositivo[7:]}/{estado}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
                 except requests.exceptions.ConnectionError:
                     print("fallo en la etapa 4")   
                 etapa=5
@@ -680,46 +670,19 @@ while True:
                                             if not ids_suprema_local:
                                                 id_suprema = 1
                                                 if not cedula in listaempleadosseguricel:
-                                                    agregarIdSupremaJson = {
-                                                        "id_suprema": id_suprema,
-                                                        "cedula": cedula,
-                                                        "template": template,
-                                                        "dedo": dedo,
-                                                        "mano": mano,
-                                                        "contrato": CONTRATO
-                                                    }
-                                                    requests.put(url=f'{URL_API}obtenerhuellasportemplateapi/{template}/', 
-                                                    json=agregarIdSupremaJson, auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
+                                                    requests.put(url=f'{URL_API}agregaridsupremaportemplateapi/{template}/{id_suprema}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
                                             else:
                                                 for id_suprema_local in ids_suprema_local:
                                                     IdSupremaContador=IdSupremaContador+1
                                                     if not id_suprema_local[0] == IdSupremaContador:
                                                         id_suprema=IdSupremaContador
                                                         if not cedula in listaempleadosseguricel:
-                                                            agregarIdSupremaJson = {
-                                                                "id_suprema": id_suprema,
-                                                                "cedula": cedula,
-                                                                "template": template,
-                                                                "dedo": dedo,
-                                                                "mano": mano,
-                                                                "contrato": CONTRATO
-                                                            }
-                                                            requests.put(url=f'{URL_API}obtenerhuellasportemplateapi/{template}/', 
-                                                            json=agregarIdSupremaJson, auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
+                                                            requests.put(url=f'{URL_API}agregaridsupremaportemplateapi/{template}/{id_suprema}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
                                                         break
                                                 if nro_ids_suprema_local == IdSupremaContador:
                                                     id_suprema=IdSupremaContador+1
                                                     if not cedula in listaempleadosseguricel:
-                                                        agregarIdSupremaJson = {
-                                                            "id_suprema": id_suprema,
-                                                            "cedula": cedula,
-                                                            "template": template,
-                                                            "dedo": dedo,
-                                                            "mano": mano,
-                                                            "contrato": CONTRATO
-                                                        }
-                                                        requests.put(url=f'{URL_API}obtenerhuellasportemplateapi/{template}/', 
-                                                        json=agregarIdSupremaJson, auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
+                                                        requests.put(url=f'{URL_API}agregaridsupremaportemplateapi/{template}/{id_suprema}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
                                         id_suprema_hex = (id_suprema).to_bytes(4, byteorder='big').hex()
                                         id_suprema_hex = id_suprema_hex[6:]+id_suprema_hex[4:6]+id_suprema_hex[2:4]+id_suprema_hex[0:2]
                                         for captahuella in captahuellas:
