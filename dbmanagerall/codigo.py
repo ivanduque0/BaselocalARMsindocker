@@ -763,7 +763,7 @@ while True:
                             idapertura=aperturalocal[0]
                             try:
                                 request_json = requests.delete(url=f'{URL_API}eliminarsolicitudesaperturaapi/{idapertura}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
-                                if request_json.status_code == 200 or request_json.status_code == 500::
+                                if request_json.status_code == 200 or request_json.status_code == 500:
                                     cursorlocal.execute('DELETE FROM solicitud_aperturas WHERE id=%s', (idapertura,))
                                     connlocal.commit()
                             except requests.exceptions.ConnectionError:
