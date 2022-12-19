@@ -268,8 +268,8 @@ while True:
                             cedula=None
                     except requests.exceptions.ConnectionError:
                         print("fallo consultando api en la etapa 0")
-                except:
-                    print("fallo total etapa0")
+                except Exception as e:
+                    print(f"{e} - fallo total etapa0")
                 etapa=1
 
             if etapa==1:
@@ -376,8 +376,8 @@ while True:
                             listaUsuariosLocal=[]
                     except requests.exceptions.ConnectionError:
                         print("fallo consultando api en la etapa 1")
-                except:
-                    print("fallo total etapa1")
+                except Exception as e:
+                    print(f"{e} - fallo total etapa1")
                 etapa=2
 
             if etapa==2:
@@ -445,8 +445,8 @@ while True:
                             #listaUsuariosLocal=[]
                     except requests.exceptions.ConnectionError:
                         print("fallo consultando api en la etapa 2")
-                except:
-                    print("fallo total etapa2")
+                except Exception as e:
+                    print(f"{e} - fallo total etapa2")
                 etapa=3
 
             if etapa==3:
@@ -476,8 +476,8 @@ while True:
                                     connlocal.commit()
                     except requests.exceptions.ConnectionError:
                         print("fallo consultando api en la etapa 3")
-                except:
-                    print("fallo total etapa3")
+                except Exception as e:
+                    print(f"{e} - fallo total etapa3")
                 etapa=4
 
             if etapa==4:
@@ -542,8 +542,8 @@ while True:
                                     requests.put(url=f'{URL_API}actualizardispositivosapi/{CONTRATO}/{dispositivo[7:]}/{estado}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
                     except requests.exceptions.ConnectionError:
                         print("fallo consultando api en la etapa 4")   
-                except:
-                    print("fallo total etapa4")
+                except Exception as e:
+                    print(f"{e} - fallo total etapa4")
                 etapa=5
             
             if etapa==5:
@@ -729,8 +729,8 @@ while True:
                         listaempleadosseguricel=[]
                     except requests.exceptions.ConnectionError:
                         print("fallo consultando api en la etapa 5")
-                except:
-                    print("fallo total etapa5")
+                except Exception as e:
+                    print(f"{e} - fallo total etapa5")
                 etapa=6
 
             if etapa==6:
@@ -771,8 +771,8 @@ while True:
                                     connlocal.commit()
                     except requests.exceptions.ConnectionError:
                         print("fallo consultando api en la etapa 6")
-                except:
-                    print("fallo total etapa6")
+                except Exception as e:
+                    print(f"{e} - fallo total etapa6")
                 etapa=7
 
             if etapa==7:
@@ -790,8 +790,8 @@ while True:
                                         connlocal.commit()
                                 except requests.exceptions.ConnectionError:
                                     print("fallo consultando api en la etapa 7")
-                except:
-                    print("fallo total etapa7")
+                except Exception as e:
+                    print(f"{e} - fallo total etapa7")
                 etapa=0
 
 
