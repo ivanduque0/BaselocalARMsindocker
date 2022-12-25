@@ -797,7 +797,7 @@ while True:
                                             cursorlocal.execute('DELETE FROM solicitud_aperturas WHERE id=%s', (idapertura,))
                                             connlocal.commit()
                                     except requests.exceptions.ConnectionError:
-                                        print("fallo en la etapa 8")
+                                        print("fallo consultando api en la etapa 7")
                                 elif not peticionDesdeInternet and feedbackPeticion:
                                     cursorlocal.execute('DELETE FROM solicitud_aperturas WHERE id=%s', (idapertura,))
                                     connlocal.commit()
