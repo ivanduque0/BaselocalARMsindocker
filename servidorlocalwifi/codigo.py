@@ -127,22 +127,30 @@ razondictrfids = {'1':razonrfid1, '2':razonrfid2, '3':razonrfid3, '4':razonrfid4
                     '11':razonrfid11, '12':razonrfid12, '13':razonrfid13, '14':razonrfid14, '15':razonrfid15,
                     '16':razonrfid16, '17':razonrfid17, '18':razonrfid18, '19':razonrfid19, '20':razonrfid20}
 
-def aperturaconcedida(nombref, fechaf, horaf, contratof, cedulaf, cursorf, connf, acceso):
+# def aperturaconcedida(nombref, fechaf, horaf, contratof, cedulaf, cursorf, connf, acceso):
 
-    try:
-        if accesodict[acceso]:
-            urllib.request.urlopen(url=f'{accesodict[acceso]}/on', timeout=3)
-            cursorf.execute('''INSERT INTO web_interacciones (nombre, fecha, hora, razon, contrato, cedula_id)
-            VALUES (%s, %s, %s, %s, %s, %s);''', (nombref, fechaf, horaf, razondict[acceso], contratof, cedulaf))
-            #cursorf.execute('''UPDATE led SET onoff=1 WHERE onoff=0;''')
-            connf.commit()
-    except:
-        cursorf.execute('''INSERT INTO web_interacciones (nombre, fecha, hora, razon, contrato, cedula_id)
-        VALUES (%s, %s, %s, %s, %s, %s);''', (nombref, fechaf, horaf, f'fallo_{razondict[acceso]}', contratof, cedulaf))
+#     try:
+#         if accesodict[acceso]:
+#             urllib.request.urlopen(url=f'{accesodict[acceso]}/on', timeout=3)
+#             cursorf.execute('''INSERT INTO web_interacciones (nombre, fecha, hora, razon, contrato, cedula_id)
+#             VALUES (%s, %s, %s, %s, %s, %s);''', (nombref, fechaf, horaf, razondict[acceso], contratof, cedulaf))
+#             #cursorf.execute('''UPDATE led SET onoff=1 WHERE onoff=0;''')
+#             connf.commit()
+#     except:
+#         cursorf.execute('''INSERT INTO web_interacciones (nombre, fecha, hora, razon, contrato, cedula_id)
+#         VALUES (%s, %s, %s, %s, %s, %s);''', (nombref, fechaf, horaf, f'fallo_{razondict[acceso]}', contratof, cedulaf))
+#         #cursorf.execute('''UPDATE led SET onoff=1 WHERE onoff=0;''')
+#         connf.commit()
+#     finally:
+#         pass
+
+def aperturaconcedida(id_usuariof, cursorf, connf, acceso):
+
+    if accesodict[acceso]:
+        cursorf.execute('''INSERT INTO solicitud_aperturas (id, id_usuario, acceso, estado, peticionInternet, feedback)
+        VALUES (%s, %s, %s, %s, %s, %s);''', (idPeticion, id_usuariof, acceso, 0, 'f', 'f'))
         #cursorf.execute('''UPDATE led SET onoff=1 WHERE onoff=0;''')
         connf.commit()
-    finally:
-        pass
 
 def aperturaconcedidahuella(nombref, fechaf, horaf, contratof, cedulaf, cursorf, connf, acceso):
 
@@ -228,13 +236,14 @@ class MyServer(BaseHTTPRequestHandler):
             etapadiaapertura=0
             cantidaddias = 0
             contadoraux = 0
-            cursor.execute("SELECT cedula, nombre, wifi FROM web_usuarios where telegram_id=%s", (id_usuario,))
+            cursor.execute("SELECT cedula, nombre, wifi, telegram_id FROM web_usuarios where telegram_id=%s", (id_usuario,))
             datosUsuario = cursor.fetchall()
             #print(datosUsuario)
             if len(datosUsuario)!=0:
                 cedula=datosUsuario[0][0]
                 nombre=datosUsuario[0][1]
                 permisoAperturaWifi = datosUsuario[0][2]
+                idUsuario = datosUsuario[0][3]
                 cursor.execute('SELECT * FROM web_horariospermitidos where cedula_id=%s', (cedula,))
                 horarios_permitidos = cursor.fetchall()
                 if horarios_permitidos != [] and permisoAperturaWifi == True:
@@ -251,7 +260,8 @@ class MyServer(BaseHTTPRequestHandler):
                             horahoy = datetime.strptime(hora, '%H:%M:%S').time()
                             fecha=str(caracas_now)[:10]
                             etapadia=1
-                            aperturaconcedida(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
+                            #aperturaconcedida(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
+                            aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud)
                             etapadiaapertura=1
                         elif dia==diahoy and cantidaddias==1:
                             hora=str(caracas_now)[11:19]
@@ -261,7 +271,8 @@ class MyServer(BaseHTTPRequestHandler):
                             if entrada<salida:
                                 if horahoy >= entrada and horahoy <= salida:
                                     #print('entrada concedida')
-                                    aperturaconcedida(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
+                                    #aperturaconcedida(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
+                                    aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud)
                                     etapadiaapertura=1
                                 else:
                                     aperturadenegada(cursor, conn, acceso_solicitud)
@@ -269,7 +280,8 @@ class MyServer(BaseHTTPRequestHandler):
                             if entrada>salida:
                                 if (horahoy>=entrada and horahoy <=ultimahora) or (horahoy>=primerahora and horahoy <= salida):
                                     #print('entrada concedida')
-                                    aperturaconcedida(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
+                                    #aperturaconcedida(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
+                                    aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud)
                                     etapadiaapertura=1
                                 else:
                                     aperturadenegada(cursor, conn, acceso_solicitud)
@@ -282,7 +294,8 @@ class MyServer(BaseHTTPRequestHandler):
                             if entrada<salida:
                                 if horahoy >= entrada and horahoy <= salida:
                                     #print('entrada concedida')
-                                    aperturaconcedida(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
+                                    #aperturaconcedida(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
+                                    aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud)
                                     etapadiaapertura=1
                                     contadoraux=0
                                 else:
@@ -293,7 +306,8 @@ class MyServer(BaseHTTPRequestHandler):
                             if entrada>salida:
                                 if (horahoy>=entrada and horahoy <=ultimahora) or (horahoy>=primerahora and horahoy <= salida):
                                     #print('entrada concedida')
-                                    aperturaconcedida(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
+                                    #aperturaconcedida(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
+                                    aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud)
                                     etapadiaapertura=1
                                     contadoraux=0
                                 else:
@@ -327,12 +341,13 @@ class MyServer(BaseHTTPRequestHandler):
             etapadiaapertura=0
             cantidaddias = 0
             contadoraux = 0
-            cursor.execute("SELECT cedula, nombre, wifi, captahuella, rfid, facial  FROM web_usuarios where telegram_id=%s", (uuid_usuario,))
+            cursor.execute("SELECT cedula, nombre, wifi, telegram_id FROM web_usuarios where telegram_id=%s", (uuid_usuario,))
             datosUsuario = cursor.fetchall()
             #print(datosUsuario)
             if len(datosUsuario)!=0:
                 cedula=datosUsuario[0][0]
                 nombre=datosUsuario[0][1]
+                idUsuario = datosUsuario[0][3]
                 cursor.execute('SELECT * FROM web_horariospermitidos where cedula_id=%s', (cedula,))
                 horarios_permitidos = cursor.fetchall()
                 if horarios_permitidos != []:
@@ -349,7 +364,8 @@ class MyServer(BaseHTTPRequestHandler):
                             horahoy = datetime.strptime(hora, '%H:%M:%S').time()
                             fecha=str(caracas_now)[:10]
                             etapadia=1
-                            aperturaconcedida(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
+                            #aperturaconcedida(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
+                            aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud)
                             etapadiaapertura=1
                         elif dia==diahoy and cantidaddias==1:
                             hora=str(caracas_now)[11:19]
@@ -359,7 +375,8 @@ class MyServer(BaseHTTPRequestHandler):
                             if entrada<salida:
                                 if horahoy >= entrada and horahoy <= salida:
                                     #print('entrada concedida')
-                                    aperturaconcedida(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
+                                    #aperturaconcedida(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
+                                    aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud)
                                     etapadiaapertura=1
                                 else:
                                     aperturadenegada(cursor, conn, acceso_solicitud)
@@ -367,7 +384,8 @@ class MyServer(BaseHTTPRequestHandler):
                             if entrada>salida:
                                 if (horahoy>=entrada and horahoy <=ultimahora) or (horahoy>=primerahora and horahoy <= salida):
                                     #print('entrada concedida')
-                                    aperturaconcedida(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
+                                    #aperturaconcedida(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
+                                    aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud)
                                     etapadiaapertura=1
                                 else:
                                     aperturadenegada(cursor, conn, acceso_solicitud)
@@ -380,7 +398,8 @@ class MyServer(BaseHTTPRequestHandler):
                             if entrada<salida:
                                 if horahoy >= entrada and horahoy <= salida:
                                     #print('entrada concedida')
-                                    aperturaconcedida(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
+                                    #aperturaconcedida(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
+                                    aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud)
                                     etapadiaapertura=1
                                     contadoraux=0
                                 else:
@@ -391,7 +410,8 @@ class MyServer(BaseHTTPRequestHandler):
                             if entrada>salida:
                                 if (horahoy>=entrada and horahoy <=ultimahora) or (horahoy>=primerahora and horahoy <= salida):
                                     #print('entrada concedida')
-                                    aperturaconcedida(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
+                                    #aperturaconcedida(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
+                                    aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud)
                                     etapadiaapertura=1
                                     contadoraux=0
                                 else:
