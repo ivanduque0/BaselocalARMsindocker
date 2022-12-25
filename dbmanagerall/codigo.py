@@ -283,7 +283,7 @@ while True:
                         usuariosServidor=[]
                         empleados_seguricel=[]
                         for consultajson in request_json:
-                            tuplaUsuarioIndividual=(consultajson['cedula'],consultajson['telegram_id'],)
+                            tuplaUsuarioIndividual=(consultajson['cedula'],consultajson['telegram_id'], consultajson['telefonoInternet'], consultajson['telefonoWifi'], consultajson['captahuella'], consultajson['rfid'], consultajson['reconocimientoFacial'],)
                             usuariosServidor.append(tuplaUsuarioIndividual)
                             if consultajson['contrato'] == 'SEGURICEL':
                                 empleados_seguricel.append(tuplaUsuarioIndividual)
@@ -383,7 +383,7 @@ while True:
             if etapa==2:
                 try:
                     try:
-                        cursorlocal.execute('SELECT cedula, telegram_id FROM web_usuarios')
+                        cursorlocal.execute('SELECT cedula, telegram_id, internet, wifi, captahuella, rfid, facial FROM web_usuarios')
                         usuarios_local= cursorlocal.fetchall()
 
                         # request_json = requests.get(url=f'{URL_API}obtenerusuariosapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
@@ -472,7 +472,12 @@ while True:
                                 except ValueError:
                                     cedula=usuario[0]
                                     telegram_id=usuario[1]
-                                    cursorlocal.execute("UPDATE web_usuarios SET telegram_id=%s WHERE cedula=%s", (telegram_id,cedula))
+                                    internet=usuario[2]
+                                    wifi=usuario[3]
+                                    captahuella=usuario[4]
+                                    rfid=usuario[5]
+                                    facial=usuario[6]
+                                    cursorlocal.execute("UPDATE web_usuarios SET telegram_id=%s, internet=%s, wifi=%s, captahuella=%s, rfid=%s, facial=%s WHERE cedula=%s", (telegram_id,internet,wifi,captahuella,rfid,facial,cedula))
                                     connlocal.commit()
                     except requests.exceptions.ConnectionError:
                         print("fallo consultando api en la etapa 3")

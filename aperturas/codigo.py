@@ -71,22 +71,6 @@ razondict = {'1':razon1, '2':razon2, '3':razon3, '4':razon4, '5':razon5,
             '6':razon6, '7':razon7, '8':razon8, '9':razon9, '10':razon10,
             '11':razon11, '12':razon12, '13':razon13, '14':razon14, '15':razon15,
             '16':razon16, '17':razon17, '18':razon18, '19':razon19, '20':razon20}
-# pulseaqui = [
-#     'pulse aqui',
-#     'pulse aqui',
-#     'pulse aqui',
-#     'pulse aqui',
-#     'pulse aqui',
-#     'pulse aqui',
-#     'pulse aqui',
-#     'pulse aqui',
-#     'pulse aqui',
-#     'pulse aqui',
-#     'pulse aqui',
-    
-# ]
-
-# keyboard = Keyboa(items=pulseaqui)
 
 def aperturaconcedida(nombref, fechaf, horaf, contratof, cedulaf, cursorf, connf, acceso):
     
@@ -202,15 +186,16 @@ while True:
                     id_usuario = aperturalocal[1]
                     acceso_solicitud=aperturalocal[2]
                     id_solicitud=aperturalocal[0]
-                    cursor.execute("SELECT * FROM web_usuarios where telegram_id=%s", (id_usuario,))
-                    datosusuario = cursor.fetchall()
-                    #print(datosusuario)
-                    if len(datosusuario)!=0:
-                        cedula=datosusuario[0][0]
-                        nombre=datosusuario[0][1]
+                    cursor.execute("SELECT cedula, nombre, internet FROM web_usuarios where telegram_id=%s", (id_usuario,))
+                    datosUsuario = cursor.fetchall()
+                    #print(datosUsuario)
+                    if len(datosUsuario)!=0:
+                        cedula=datosUsuario[0][0]
+                        nombre=datosUsuario[0][1]
+                        permisoAperturaInternet = datosUsuario[0][2]
                         cursor.execute('SELECT * FROM web_horariospermitidos where cedula_id=%s', (cedula,))
                         horarios_permitidos = cursor.fetchall()
-                        if horarios_permitidos != []:
+                        if horarios_permitidos != [] and permisoAperturaInternet == True:
                             tz = pytz.timezone('America/Caracas')
                             caracas_now = datetime.now(tz)
                             dia = caracas_now.weekday()
@@ -301,5 +286,3 @@ while True:
             cursor.close()
             conn.close()
             total=0
-
-
