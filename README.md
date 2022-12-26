@@ -42,6 +42,12 @@ sudo pip3.7 install python-dotenv
 instalar ping3
 sudo pip3.7 install ping3 
 
+instalar pytz 
+sudo pip3.7 install pytz
+
+instalar requests
+sudo pip3.7 install requests
+
 -----------------------------------------
 CONFIGURAR EL WIFI Y HACERLO ESTATICO
 
