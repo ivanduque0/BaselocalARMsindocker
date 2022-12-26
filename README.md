@@ -83,6 +83,8 @@ crear base de datos y usuario en postgresql
 CREATE DATABASE tesis;
 CREATE ROLE tesis WITH LOGIN CREATEDB CREATEROLE CREATEUSER INHERIT ENCRYPTED PASSWORD 'tesis';
 
+Luego se debe crear un usuario con el mismo nombre del rol y la base de datos preferiblemente  
+sudo adduser <nombre del usuario>
 --------------------------------------------
 
 pasos para crear el bot
