@@ -790,7 +790,7 @@ while True:
                                 idapertura=aperturalocal[0]
                                 peticionDesdeInternet=aperturalocal[2]
                                 feedbackPeticion=aperturalocal[3]
-                                if peticionDesdeInternet and feedbackPeticion:
+                                if peticionDesdeInternet:# and feedbackPeticion:
                                     try:
                                         request_json = requests.delete(url=f'{URL_API}eliminarsolicitudesaperturaapi/{idapertura}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
                                         if request_json.status_code == 200 or request_json.status_code == 500:
@@ -798,7 +798,7 @@ while True:
                                             connlocal.commit()
                                     except requests.exceptions.ConnectionError:
                                         print("fallo consultando api en la etapa 7")
-                                elif not peticionDesdeInternet and feedbackPeticion:
+                                elif not peticionDesdeInternet:# and feedbackPeticion:
                                     cursorlocal.execute('DELETE FROM solicitud_aperturas WHERE id=%s', (idapertura,))
                                     connlocal.commit()
                 except Exception as e:

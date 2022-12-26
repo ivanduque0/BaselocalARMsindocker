@@ -180,11 +180,11 @@ while True:
                             cursor.execute('''INSERT INTO solicitud_aperturas (id, id_usuario, acceso, estado, peticionInternet, feedback)
                                 VALUES (%s, %s, %s, %s, %s, %s)''', (solicitud_id, id_usuario, solicitud_acceso, 0, 't', 'f'))
                             conn.commit()
-                    else:
+                    # else:
                         
-                        cursor.execute('''INSERT INTO solicitud_aperturas (id, id_usuario, acceso, estado)
-                            VALUES (%s, %s, %s, %s)''', (solicitud_id, id_usuario, solicitud_acceso, 1))
-                        conn.commit()
+                    #     cursor.execute('''INSERT INTO solicitud_aperturas (id, id_usuario, acceso, estado)
+                    #         VALUES (%s, %s, %s, %s)''', (solicitud_id, id_usuario, solicitud_acceso, 1))
+                    #     conn.commit()
 
 
             cursor.execute('SELECT id, id_usuario, acceso, estado, peticionInternet FROM solicitud_aperturas')
