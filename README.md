@@ -2,6 +2,14 @@
 Este repositorio corresponde a la baselocal que hay que clonar a dispositivos Armv7l que no se les pueda instalar docker, 
 aunque tambien funciona con cualquier dispositivo con arquitectura ARM que tenga linux
 
+IMPORTANTE
+si se esta usando una tarjeta orangepi i96 o iot-2g, al iniciarla pro primera vez se debe eliminar el paquete alsa-utils ya que este paquete impide que el sistema inicie si se reinicia la placa, para eliminar el paquete deve ejecutar el siguiente comando: sudo apt remove alsa-utils
+
+al iniciar la placa por primera vez se deben ejecutar los diguientes comandos, se debe esperar a que el primer comando se complete por completo para poder iniciar el otro
+
+sudo apt-get update
+sudo apt-get upgrade
+
 instalar git
 sudo apt-get install git
 
