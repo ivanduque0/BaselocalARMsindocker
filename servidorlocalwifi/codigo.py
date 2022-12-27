@@ -204,16 +204,6 @@ def aperturadenegada(cursorf, connf, acceso):
     # cursorf.execute('''UPDATE led SET onoff=2 WHERE onoff=0;''')
     # connf.commit()
     try:
-        urllib.request.urlopen(url=f'{accesodict[acceso]}/off', timeout=3)
-    except:
-        print("fallo en peticion http")
-    finally:
-        pass
-
-def aperturadenegada_rh(cursorf, connf, acceso):
-    # cursorf.execute('''UPDATE led SET onoff=2 WHERE onoff=0;''')
-    # connf.commit()
-    try:
         urllib.request.urlopen(url=f'{accesodict[acceso]}/offrh', timeout=3)
     except:
         print("fallo en peticion http")
@@ -243,7 +233,7 @@ class MyServer(BaseHTTPRequestHandler):
 
         if len(peticion) == 2 and peticion[1] == "noregistrado":
             acceso_solicitud, _ = peticion
-            aperturadenegada_rh(cursor, conn, acceso_solicitud)
+            aperturadenegada(cursor, conn, acceso_solicitud)
 
         if len(peticion) == 3 and peticion[2] == "seguricel_wifi_activo":
             self.send_response(200)
@@ -299,7 +289,7 @@ class MyServer(BaseHTTPRequestHandler):
                                     aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud)
                                     etapadiaapertura=1
                                 else:
-                                    aperturadenegada_rh(cursor, conn, acceso_solicitud)
+                                    aperturadenegada(cursor, conn, acceso_solicitud)
                                     #print('fuera de horario')
                             if entrada>salida:
                                 if (horahoy>=entrada and horahoy <=ultimahora) or (horahoy>=primerahora and horahoy <= salida):
@@ -308,7 +298,7 @@ class MyServer(BaseHTTPRequestHandler):
                                     aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud)
                                     etapadiaapertura=1
                                 else:
-                                    aperturadenegada_rh(cursor, conn, acceso_solicitud)
+                                    aperturadenegada(cursor, conn, acceso_solicitud)
                                     #print('fuera de horario')
                         elif dia==diahoy and cantidaddias>1:
                             hora=str(caracas_now)[11:19]
@@ -325,7 +315,7 @@ class MyServer(BaseHTTPRequestHandler):
                                 else:
                                     contadoraux = contadoraux+1
                                     if contadoraux == cantidaddias:
-                                        aperturadenegada_rh(cursor, conn, acceso_solicitud)
+                                        aperturadenegada(cursor, conn, acceso_solicitud)
                                         contadoraux=0
                             if entrada>salida:
                                 if (horahoy>=entrada and horahoy <=ultimahora) or (horahoy>=primerahora and horahoy <= salida):
@@ -337,18 +327,18 @@ class MyServer(BaseHTTPRequestHandler):
                                 else:
                                     contadoraux = contadoraux+1
                                     if contadoraux == cantidaddias:
-                                        aperturadenegada_rh(cursor, conn, acceso_solicitud)
+                                        aperturadenegada(cursor, conn, acceso_solicitud)
                                         contadoraux=0
                                     #print('fuera de horario')
                     if etapadia==0 and etapadiaapertura==0:
-                        aperturadenegada_rh(cursor, conn, acceso_solicitud)
+                        aperturadenegada(cursor, conn, acceso_solicitud)
                         #print('Dia no permitido')
                 if horarios_permitidos == []:
-                    aperturadenegada_rh(cursor, conn, acceso_solicitud)
+                    aperturadenegada(cursor, conn, acceso_solicitud)
                     #print('este usuario no tiene horarios establecidos')
                 diasusuario=[]
             else:
-                aperturadenegada_rh(cursor, conn, acceso_solicitud)
+                aperturadenegada(cursor, conn, acceso_solicitud)
 
         if len(peticion) == 3 and peticion[2] == "seguricel_bluetooth_activo":
             self.send_response(200)
@@ -403,7 +393,7 @@ class MyServer(BaseHTTPRequestHandler):
                                     aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud)
                                     etapadiaapertura=1
                                 else:
-                                    aperturadenegada_rh(cursor, conn, acceso_solicitud)
+                                    aperturadenegada(cursor, conn, acceso_solicitud)
                                     #print('fuera de horario')
                             if entrada>salida:
                                 if (horahoy>=entrada and horahoy <=ultimahora) or (horahoy>=primerahora and horahoy <= salida):
@@ -412,7 +402,7 @@ class MyServer(BaseHTTPRequestHandler):
                                     aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud)
                                     etapadiaapertura=1
                                 else:
-                                    aperturadenegada_rh(cursor, conn, acceso_solicitud)
+                                    aperturadenegada(cursor, conn, acceso_solicitud)
                                     #print('fuera de horario')
                         elif dia==diahoy and cantidaddias>1:
                             hora=str(caracas_now)[11:19]
@@ -429,7 +419,7 @@ class MyServer(BaseHTTPRequestHandler):
                                 else:
                                     contadoraux = contadoraux+1
                                     if contadoraux == cantidaddias:
-                                        aperturadenegada_rh(cursor, conn, acceso_solicitud)
+                                        aperturadenegada(cursor, conn, acceso_solicitud)
                                         contadoraux=0
                             if entrada>salida:
                                 if (horahoy>=entrada and horahoy <=ultimahora) or (horahoy>=primerahora and horahoy <= salida):
@@ -441,18 +431,18 @@ class MyServer(BaseHTTPRequestHandler):
                                 else:
                                     contadoraux = contadoraux+1
                                     if contadoraux == cantidaddias:
-                                        aperturadenegada_rh(cursor, conn, acceso_solicitud)
+                                        aperturadenegada(cursor, conn, acceso_solicitud)
                                         contadoraux=0
                                     #print('fuera de horario')
                     if etapadia==0 and etapadiaapertura==0:
-                        aperturadenegada_rh(cursor, conn, acceso_solicitud)
+                        aperturadenegada(cursor, conn, acceso_solicitud)
                         #print('Dia no permitido')
                 if horarios_permitidos == []:
-                    aperturadenegada_rh(cursor, conn, acceso_solicitud)
+                    aperturadenegada(cursor, conn, acceso_solicitud)
                     #print('este usuario no tiene horarios establecidos')
                 diasusuario=[]
             else:
-                aperturadenegada_rh(cursor, conn, acceso_solicitud)
+                aperturadenegada(cursor, conn, acceso_solicitud)
 
         if len(peticion) == 3 and peticion[2] == "seguricel_captahuella_activo":
             self.send_response(200)
@@ -509,7 +499,7 @@ class MyServer(BaseHTTPRequestHandler):
                                     aperturaconcedidahuella(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
                                     etapadiaapertura=1
                                 else:
-                                    aperturadenegada_rh(cursor, conn, acceso_solicitud)
+                                    aperturadenegada(cursor, conn, acceso_solicitud)
                                     #print('fuera de horario')
                             if entrada>salida:
                                 if (horahoy>=entrada and horahoy <=ultimahora) or (horahoy>=primerahora and horahoy <= salida):
@@ -517,7 +507,7 @@ class MyServer(BaseHTTPRequestHandler):
                                     aperturaconcedidahuella(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
                                     etapadiaapertura=1
                                 else:
-                                    aperturadenegada_rh(cursor, conn, acceso_solicitud)
+                                    aperturadenegada(cursor, conn, acceso_solicitud)
                                     #print('fuera de horario')
                         elif dia==diahoy and cantidaddias>1:
                             hora=str(caracas_now)[11:19]
@@ -533,7 +523,7 @@ class MyServer(BaseHTTPRequestHandler):
                                 else:
                                     contadoraux = contadoraux+1
                                     if contadoraux == cantidaddias:
-                                        aperturadenegada_rh(cursor, conn, acceso_solicitud)
+                                        aperturadenegada(cursor, conn, acceso_solicitud)
                                         contadoraux=0
                             if entrada>salida:
                                 if (horahoy>=entrada and horahoy <=ultimahora) or (horahoy>=primerahora and horahoy <= salida):
@@ -544,18 +534,20 @@ class MyServer(BaseHTTPRequestHandler):
                                 else:
                                     contadoraux = contadoraux+1
                                     if contadoraux == cantidaddias:
-                                        aperturadenegada_rh(cursor, conn, acceso_solicitud)
+                                        aperturadenegada(cursor, conn, acceso_solicitud)
                                         contadoraux=0
                                     #print('fuera de horario')
                     if etapadia==0 and etapadiaapertura==0:
-                        aperturadenegada_rh(cursor, conn, acceso_solicitud)
+                        aperturadenegada(cursor, conn, acceso_solicitud)
                         #print('Dia no permitido')
-                if horarios_permitidos == []:
-                    aperturadenegada_rh(cursor, conn, acceso_solicitud)
-                    #print('este usuario no tiene horarios establecidos')
+                else:
+                    aperturadenegada(cursor, conn, acceso_solicitud)
+                # if horarios_permitidos == []:
+                #     aperturadenegada(cursor, conn, acceso_solicitud)
+                #     #print('este usuario no tiene horarios establecidos')
                 diasusuario=[]
             else:
-                aperturadenegada_rh(cursor, conn, acceso_solicitud)
+                aperturadenegada(cursor, conn, acceso_solicitud)
 
         if len(peticion) == 3 and peticion[2] == "seguricel_rfid_activo":
             self.send_response(200)
@@ -606,7 +598,7 @@ class MyServer(BaseHTTPRequestHandler):
                                     aperturaconcedidarfid(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
                                     etapadiaapertura=1
                                 else:
-                                    aperturadenegada_rh(cursor, conn, acceso_solicitud)
+                                    aperturadenegada(cursor, conn, acceso_solicitud)
                                     #print('fuera de horario')
                             if entrada>salida:
                                 if (horahoy>=entrada and horahoy <=ultimahora) or (horahoy>=primerahora and horahoy <= salida):
@@ -614,7 +606,7 @@ class MyServer(BaseHTTPRequestHandler):
                                     aperturaconcedidarfid(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
                                     etapadiaapertura=1
                                 else:
-                                    aperturadenegada_rh(cursor, conn, acceso_solicitud)
+                                    aperturadenegada(cursor, conn, acceso_solicitud)
                                     #print('fuera de horario')
                         elif dia==diahoy and cantidaddias>1:
                             hora=str(caracas_now)[11:19]
@@ -630,7 +622,7 @@ class MyServer(BaseHTTPRequestHandler):
                                 else:
                                     contadoraux = contadoraux+1
                                     if contadoraux == cantidaddias:
-                                        aperturadenegada_rh(cursor, conn, acceso_solicitud)
+                                        aperturadenegada(cursor, conn, acceso_solicitud)
                                         contadoraux=0
                             if entrada>salida:
                                 if (horahoy>=entrada and horahoy <=ultimahora) or (horahoy>=primerahora and horahoy <= salida):
@@ -641,18 +633,20 @@ class MyServer(BaseHTTPRequestHandler):
                                 else:
                                     contadoraux = contadoraux+1
                                     if contadoraux == cantidaddias:
-                                        aperturadenegada_rh(cursor, conn, acceso_solicitud)
+                                        aperturadenegada(cursor, conn, acceso_solicitud)
                                         contadoraux=0
                                     #print('fuera de horario')
                     if etapadia==0 and etapadiaapertura==0:
-                        aperturadenegada_rh(cursor, conn, acceso_solicitud)
+                        aperturadenegada(cursor, conn, acceso_solicitud)
                         #print('Dia no permitido')
-                if horarios_permitidos == []:
-                    aperturadenegada_rh(cursor, conn, acceso_solicitud)
-                    #print('este usuario no tiene horarios establecidos')
+                else:
+                    aperturadenegada(cursor, conn, acceso_solicitud)    
+                # if horarios_permitidos == []:
+                #     aperturadenegada(cursor, conn, acceso_solicitud)
+                #     #print('este usuario no tiene horarios establecidos')
                 diasusuario=[]
             else:
-                aperturadenegada_rh(cursor, conn, acceso_solicitud)
+                aperturadenegada(cursor, conn, acceso_solicitud)
 
 
 if __name__ == "__main__":
