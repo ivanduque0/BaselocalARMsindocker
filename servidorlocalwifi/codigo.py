@@ -170,7 +170,7 @@ def aperturaconcedidahuella(nombref, fechaf, horaf, contratof, cedulaf, cursorf,
 
     try:
         if accesodict[acceso]:
-            urllib.request.urlopen(url=f'{accesodict[acceso]}/on', timeout=3)
+            urllib.request.urlopen(url=f'{accesodict[acceso]}/onrh', timeout=3)
             cursorf.execute('''INSERT INTO web_interacciones (nombre, fecha, hora, razon, contrato, cedula_id)
             VALUES (%s, %s, %s, %s, %s, %s);''', (nombref, fechaf, horaf, razondicthuellas[acceso], contratof, cedulaf))
             #cursorf.execute('''UPDATE led SET onoff=1 WHERE onoff=0;''')
@@ -187,7 +187,7 @@ def aperturaconcedidarfid(nombref, fechaf, horaf, contratof, cedulaf, cursorf, c
 
     try:
         if accesodict[acceso]:
-            urllib.request.urlopen(url=f'{accesodict[acceso]}/on', timeout=3)
+            urllib.request.urlopen(url=f'{accesodict[acceso]}/onrh', timeout=3)
             cursorf.execute('''INSERT INTO web_interacciones (nombre, fecha, hora, razon, contrato, cedula_id)
             VALUES (%s, %s, %s, %s, %s, %s);''', (nombref, fechaf, horaf, razondictrfids[acceso], contratof, cedulaf))
             #cursorf.execute('''UPDATE led SET onoff=1 WHERE onoff=0;''')

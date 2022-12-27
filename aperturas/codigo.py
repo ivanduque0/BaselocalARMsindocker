@@ -77,7 +77,7 @@ def aperturaConcedidaInternet(nombref, fechaf, horaf, contratof, cedulaf, cursor
     
     try:
         if accesodict[acceso]:
-            urllib.request.urlopen(f'{accesodict[acceso]}/on')
+            urllib.request.urlopen(f'{accesodict[acceso]}/on', timeout=1)
             cursorf.execute('''INSERT INTO web_interacciones (nombre, fecha, hora, razon, contrato, cedula_id)
             VALUES (%s, %s, %s, %s, %s, %s);''', (nombref, fechaf, horaf, f"{razondict[acceso]}-Internet", contratof, cedulaf))
             #cursorf.execute('''UPDATE led SET onoff=1 WHERE onoff=0;''')
@@ -97,7 +97,7 @@ def aperturaConcedidaWifi(nombref, fechaf, horaf, contratof, cedulaf, cursorf, c
     
     try:
         if accesodict[acceso]:
-            urllib.request.urlopen(f'{accesodict[acceso]}/on')
+            urllib.request.urlopen(f'{accesodict[acceso]}/on', timeout=1)
             cursorf.execute('''INSERT INTO web_interacciones (nombre, fecha, hora, razon, contrato, cedula_id)
             VALUES (%s, %s, %s, %s, %s, %s);''', (nombref, fechaf, horaf, f"{razondict[acceso]}-Wifi", contratof, cedulaf))
             #cursorf.execute('''UPDATE led SET onoff=1 WHERE onoff=0;''')
