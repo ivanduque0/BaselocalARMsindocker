@@ -221,7 +221,7 @@ while True:
                             permisoAperturaWifi = datosUsuario[0][3]
                             cursor.execute('SELECT * FROM web_horariospermitidos where cedula_id=%s', (cedula,))
                             horarios_permitidos = cursor.fetchall()
-                            if horarios_permitidos != [] and permisoAperturaInternet == True:
+                            if horarios_permitidos != [] and permisoAperturaInternet == True and peticion_internet==True:
                                 tz = pytz.timezone('America/Caracas')
                                 caracas_now = datetime.now(tz)
                                 dia = caracas_now.weekday()
@@ -289,7 +289,7 @@ while True:
                                 if etapadia==0 and etapadiaapertura==0:
                                     aperturadenegada(cursor, conn, acceso_solicitud)
                                     #print('Dia no permitido')
-                            elif horarios_permitidos != [] and permisoAperturaWifi == True:
+                            elif horarios_permitidos != [] and permisoAperturaWifi == True and peticion_internet == False:
                                 tz = pytz.timezone('America/Caracas')
                                 caracas_now = datetime.now(tz)
                                 dia = caracas_now.weekday()
