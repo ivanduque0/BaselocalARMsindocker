@@ -221,7 +221,7 @@ while True:
                             permisoAperturaWifi = datosUsuario[0][3]
                             cursor.execute('SELECT * FROM web_horariospermitidos where cedula_id=%s', (cedula,))
                             horarios_permitidos = cursor.fetchall()
-                            if horarios_permitidos != [] and (permisoAperturaInternet == True or permisoAperturaWifi == True):
+                            if horarios_permitidos != [] and permisoAperturaInternet == True:
                                 tz = pytz.timezone('America/Caracas')
                                 caracas_now = datetime.now(tz)
                                 dia = caracas_now.weekday()
@@ -304,7 +304,90 @@ while True:
                                 if etapadia==0 and etapadiaapertura==0:
                                     aperturadenegada(cursor, conn, acceso_solicitud)
                                     #print('Dia no permitido')
-                            if horarios_permitidos == []:
+                            elif horarios_permitidos != [] and permisoAperturaWifi == True:
+                                tz = pytz.timezone('America/Caracas')
+                                caracas_now = datetime.now(tz)
+                                dia = caracas_now.weekday()
+                                diahoy = dias_semana[dia]
+                                for entrada, salida, _, dia in horarios_permitidos:
+                                    diasusuario.append(dia)
+                                cantidaddias = diasusuario.count(dia)
+                                for entrada, salida, _, dia in horarios_permitidos:
+                                    if 'Siempre' in diasusuario:
+                                        hora=str(caracas_now)[11:19]
+                                        horahoy = datetime.strptime(hora, '%H:%M:%S').time()
+                                        fecha=str(caracas_now)[:10]
+                                        etapadia=1
+                                        if peticion_internet:
+                                            aperturaConcedidaInternet(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, id_solicitud)
+                                        else:
+                                            aperturaConcedidaWifi(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, id_solicitud)
+                                        etapadiaapertura=1
+                                    elif dia==diahoy and cantidaddias==1:
+                                        hora=str(caracas_now)[11:19]
+                                        horahoy = datetime.strptime(hora, '%H:%M:%S').time()
+                                        fecha=str(caracas_now)[:10]
+                                        etapadia=1
+                                        if entrada<salida:
+                                            if horahoy >= entrada and horahoy <= salida:
+                                                #print('entrada concedida')
+                                                if peticion_internet:
+                                                    aperturaConcedidaInternet(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, id_solicitud)
+                                                else:
+                                                    aperturaConcedidaWifi(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, id_solicitud)
+                                                etapadiaapertura=1
+                                            else:
+                                                aperturadenegada(cursor, conn, acceso_solicitud)
+                                                #print('fuera de horario')
+                                        if entrada>salida:
+                                            if (horahoy>=entrada and horahoy <=ultimahora) or (horahoy>=primerahora and horahoy <= salida):
+                                                #print('entrada concedida')
+                                                if peticion_internet:
+                                                    aperturaConcedidaInternet(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, id_solicitud)
+                                                else:
+                                                    aperturaConcedidaWifi(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, id_solicitud)
+                                                etapadiaapertura=1
+                                            else:
+                                                aperturadenegada(cursor, conn, acceso_solicitud)
+                                                #print('fuera de horario')
+                                    elif dia==diahoy and cantidaddias>1:
+                                        hora=str(caracas_now)[11:19]
+                                        horahoy = datetime.strptime(hora, '%H:%M:%S').time()
+                                        fecha=str(caracas_now)[:10]
+                                        etapadia=1
+                                        if entrada<salida:
+                                            if horahoy >= entrada and horahoy <= salida:
+                                                #print('entrada concedida')
+                                                if peticion_internet:
+                                                    aperturaConcedidaInternet(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, id_solicitud)
+                                                else:
+                                                    aperturaConcedidaWifi(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, id_solicitud)
+                                                etapadiaapertura=1
+                                                contadoraux=0
+                                            else:
+                                                contadoraux = contadoraux+1
+                                                if contadoraux == cantidaddias:
+                                                    aperturadenegada(cursor, conn, acceso_solicitud)
+                                                    contadoraux=0
+                                        if entrada>salida:
+                                            if (horahoy>=entrada and horahoy <=ultimahora) or (horahoy>=primerahora and horahoy <= salida):
+                                                #print('entrada concedida')
+                                                if peticion_internet:
+                                                    aperturaConcedidaInternet(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, id_solicitud)
+                                                else:
+                                                    aperturaConcedidaWifi(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, id_solicitud)
+                                                etapadiaapertura=1
+                                                contadoraux=0
+                                            else:
+                                                contadoraux = contadoraux+1
+                                                if contadoraux == cantidaddias:
+                                                    aperturadenegada(cursor, conn, acceso_solicitud)
+                                                    contadoraux=0
+                                                #print('fuera de horario')
+                                if etapadia==0 and etapadiaapertura==0:
+                                    aperturadenegada(cursor, conn, acceso_solicitud)
+                                    #print('Dia no permitido')
+                            else:
                                 aperturadenegada(cursor, conn, acceso_solicitud) 
                                 #print('este usuario no tiene horarios establecidos')
                             diasusuario=[]
