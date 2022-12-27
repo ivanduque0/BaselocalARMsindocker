@@ -333,9 +333,11 @@ class MyServer(BaseHTTPRequestHandler):
                     if etapadia==0 and etapadiaapertura==0:
                         aperturadenegada(cursor, conn, acceso_solicitud)
                         #print('Dia no permitido')
-                if horarios_permitidos == []:
+                else:
                     aperturadenegada(cursor, conn, acceso_solicitud)
-                    #print('este usuario no tiene horarios establecidos')
+                # if horarios_permitidos == []:
+                #     aperturadenegada(cursor, conn, acceso_solicitud)
+                #     #print('este usuario no tiene horarios establecidos')
                 diasusuario=[]
             else:
                 aperturadenegada(cursor, conn, acceso_solicitud)
