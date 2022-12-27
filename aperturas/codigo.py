@@ -235,10 +235,7 @@ while True:
                                         horahoy = datetime.strptime(hora, '%H:%M:%S').time()
                                         fecha=str(caracas_now)[:10]
                                         etapadia=1
-                                        if peticion_internet:
-                                            aperturaConcedidaInternet(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, id_solicitud)
-                                        else:
-                                            aperturaConcedidaWifi(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, id_solicitud)
+                                        aperturaConcedidaInternet(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, id_solicitud)   
                                         etapadiaapertura=1
                                     elif dia==diahoy and cantidaddias==1:
                                         hora=str(caracas_now)[11:19]
@@ -248,10 +245,7 @@ while True:
                                         if entrada<salida:
                                             if horahoy >= entrada and horahoy <= salida:
                                                 #print('entrada concedida')
-                                                if peticion_internet:
-                                                    aperturaConcedidaInternet(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, id_solicitud)
-                                                else:
-                                                    aperturaConcedidaWifi(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, id_solicitud)
+                                                aperturaConcedidaInternet(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, id_solicitud)  
                                                 etapadiaapertura=1
                                             else:
                                                 aperturadenegada(cursor, conn, acceso_solicitud)
@@ -259,10 +253,7 @@ while True:
                                         if entrada>salida:
                                             if (horahoy>=entrada and horahoy <=ultimahora) or (horahoy>=primerahora and horahoy <= salida):
                                                 #print('entrada concedida')
-                                                if peticion_internet:
-                                                    aperturaConcedidaInternet(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, id_solicitud)
-                                                else:
-                                                    aperturaConcedidaWifi(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, id_solicitud)
+                                                aperturaConcedidaInternet(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, id_solicitud)   
                                                 etapadiaapertura=1
                                             else:
                                                 aperturadenegada(cursor, conn, acceso_solicitud)
@@ -275,10 +266,7 @@ while True:
                                         if entrada<salida:
                                             if horahoy >= entrada and horahoy <= salida:
                                                 #print('entrada concedida')
-                                                if peticion_internet:
-                                                    aperturaConcedidaInternet(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, id_solicitud)
-                                                else:
-                                                    aperturaConcedidaWifi(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, id_solicitud)
+                                                aperturaConcedidaInternet(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, id_solicitud) 
                                                 etapadiaapertura=1
                                                 contadoraux=0
                                             else:
@@ -289,10 +277,7 @@ while True:
                                         if entrada>salida:
                                             if (horahoy>=entrada and horahoy <=ultimahora) or (horahoy>=primerahora and horahoy <= salida):
                                                 #print('entrada concedida')
-                                                if peticion_internet:
-                                                    aperturaConcedidaInternet(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, id_solicitud)
-                                                else:
-                                                    aperturaConcedidaWifi(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, id_solicitud)
+                                                aperturaConcedidaInternet(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, id_solicitud) 
                                                 etapadiaapertura=1
                                                 contadoraux=0
                                             else:
@@ -318,10 +303,7 @@ while True:
                                         horahoy = datetime.strptime(hora, '%H:%M:%S').time()
                                         fecha=str(caracas_now)[:10]
                                         etapadia=1
-                                        if peticion_internet:
-                                            aperturaConcedidaInternet(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, id_solicitud)
-                                        else:
-                                            aperturaConcedidaWifi(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, id_solicitud)
+                                        aperturaConcedidaWifi(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, id_solicitud)
                                         etapadiaapertura=1
                                     elif dia==diahoy and cantidaddias==1:
                                         hora=str(caracas_now)[11:19]
@@ -331,10 +313,7 @@ while True:
                                         if entrada<salida:
                                             if horahoy >= entrada and horahoy <= salida:
                                                 #print('entrada concedida')
-                                                if peticion_internet:
-                                                    aperturaConcedidaInternet(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, id_solicitud)
-                                                else:
-                                                    aperturaConcedidaWifi(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, id_solicitud)
+                                                aperturaConcedidaWifi(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, id_solicitud)
                                                 etapadiaapertura=1
                                             else:
                                                 aperturadenegada(cursor, conn, acceso_solicitud)
@@ -342,10 +321,7 @@ while True:
                                         if entrada>salida:
                                             if (horahoy>=entrada and horahoy <=ultimahora) or (horahoy>=primerahora and horahoy <= salida):
                                                 #print('entrada concedida')
-                                                if peticion_internet:
-                                                    aperturaConcedidaInternet(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, id_solicitud)
-                                                else:
-                                                    aperturaConcedidaWifi(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, id_solicitud)
+                                                aperturaConcedidaWifi(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, id_solicitud)
                                                 etapadiaapertura=1
                                             else:
                                                 aperturadenegada(cursor, conn, acceso_solicitud)
@@ -358,10 +334,7 @@ while True:
                                         if entrada<salida:
                                             if horahoy >= entrada and horahoy <= salida:
                                                 #print('entrada concedida')
-                                                if peticion_internet:
-                                                    aperturaConcedidaInternet(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, id_solicitud)
-                                                else:
-                                                    aperturaConcedidaWifi(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, id_solicitud)
+                                                aperturaConcedidaWifi(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, id_solicitud)
                                                 etapadiaapertura=1
                                                 contadoraux=0
                                             else:
@@ -372,10 +345,7 @@ while True:
                                         if entrada>salida:
                                             if (horahoy>=entrada and horahoy <=ultimahora) or (horahoy>=primerahora and horahoy <= salida):
                                                 #print('entrada concedida')
-                                                if peticion_internet:
-                                                    aperturaConcedidaInternet(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, id_solicitud)
-                                                else:
-                                                    aperturaConcedidaWifi(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, id_solicitud)
+                                                aperturaConcedidaWifi(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, id_solicitud)
                                                 etapadiaapertura=1
                                                 contadoraux=0
                                             else:
