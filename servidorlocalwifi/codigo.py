@@ -204,7 +204,7 @@ def aperturadenegada(cursorf, connf, acceso):
     # cursorf.execute('''UPDATE led SET onoff=2 WHERE onoff=0;''')
     # connf.commit()
     try:
-        urllib.request.urlopen(url=f'{accesodict[acceso]}/offrh', timeout=3)
+        urllib.request.urlopen(url=f'{accesodict[acceso]}/off', timeout=3)
     except:
         print("fallo en peticion http")
     finally:
