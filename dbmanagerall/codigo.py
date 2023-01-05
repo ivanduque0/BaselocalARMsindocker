@@ -581,7 +581,7 @@ while True:
                 except Exception as e:
                     print(f"{e} - fallo total eliminando peticiones de aperturas")
 
-            if consultarTodo:
+            if not consultaUsuarios and consultarTodo:
                 try:
                     try:
                         cursorlocal.execute('SELECT cedula FROM web_usuarios')
@@ -603,7 +603,7 @@ while True:
                         print(nro_usu_local)
                         print(nro_usu_servidor)
                         
-                        if nro_usu_local!=nro_usu_servidor and not consultaUsuarios:
+                        if nro_usu_local!=nro_usu_servidor:
                             #cuando se va a eliminar un usuario
                             if nro_usu_local > nro_usu_servidor:
 
@@ -695,6 +695,7 @@ while True:
                                 listaUsuariosLocal=[]
                         else:
                             consultaUsuarios=True
+                            print(f'consultaUsuarios: {consultaUsuarios}')
                     except requests.exceptions.ConnectionError:
                         print("fallo consultando api en la etapa de usuarios")
                 except Exception as e:
@@ -765,8 +766,11 @@ while True:
                             
                             cursorlocal.execute('SELECT * FROM web_horariospermitidos')
                             horariosLocalCompleto= cursorlocal.fetchall()
+                            print(len(horariosLocalCompleto))
+                            print(len(horariosServidorCompleto))
                             if len(horariosLocalCompleto) == len(horariosServidorCompleto):
                                 consultaHorarios=True
+                                print(f'consultaHorarios: {consultaHorarios}')
                             horariosLocal=[]
                             horariosServidor=[]
                             #listaUsuariosServidor=[]
@@ -957,11 +961,10 @@ while True:
                                                         print(f"fallo al conectar con la esp8266 con la ip:{captahuella}")
                                     listaHuellasServidor=[]
                                     listahuellaslocal=[]
-                        
-                                if nro_huellas_servidor == nro_huellas_local:
-                                    consultaHuellas=True
+                        print(f'banderahuella: {banderaHuellas}')
                         if banderaHuellas==True:
-                            consultaHuellas=True        
+                            consultaHuellas=True 
+                            print(f'consultaHuellas: {consultaHuellas}')      
                         listaUsuariosServidor=[]
                         listaUsuariosLocal=[]
                         listaempleadosseguricel=[]
@@ -970,7 +973,6 @@ while True:
                 except Exception as e:
                     print(f"{e} - fallo total etapa3")
                 
-
             if consultaHuellas and consultarTodo:
                 try:
                     try:
@@ -1016,6 +1018,7 @@ while True:
 
                         if nro_tags_local == nro_tags_servidor:
                             consultaTags=True
+                            print(f'consultaTags: {consultaTags}')
 
                     except requests.exceptions.ConnectionError:
                         print("fallo consultando api en la etapa 4")
