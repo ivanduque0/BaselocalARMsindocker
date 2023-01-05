@@ -691,12 +691,11 @@ while True:
                                 #listaUsuariosServidor=[]
                                 listaUsuariosLocal=[]
                         else:
-                            consultarTodo=False
+                            etapa=2
                     except requests.exceptions.ConnectionError:
                         print("fallo consultando api en la etapa 1")
                 except Exception as e:
                     print(f"{e} - fallo total etapa1")
-                etapa=2
 
             if etapa==2 and consultarTodo:
                 try:
@@ -766,6 +765,7 @@ while True:
                             horariosLocalCompleto= cursorlocal.fetchall()
                             if len(horariosLocalCompleto) == len(horariosServidorCompleto):
                                 consultaHorarios=True
+                                etapa=3
                             horariosLocal=[]
                             horariosServidor=[]
                             #listaUsuariosServidor=[]
@@ -774,45 +774,8 @@ while True:
                         print("fallo consultando api en la etapa 2")
                 except Exception as e:
                     print(f"{e} - fallo total etapa2")
-                etapa=3
 
             if etapa==3 and consultarTodo:
-                try:
-                    try:
-                        # cursorlocal.execute('SELECT cedula, telegram_id FROM web_usuarios')
-                        # usuarios_local= cursorlocal.fetchall()
-
-                        # request_json = requests.get(url=f'{URL_API}obtenerusuariosapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
-
-                        # usuariosServidor=[]
-                        # for consultajson in request_json:
-                        #     tuplaUsuarioIndividual=(consultajson['cedula'],consultajson['telegram_id'],)
-                        #     usuariosServidor.append(tuplaUsuarioIndividual)
-                        
-                        nro_usu_local = len(usuarios_local)
-                        nro_usu_servidor = len(usuariosServidor)
-                    
-                        if nro_usu_servidor == nro_usu_local:
-                            for usuario in usuariosServidor:
-                                try:
-                                    usuarios_local.index(usuario)
-                                except ValueError:
-                                    cedula=usuario[0]
-                                    telegram_id=usuario[1]
-                                    internet=usuario[2]
-                                    wifi=usuario[3]
-                                    captahuella=usuario[4]
-                                    rfid=usuario[5]
-                                    facial=usuario[6]
-                                    cursorlocal.execute("UPDATE web_usuarios SET telegram_id=%s, internet=%s, wifi=%s, captahuella=%s, rfid=%s, facial=%s WHERE cedula=%s", (telegram_id,internet,wifi,captahuella,rfid,facial,cedula))
-                                    connlocal.commit()
-                    except requests.exceptions.ConnectionError:
-                        print("fallo consultando api en la etapa 3")
-                except Exception as e:
-                    print(f"{e} - fallo total etapa3")
-                etapa=4
-
-            if etapa==4 and consultarTodo:
                 try:
                     try:
                         # cursorlocal.execute('SELECT * FROM web_usuarios')
@@ -994,17 +957,18 @@ while True:
                                     listaHuellasServidor=[]
                                     listahuellaslocal=[]
                         if banderaHuellas==True:
-                            consultaHuellas=True            
+                            consultaHuellas=True
+                            etapa=4            
                         listaUsuariosServidor=[]
                         listaUsuariosLocal=[]
                         listaempleadosseguricel=[]
                     except requests.exceptions.ConnectionError:
-                        print("fallo consultando api en la etapa 4")
+                        print("fallo consultando api en la etapa 3")
                 except Exception as e:
-                    print(f"{e} - fallo total etapa4")
-                etapa=5
+                    print(f"{e} - fallo total etapa3")
+                
 
-            if etapa==5 and consultarTodo:
+            if etapa==4 and consultarTodo:
                 try:
                     try:
                         cursorlocal.execute('SELECT epc, cedula FROM web_tagsrfid')
@@ -1058,9 +1022,9 @@ while True:
                             consultaTags=True
 
                     except requests.exceptions.ConnectionError:
-                        print("fallo consultando api en la etapa 5")
+                        print("fallo consultando api en la etapa 4")
                 except Exception as e:
-                    print(f"{e} - fallo total etapa5")
+                    print(f"{e} - fallo total etapa4")
 
             if consultaUsuarios and consultaHorarios and consultaHuellas and consultaTags and consultarTodo:
                 consultarTodo=False
