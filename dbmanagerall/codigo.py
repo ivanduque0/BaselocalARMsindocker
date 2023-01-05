@@ -249,8 +249,8 @@ while True:
                                             if captahuella:
                                                 captahuella_actual=captahuella_actual+1
                                                 try:
-                                                    peticion = urllib.request.urlopen(url=f'{captahuella}/quitar/{id_suprema_hex}', timeout=3)
-                                                    if peticion.getcode() == 200:
+                                                    peticion = requests.get(url=f'{captahuella}/quitar/{id_suprema_hex}', timeout=3)
+                                                    if peticion.status_code == 200:
                                                         nroCaptahuellasSinHuella=nroCaptahuellasSinHuella+1
                                                 except:
                                                     print(f"fallo al conectar con la esp8266 con la ip:{captahuella}")
@@ -384,8 +384,8 @@ while True:
                                             if captahuella:
                                                 captahuella_actual=captahuella_actual+1
                                                 try:
-                                                    peticion = urllib.request.urlopen(url=f'{captahuella}/quitar/{id_suprema_hex}', timeout=3)
-                                                    if peticion.getcode() == 200:
+                                                    peticion = requests.get(url=f'{captahuella}/quitar/{id_suprema_hex}', timeout=3)
+                                                    if peticion.status_code == 200:
                                                         nroCaptahuellasSinHuella=nroCaptahuellasSinHuella+1
                                                 except:
                                                     print(f"fallo al conectar con la esp8266 con la ip:{captahuella}")    
@@ -441,8 +441,8 @@ while True:
                                             if captahuella:
                                                 captahuella_actual=captahuella_actual+1
                                                 try:
-                                                    peticion = urllib.request.urlopen(url=f'{captahuella}/anadir/{id_suprema_hex}/{template}0A', timeout=3)
-                                                    if peticion.getcode() == 200:
+                                                    peticion = requests.get(url=f'{captahuella}/anadir/{id_suprema_hex}/{template}0A', timeout=3)
+                                                    if peticion.status_code == 200:
                                                         nroCaptahuellasConHuella=nroCaptahuellasConHuella+1
                                                 except:
                                                     print(f"fallo al conectar con la esp8266 con la ip:{captahuella}")
@@ -454,9 +454,7 @@ while True:
                                         elif captahuella_actual != nroCaptahuellasConHuella and nroCaptahuellasConHuella != 0:
                                             for captahuella in captahuellas:
                                                 try:
-                                                    peticion = urllib.request.urlopen(url=f'{captahuella}/quitar/{id_suprema_hex}', timeout=3)
-                                                    if peticion.getcode() == 200:
-                                                        pass
+                                                    peticion = requests.get(url=f'{captahuella}/quitar/{id_suprema_hex}', timeout=3)
                                                 except:
                                                     print(f"fallo al conectar con la esp8266 con la ip:{captahuella}")
                             except requests.exceptions.ConnectionError:
@@ -659,8 +657,8 @@ while True:
                                                 if captahuella:
                                                     captahuella_actual=captahuella_actual+1
                                                     try:
-                                                        peticion = urllib.request.urlopen(url=f'{captahuella}/quitar/{id_suprema_hex}', timeout=3)
-                                                        if peticion.getcode() == 200:
+                                                        peticion = requests.get(url=f'{captahuella}/quitar/{id_suprema_hex}', timeout=3)
+                                                        if peticion.status_code == 200:
                                                             nroCaptahuellasSinHuella=nroCaptahuellasSinHuella+1
                                                     except:
                                                         print(f"fallo al conectar con la esp8266 con la ip:{captahuella}")
@@ -822,14 +820,14 @@ while True:
                                 listaempleadosseguricel.append(cedula)
                         banderaHuellas=True
 
-                        cursorlocal.execute('SELECT template, id_suprema FROM web_huellas')
+                        cursorlocal.execute('SELECT template, id_suprema, cedula FROM web_huellas')
                         huellas_local= cursorlocal.fetchall()
 
                         request_json = requests.get(url=f'{URL_API}obtenerhuellascontratoapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
 
                         huellasServidor=[]
                         for consultajson in request_json:
-                            tuplaHuellaIndividual=(consultajson['template'],consultajson['id_suprema'],)
+                            tuplaHuellaIndividual=(consultajson['template'],consultajson['id_suprema'],consultajson['cedula'])
                             huellasServidor.append(tuplaHuellaIndividual)
 
                         nro_huellas_local = len(huellas_local)
@@ -851,8 +849,8 @@ while True:
                                         if captahuella:
                                             captahuella_actual=captahuella_actual+1
                                             try:
-                                                peticion = urllib.request.urlopen(url=f'{captahuella}/quitar/{id_suprema_hex}', timeout=3)
-                                                if peticion.getcode() == 200:
+                                                peticion = requests.get(url=f'{captahuella}/quitar/{id_suprema_hex}', timeout=3)
+                                                if peticion.status_code == 200:
                                                     nroCaptahuellasSinHuella=nroCaptahuellasSinHuella+1
                                             except:
                                                 print(f"fallo al conectar con la esp8266 con la ip:{captahuella}")    
@@ -871,21 +869,9 @@ while True:
                                     try:
                                         huellas_local.index(huella)
                                     except ValueError:
-                                        templateServidor=huella[0]
-                                        request_json = requests.get(url=f'{URL_API}obtenerhuellasportemplateapi/{templateServidor}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
-
-                                        # huellaServidor=[]
-                                        for consultajson in request_json:
-                                            # tuplaHuellaIndividual=(consultajson['id_suprema'],consultajson['cedula'],consultajson['template'],)
-                                            # huellaServidor.append(tuplaHuellaIndividual)
-                                            id_suprema=consultajson['id_suprema']
-                                            cedula=consultajson['cedula']
-                                            template=consultajson['template']
-                                            dedo=consultajson['dedo']
-                                            mano=consultajson['mano']
-                                        # id_suprema=huellaServidor[0][0]
-                                        # cedula=huellaServidor[0][1]
-                                        # template=huellaServidor[0][2]
+                                        template=huella[0]
+                                        id_suprema=huella[1]
+                                        cedula=huella[2]
                                         nroCaptahuellasConHuella=0
                                         captahuella_actual=0
                                         IdSupremaContador=0 #esto lo uso para ver si hay id de suprema disponibles
@@ -915,8 +901,8 @@ while True:
                                             if captahuella:
                                                 captahuella_actual=captahuella_actual+1
                                                 try:
-                                                    peticion = urllib.request.urlopen(url=f'{captahuella}/anadir/{id_suprema_hex}/{template}0A', timeout=3)
-                                                    if peticion.getcode() == 200:
+                                                    peticion = requests.get(url=f'{captahuella}/anadir/{id_suprema_hex}/{template}0A', timeout=3)
+                                                    if peticion.status_code == 200:
                                                         nroCaptahuellasConHuella=nroCaptahuellasConHuella+1
                                                 except:
                                                     print(f"fallo al conectar con la esp8266 con la ip:{captahuella}")
@@ -928,9 +914,7 @@ while True:
                                             banderaHuellas=False
                                             for captahuella in captahuellas:
                                                 try:
-                                                    peticion = urllib.request.urlopen(url=f'{captahuella}/quitar/{id_suprema_hex}', timeout=3)
-                                                    if peticion.getcode() == 200:
-                                                        pass
+                                                    peticion = requests.get(url=f'{captahuella}/quitar/{id_suprema_hex}', timeout=3)
                                                 except:
                                                     print(f"fallo al conectar con la esp8266 con la ip:{captahuella}")
                                 listaHuellasServidor=[]
