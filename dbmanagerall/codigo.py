@@ -289,7 +289,7 @@ while True:
                             request_json_usuario = requests.delete(url=f'{URL_API}eliminarcambioapi/{idCambio}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
                     
                     elif tablaCambiada == 'Horarios':
-                        request_json_horarios = requests.get(url=f'{URL_API}obtenerhorariosapi/{CONTRATO}/{cedulaUsuario}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
+                        request_json_horarios = requests.get(url=f'{URL_API}obtenerhorariosindividualapi/{CONTRATO}/{cedulaUsuario}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
                                 
                         horariosServidor=[]
                         for consultajson in request_json_horarios:
@@ -723,101 +723,46 @@ while True:
                                 except ValueError:
                                     listaUsuariosLocal.append(cedula)
 
-                            if usuarioIndex == 0:
-                                for usuarioIndice in range(len(listaUsuariosLocal)):
-                                    usuarioIndex = usuarioIndice
-                                    print(f'usuarioIndex:{usuarioIndex}')
-                                    usuario = listaUsuariosLocal[usuarioIndice]
-                                    request_json = requests.get(url=f'{URL_API}obtenerhorariosapi/{CONTRATO}/{usuario}', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
-                                    
-                                    horariosServidor=[]
-                                    for consultajson in request_json:
-                                        entradaObjetohora=time.fromisoformat(consultajson['entrada'])
-                                        salidaObjetohora=time.fromisoformat(consultajson['salida'])
-                                        TuplaHorarioIndividual=(entradaObjetohora,salidaObjetohora,consultajson['cedula'],consultajson['dia'],)
-                                        horariosServidor.append(TuplaHorarioIndividual)
-                                    
-                                    cursorlocal.execute('SELECT * FROM web_horariospermitidos WHERE cedula_id=%s',(usuario,))
-                                    horariosLocal= cursorlocal.fetchall()
-
-                                    horariosServidorCompleto=[]
-                                    horariosLocalCompleto=[]
-                                    if len(horariosServidor) > 0 and len(horariosServidor) > len(horariosLocal):
-                                        for horario in horariosServidor:
-                                            try:
-                                                horariosServidorCompleto.append(horario)
-                                                horariosLocal.index(horario)
-                                            except ValueError:
-                                                entrada=horario[0]
-                                                salida=horario[1]
-                                                cedula=horario[2]
-                                                dia=horario[3]
-                                                cursorlocal.execute('''INSERT INTO web_horariospermitidos (entrada, salida, cedula_id, dia)
-                                                VALUES (%s, %s, %s, %s);''', (entrada, salida, cedula, dia))
-                                                connlocal.commit()
-
-                                    if len(horariosLocal) > len(horariosServidor):
-                                        for horariosLocaliterar in horariosLocal:
-                                            try:
-                                                horariosServidor.index(horariosLocaliterar)
-                                            except ValueError:
-                                                entrada=horariosLocaliterar[0]
-                                                salida=horariosLocaliterar[1]
-                                                cedula=horariosLocaliterar[2]
-                                                dia=horariosLocaliterar[3]
-                                                cursorlocal.execute('DELETE FROM web_horariospermitidos WHERE entrada=%s AND salida=%s AND cedula_id=%s AND dia=%s',(entrada, salida, cedula, dia))
-                                                connlocal.commit()
+                                request_json = requests.get(url=f'{URL_API}obtenerhorariosapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
                                 
-                            if usuarioIndex != 0:
-                                for usuarioIndice in range(usuarioIndex, len(listaUsuariosLocal)):
-                                    usuarioIndex = usuarioIndice
-                                    print(f'usuarioIndex:{usuarioIndex}')
-                                    usuario = listaUsuariosLocal[usuarioIndex]
-                                    request_json = requests.get(url=f'{URL_API}obtenerhorariosapi/{CONTRATO}/{usuario}', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
-                                    
-                                    horariosServidor=[]
-                                    for consultajson in request_json:
-                                        entradaObjetohora=time.fromisoformat(consultajson['entrada'])
-                                        salidaObjetohora=time.fromisoformat(consultajson['salida'])
-                                        TuplaHorarioIndividual=(entradaObjetohora,salidaObjetohora,consultajson['cedula'],consultajson['dia'],)
-                                        horariosServidor.append(TuplaHorarioIndividual)
-                                    
-                                    cursorlocal.execute('SELECT * FROM web_horariospermitidos WHERE cedula_id=%s',(usuario,))
-                                    horariosLocal= cursorlocal.fetchall()
+                                horariosServidor=[]
+                                for consultajson in request_json:
+                                    entradaObjetohora=time.fromisoformat(consultajson['entrada'])
+                                    salidaObjetohora=time.fromisoformat(consultajson['salida'])
+                                    TuplaHorarioIndividual=(entradaObjetohora,salidaObjetohora,consultajson['cedula'],consultajson['dia'],)
+                                    horariosServidor.append(TuplaHorarioIndividual)
+                                
+                                cursorlocal.execute('SELECT * FROM web_horariospermitidos')
+                                horariosLocal= cursorlocal.fetchall()
 
-                                    horariosServidorCompleto=[]
-                                    horariosLocalCompleto=[]
-                                    if len(horariosServidor) > 0 and len(horariosServidor) > len(horariosLocal):
-                                        for horario in horariosServidor:
-                                            try:
-                                                horariosServidorCompleto.append(horario)
-                                                horariosLocal.index(horario)
-                                            except ValueError:
-                                                entrada=horario[0]
-                                                salida=horario[1]
-                                                cedula=horario[2]
-                                                dia=horario[3]
-                                                cursorlocal.execute('''INSERT INTO web_horariospermitidos (entrada, salida, cedula_id, dia)
-                                                VALUES (%s, %s, %s, %s);''', (entrada, salida, cedula, dia))
-                                                connlocal.commit()
+                                for horario in horariosServidor:
+                                    try:
+                                        horariosLocal.index(horario)
+                                    except ValueError:
+                                        entrada=horario[0]
+                                        salida=horario[1]
+                                        cedula=horario[2]
+                                        dia=horario[3]
+                                        cursorlocal.execute('''INSERT INTO web_horariospermitidos (entrada, salida, cedula_id, dia)
+                                        VALUES (%s, %s, %s, %s);''', (entrada, salida, cedula, dia))
+                                        connlocal.commit()
 
-                                    if len(horariosLocal) > len(horariosServidor):
-                                        for horariosLocaliterar in horariosLocal:
-                                            try:
-                                                horariosServidor.index(horariosLocaliterar)
-                                            except ValueError:
-                                                entrada=horariosLocaliterar[0]
-                                                salida=horariosLocaliterar[1]
-                                                cedula=horariosLocaliterar[2]
-                                                dia=horariosLocaliterar[3]
-                                                cursorlocal.execute('DELETE FROM web_horariospermitidos WHERE entrada=%s AND salida=%s AND cedula_id=%s AND dia=%s',(entrada, salida, cedula, dia))
-                                                connlocal.commit()
+                                for horariosLocaliterar in horariosLocal:
+                                    try:
+                                        horariosServidor.index(horariosLocaliterar)
+                                    except ValueError:
+                                        entrada=horariosLocaliterar[0]
+                                        salida=horariosLocaliterar[1]
+                                        cedula=horariosLocaliterar[2]
+                                        dia=horariosLocaliterar[3]
+                                        cursorlocal.execute('DELETE FROM web_horariospermitidos WHERE entrada=%s AND salida=%s AND cedula_id=%s AND dia=%s',(entrada, salida, cedula, dia))
+                                        connlocal.commit()
 
                             cursorlocal.execute('SELECT * FROM web_horariospermitidos')
-                            horariosLocalCompleto= cursorlocal.fetchall()
-                            print(len(horariosLocalCompleto))
-                            print(len(horariosServidorCompleto))
-                            if len(horariosLocalCompleto) == len(horariosServidorCompleto):
+                            horariosLocal= cursorlocal.fetchall()
+                            print(len(horariosLocal))
+                            print(len(horariosServidor))
+                            if len(horariosLocal) == len(horariosServidor):
                                 consultaHorarios=True
                                 print(f'consultaHorarios: {consultaHorarios}')
                             horariosLocal=[]
@@ -868,86 +813,57 @@ while True:
                         banderaHuellas=True
                         if len(usuarios_local) == len(usuariosServidor):
 
-                            for usuario_local in listaUsuariosLocal:
-                                cursorlocal.execute('SELECT template, id_suprema FROM web_huellas where cedula=%s', (usuario_local,))
-                                huellas_local= cursorlocal.fetchall()
+                            cursorlocal.execute('SELECT template, id_suprema FROM web_huellas')
+                            huellas_local= cursorlocal.fetchall()
 
-                                request_json = requests.get(url=f'{URL_API}obtenerhuellasapi/{usuario_local}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
+                            request_json = requests.get(url=f'{URL_API}obtenerhuellascontratoapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
 
-                                huellasServidor=[]
-                                for consultajson in request_json:
-                                    tuplaHuellaIndividual=(consultajson['template'],consultajson['id_suprema'],)
-                                    huellasServidor.append(tuplaHuellaIndividual)
+                            huellasServidor=[]
+                            for consultajson in request_json:
+                                tuplaHuellaIndividual=(consultajson['template'],consultajson['id_suprema'],)
+                                huellasServidor.append(tuplaHuellaIndividual)
 
-                                nro_huellas_local = len(huellas_local)
-                                nro_huellas_servidor = len(huellasServidor)
-                                #cuando se van a eliminar huellas
-                                if nro_huellas_local > nro_huellas_servidor:
+                            nro_huellas_local = len(huellas_local)
+                            nro_huellas_servidor = len(huellasServidor)
+                            #cuando se van a eliminar huellas
+                            if nro_huellas_local > nro_huellas_servidor:
 
-                                    for usuario in huellasServidor:
-                                        template=usuario[0]
-                                        try:
-                                            listaHuellasServidor.index(template)
-                                        except ValueError:
-                                            listaHuellasServidor.append(template)
-                                    
-                                    for usuario in huellas_local:
-                                        template=usuario[0]
-                                        try:
-                                            listahuellaslocal.index(template)
-                                        except ValueError:
-                                            listahuellaslocal.append(template)
-
-                                    for templateEnLista in listahuellaslocal:
-                                        try:
-                                            listaHuellasServidor.index(templateEnLista)
-                                        except ValueError:
-                                            nroCaptahuellasSinHuella=0
-                                            captahuella_actual=0
-                                            cursorlocal.execute('SELECT id_suprema FROM web_huellas where template=%s', (templateEnLista,))
-                                            huella_local= cursorlocal.fetchall()
-                                            id_suprema = huella_local[0][0]
-                                            id_suprema_hex = (id_suprema).to_bytes(4, byteorder='big').hex()
-                                            id_suprema_hex = id_suprema_hex[6:]+id_suprema_hex[4:6]+id_suprema_hex[2:4]+id_suprema_hex[0:2]
-                                            for captahuella in captahuellas:
-                                                if captahuella:
-                                                    captahuella_actual=captahuella_actual+1
-                                                    try:
-                                                        peticion = urllib.request.urlopen(url=f'{captahuella}/quitar/{id_suprema_hex}', timeout=3)
-                                                        if peticion.getcode() == 200:
-                                                            nroCaptahuellasSinHuella=nroCaptahuellasSinHuella+1
-                                                    except:
-                                                        print(f"fallo al conectar con la esp8266 con la ip:{captahuella}")    
-                                            if nroCaptahuellasSinHuella == captahuella_actual:
-                                                cursorlocal.execute('DELETE FROM web_huellas WHERE template=%s', (templateEnLista,))
-                                                connlocal.commit()
-                                            else:
-                                                banderaHuellas=False
-                                    listaHuellasServidor=[]
-                                    listahuellaslocal=[]
+                                for huella in huellas_local:
+                                    try:
+                                        huellasServidor.index(huella)
+                                    except ValueError:
+                                        nroCaptahuellasSinHuella=0
+                                        captahuella_actual=0
+                                        template=huella[0]
+                                        id_suprema = huella[1]
+                                        id_suprema_hex = (id_suprema).to_bytes(4, byteorder='big').hex()
+                                        id_suprema_hex = id_suprema_hex[6:]+id_suprema_hex[4:6]+id_suprema_hex[2:4]+id_suprema_hex[0:2]
+                                        for captahuella in captahuellas:
+                                            if captahuella:
+                                                captahuella_actual=captahuella_actual+1
+                                                try:
+                                                    peticion = urllib.request.urlopen(url=f'{captahuella}/quitar/{id_suprema_hex}', timeout=3)
+                                                    if peticion.getcode() == 200:
+                                                        nroCaptahuellasSinHuella=nroCaptahuellasSinHuella+1
+                                                except:
+                                                    print(f"fallo al conectar con la esp8266 con la ip:{captahuella}")    
+                                        if nroCaptahuellasSinHuella == captahuella_actual:
+                                            cursorlocal.execute('DELETE FROM web_huellas WHERE template=%s', (template,))
+                                            connlocal.commit()
+                                        else:
+                                            banderaHuellas=False
+                                listaHuellasServidor=[]
+                                listahuellaslocal=[]
 
                                 # cuando se van a agregar huellas
                                 if nro_huellas_servidor > nro_huellas_local:
 
-                                    for usuario in huellasServidor:
-                                        template=usuario[0]
+                                    for huella in huellasServidor:
                                         try:
-                                            listaHuellasServidor.index(template)
+                                            huellas_local.index(huella)
                                         except ValueError:
-                                            listaHuellasServidor.append(template)
-                                    
-                                    for usuario in huellas_local:
-                                        template=usuario[0]
-                                        try:
-                                            listahuellaslocal.index(template)
-                                        except ValueError:
-                                            listahuellaslocal.append(template)
-
-                                    for templateEnLista in listaHuellasServidor:
-                                        try:
-                                            listahuellaslocal.index(templateEnLista)
-                                        except ValueError:
-                                            request_json = requests.get(url=f'{URL_API}obtenerhuellasportemplateapi/{templateEnLista}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
+                                            templateServidor=huella[0]
+                                            request_json = requests.get(url=f'{URL_API}obtenerhuellasportemplateapi/{templateServidor}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
 
                                             # huellaServidor=[]
                                             for consultajson in request_json:
@@ -1038,26 +954,24 @@ while True:
                         nro_tags_local = len(tags_local)
                         nro_tags_servidor = len(tagsServidor)
 
-                        if nro_tags_servidor > nro_tags_local:
-                            for tagServidor in tagsServidor:
-                                try:
-                                    tags_local.index(tagServidor)
-                                except ValueError:
-                                    epc=tagServidor[0]
-                                    cedula=tagServidor[1]
-                                    cursorlocal.execute('''INSERT INTO web_tagsrfid (epc, cedula)
-                                    VALUES (%s, %s);''', (epc, cedula))
-                                    connlocal.commit()
+                        for tagServidor in tagsServidor:
+                            try:
+                                tags_local.index(tagServidor)
+                            except ValueError:
+                                epc=tagServidor[0]
+                                cedula=tagServidor[1]
+                                cursorlocal.execute('''INSERT INTO web_tagsrfid (epc, cedula)
+                                VALUES (%s, %s);''', (epc, cedula))
+                                connlocal.commit()
 
-                        if nro_tags_local > nro_tags_servidor:
-                            for taglocaliterar in tags_local:
-                                try:
-                                    tagsServidor.index(taglocaliterar)
-                                except ValueError:
-                                    epc=taglocaliterar[0]
-                                    cedula=taglocaliterar[1]
-                                    cursorlocal.execute('DELETE FROM web_tagsrfid WHERE epc=%s AND cedula=%s',(epc, cedula))
-                                    connlocal.commit()
+                        for taglocaliterar in tags_local:
+                            try:
+                                tagsServidor.index(taglocaliterar)
+                            except ValueError:
+                                epc=taglocaliterar[0]
+                                cedula=taglocaliterar[1]
+                                cursorlocal.execute('DELETE FROM web_tagsrfid WHERE epc=%s AND cedula=%s',(epc, cedula))
+                                connlocal.commit()
 
                         cursorlocal.execute('SELECT epc, cedula FROM web_tagsrfid')
                         tags_local= cursorlocal.fetchall()
