@@ -726,6 +726,7 @@ while True:
                             if usuarioIndex == 0:
                                 for usuarioIndice in range(len(listaUsuariosLocal)):
                                     usuarioIndex = usuarioIndice
+                                    print(f'usuarioIndex:{usuarioIndex}')
                                     usuario = listaUsuariosLocal[usuarioIndice]
                                     request_json = requests.get(url=f'{URL_API}obtenerhorariosapi/{CONTRATO}/{usuario}', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
                                     
