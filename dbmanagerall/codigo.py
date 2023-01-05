@@ -43,6 +43,7 @@ consultaTags=False
 subirLog=True
 subirEstadoDispositivos=True
 BorrarPeticionesListas= True
+usuarioIndex=0
 
 ######################################
 #############ACCESOS###################
@@ -721,49 +722,96 @@ while True:
                                     listaUsuariosLocal.index(cedula)
                                 except ValueError:
                                     listaUsuariosLocal.append(cedula)
-                            
-                            for usuario in listaUsuariosLocal:
 
-                                request_json = requests.get(url=f'{URL_API}obtenerhorariosapi/{CONTRATO}/{usuario}', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
+                            if usuarioIndex == 0:
+                                for usuarioIndice in range(len(listaUsuariosLocal)):
+                                    usuarioIndex = usuarioIndice
+                                    usuario = listaUsuariosLocal[usuarioIndice]
+                                    request_json = requests.get(url=f'{URL_API}obtenerhorariosapi/{CONTRATO}/{usuario}', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
+                                    
+                                    horariosServidor=[]
+                                    for consultajson in request_json:
+                                        entradaObjetohora=time.fromisoformat(consultajson['entrada'])
+                                        salidaObjetohora=time.fromisoformat(consultajson['salida'])
+                                        TuplaHorarioIndividual=(entradaObjetohora,salidaObjetohora,consultajson['cedula'],consultajson['dia'],)
+                                        horariosServidor.append(TuplaHorarioIndividual)
+                                    
+                                    cursorlocal.execute('SELECT * FROM web_horariospermitidos WHERE cedula_id=%s',(usuario,))
+                                    horariosLocal= cursorlocal.fetchall()
+
+                                    horariosServidorCompleto=[]
+                                    horariosLocalCompleto=[]
+                                    if len(horariosServidor) > 0 and len(horariosServidor) > len(horariosLocal):
+                                        for horario in horariosServidor:
+                                            try:
+                                                horariosServidorCompleto.append(horario)
+                                                horariosLocal.index(horario)
+                                            except ValueError:
+                                                entrada=horario[0]
+                                                salida=horario[1]
+                                                cedula=horario[2]
+                                                dia=horario[3]
+                                                cursorlocal.execute('''INSERT INTO web_horariospermitidos (entrada, salida, cedula_id, dia)
+                                                VALUES (%s, %s, %s, %s);''', (entrada, salida, cedula, dia))
+                                                connlocal.commit()
+
+                                    if len(horariosLocal) > len(horariosServidor):
+                                        for horariosLocaliterar in horariosLocal:
+                                            try:
+                                                horariosServidor.index(horariosLocaliterar)
+                                            except ValueError:
+                                                entrada=horariosLocaliterar[0]
+                                                salida=horariosLocaliterar[1]
+                                                cedula=horariosLocaliterar[2]
+                                                dia=horariosLocaliterar[3]
+                                                cursorlocal.execute('DELETE FROM web_horariospermitidos WHERE entrada=%s AND salida=%s AND cedula_id=%s AND dia=%s',(entrada, salida, cedula, dia))
+                                                connlocal.commit()
                                 
-                                horariosServidor=[]
-                                for consultajson in request_json:
-                                    entradaObjetohora=time.fromisoformat(consultajson['entrada'])
-                                    salidaObjetohora=time.fromisoformat(consultajson['salida'])
-                                    TuplaHorarioIndividual=(entradaObjetohora,salidaObjetohora,consultajson['cedula'],consultajson['dia'],)
-                                    horariosServidor.append(TuplaHorarioIndividual)
-                                
-                                cursorlocal.execute('SELECT * FROM web_horariospermitidos WHERE cedula_id=%s',(usuario,))
-                                horariosLocal= cursorlocal.fetchall()
+                            if usuarioIndex != 0:
+                                for usuarioIndice in range(usuarioIndex, len(listaUsuariosLocal)):
+                                    usuarioIndex = usuarioIndice
+                                    print(f'usuarioIndex:{usuarioIndex}')
+                                    usuario = listaUsuariosLocal[usuarioIndex]
+                                    request_json = requests.get(url=f'{URL_API}obtenerhorariosapi/{CONTRATO}/{usuario}', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
+                                    
+                                    horariosServidor=[]
+                                    for consultajson in request_json:
+                                        entradaObjetohora=time.fromisoformat(consultajson['entrada'])
+                                        salidaObjetohora=time.fromisoformat(consultajson['salida'])
+                                        TuplaHorarioIndividual=(entradaObjetohora,salidaObjetohora,consultajson['cedula'],consultajson['dia'],)
+                                        horariosServidor.append(TuplaHorarioIndividual)
+                                    
+                                    cursorlocal.execute('SELECT * FROM web_horariospermitidos WHERE cedula_id=%s',(usuario,))
+                                    horariosLocal= cursorlocal.fetchall()
 
-                                horariosServidorCompleto=[]
-                                horariosLocalCompleto=[]
-                                if len(horariosServidor) > 0 and len(horariosServidor) > len(horariosLocal):
-                                    for horario in horariosServidor:
-                                        try:
-                                            horariosServidorCompleto.append(horario)
-                                            horariosLocal.index(horario)
-                                        except ValueError:
-                                            entrada=horario[0]
-                                            salida=horario[1]
-                                            cedula=horario[2]
-                                            dia=horario[3]
-                                            cursorlocal.execute('''INSERT INTO web_horariospermitidos (entrada, salida, cedula_id, dia)
-                                            VALUES (%s, %s, %s, %s);''', (entrada, salida, cedula, dia))
-                                            connlocal.commit()
+                                    horariosServidorCompleto=[]
+                                    horariosLocalCompleto=[]
+                                    if len(horariosServidor) > 0 and len(horariosServidor) > len(horariosLocal):
+                                        for horario in horariosServidor:
+                                            try:
+                                                horariosServidorCompleto.append(horario)
+                                                horariosLocal.index(horario)
+                                            except ValueError:
+                                                entrada=horario[0]
+                                                salida=horario[1]
+                                                cedula=horario[2]
+                                                dia=horario[3]
+                                                cursorlocal.execute('''INSERT INTO web_horariospermitidos (entrada, salida, cedula_id, dia)
+                                                VALUES (%s, %s, %s, %s);''', (entrada, salida, cedula, dia))
+                                                connlocal.commit()
 
-                                if len(horariosLocal) > len(horariosServidor):
-                                    for horariosLocaliterar in horariosLocal:
-                                        try:
-                                            horariosServidor.index(horariosLocaliterar)
-                                        except ValueError:
-                                            entrada=horariosLocaliterar[0]
-                                            salida=horariosLocaliterar[1]
-                                            cedula=horariosLocaliterar[2]
-                                            dia=horariosLocaliterar[3]
-                                            cursorlocal.execute('DELETE FROM web_horariospermitidos WHERE entrada=%s AND salida=%s AND cedula_id=%s AND dia=%s',(entrada, salida, cedula, dia))
-                                            connlocal.commit()
-                            
+                                    if len(horariosLocal) > len(horariosServidor):
+                                        for horariosLocaliterar in horariosLocal:
+                                            try:
+                                                horariosServidor.index(horariosLocaliterar)
+                                            except ValueError:
+                                                entrada=horariosLocaliterar[0]
+                                                salida=horariosLocaliterar[1]
+                                                cedula=horariosLocaliterar[2]
+                                                dia=horariosLocaliterar[3]
+                                                cursorlocal.execute('DELETE FROM web_horariospermitidos WHERE entrada=%s AND salida=%s AND cedula_id=%s AND dia=%s',(entrada, salida, cedula, dia))
+                                                connlocal.commit()
+
                             cursorlocal.execute('SELECT * FROM web_horariospermitidos')
                             horariosLocalCompleto= cursorlocal.fetchall()
                             print(len(horariosLocalCompleto))
