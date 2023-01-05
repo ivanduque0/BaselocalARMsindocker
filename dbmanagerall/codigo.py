@@ -485,6 +485,7 @@ while True:
                         request_json_usuario = requests.delete(url=f'{URL_API}eliminarcambioapi/{idCambio}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
                 
                 t1_cambios=tm.perf_counter()
+            
             if subirLog:
                 try:
                     tz = pytz.timezone('America/Caracas')
@@ -598,7 +599,9 @@ while True:
 
                         nro_usu_local = len(usuarios_local)
                         nro_usu_servidor = len(usuariosServidor)
-                    
+
+                        print(nro_usu_local)
+                        print(nro_usu_servidor)
                         
                         if nro_usu_local!=nro_usu_servidor and not consultaUsuarios:
                             #cuando se va a eliminar un usuario
