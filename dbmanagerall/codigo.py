@@ -600,7 +600,7 @@ while True:
                         nro_usu_servidor = len(usuariosServidor)
                     
                         
-                        if nro_usu_local!=nro_usu_servidor:
+                        if nro_usu_local!=nro_usu_servidor and not consultaUsuarios:
                             #cuando se va a eliminar un usuario
                             if nro_usu_local > nro_usu_servidor:
 
@@ -691,13 +691,13 @@ while True:
                                 #listaUsuariosServidor=[]
                                 listaUsuariosLocal=[]
                         else:
-                            etapa=2
+                            consultaUsuarios=True
                     except requests.exceptions.ConnectionError:
-                        print("fallo consultando api en la etapa 1")
+                        print("fallo consultando api en la etapa de usuarios")
                 except Exception as e:
-                    print(f"{e} - fallo total etapa1")
+                    print(f"{e} - fallo total etapa de usuarios")
 
-            if etapa==2 and consultarTodo:
+            if consultaUsuarios and consultarTodo:
                 try:
                     try:
                         cursorlocal.execute('SELECT cedula, telegram_id, internet, wifi, captahuella, rfid, facial FROM web_usuarios')
@@ -711,7 +711,6 @@ while True:
                         #     usuariosServidor.append(tuplaUsuarioIndividual)
 
                         if len(usuariosServidor) == len(usuarios_local):
-                            consultaUsuarios=True
                             for usuario in usuarios_local:
                                 cedula=usuario[0]
                                 try:
@@ -765,17 +764,16 @@ while True:
                             horariosLocalCompleto= cursorlocal.fetchall()
                             if len(horariosLocalCompleto) == len(horariosServidorCompleto):
                                 consultaHorarios=True
-                                etapa=3
                             horariosLocal=[]
                             horariosServidor=[]
                             #listaUsuariosServidor=[]
                             #listaUsuariosLocal=[]
                     except requests.exceptions.ConnectionError:
-                        print("fallo consultando api en la etapa 2")
+                        print("fallo consultando api en la etapa de horarios")
                 except Exception as e:
-                    print(f"{e} - fallo total etapa2")
+                    print(f"{e} - fallo total etapa de horarios")
 
-            if etapa==3 and consultarTodo:
+            if consultaHorarios and consultarTodo:
                 try:
                     try:
                         # cursorlocal.execute('SELECT * FROM web_usuarios')
@@ -956,9 +954,11 @@ while True:
                                                         print(f"fallo al conectar con la esp8266 con la ip:{captahuella}")
                                     listaHuellasServidor=[]
                                     listahuellaslocal=[]
+                        
+                                if nro_huellas_servidor == nro_huellas_local:
+                                    consultaHuellas=True
                         if banderaHuellas==True:
-                            consultaHuellas=True
-                            etapa=4            
+                            consultaHuellas=True        
                         listaUsuariosServidor=[]
                         listaUsuariosLocal=[]
                         listaempleadosseguricel=[]
@@ -968,7 +968,7 @@ while True:
                     print(f"{e} - fallo total etapa3")
                 
 
-            if etapa==4 and consultarTodo:
+            if consultaHuellas and consultarTodo:
                 try:
                     try:
                         cursorlocal.execute('SELECT epc, cedula FROM web_tagsrfid')
@@ -1007,13 +1007,6 @@ while True:
 
                         cursorlocal.execute('SELECT epc, cedula FROM web_tagsrfid')
                         tags_local= cursorlocal.fetchall()
-
-                        request_json = requests.get(url=f'{URL_API}obtenertagsrfidapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
-
-                        tagsServidor=[]
-                        for consultajson in request_json:
-                            tuplaTagIndividual=(consultajson['epc'],consultajson['cedula'],)
-                            tagsServidor.append(tuplaTagIndividual)
                         
                         nro_tags_local = len(tags_local)
                         nro_tags_servidor = len(tagsServidor)
