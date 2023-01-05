@@ -600,7 +600,7 @@ while True:
                         nro_usu_servidor = len(usuariosServidor)
                     
                         
-                        if nro_usu_local==0:
+                        if nro_usu_local!=nro_usu_servidor:
                             #cuando se va a eliminar un usuario
                             if nro_usu_local > nro_usu_servidor:
 
