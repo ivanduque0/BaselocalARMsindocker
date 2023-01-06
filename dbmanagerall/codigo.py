@@ -597,7 +597,7 @@ while True:
                                 elif not peticionDesdeInternet:# and feedbackPeticion:
                                     cursorlocal.execute('DELETE FROM solicitud_aperturas WHERE id=%s', (idapertura,))
                                     connlocal.commit()
-                BorrarPeticionesListas=False
+                    BorrarPeticionesListas=False
                 except Exception as e:
                     print(f"{e} - fallo total eliminando peticiones de aperturas")
 

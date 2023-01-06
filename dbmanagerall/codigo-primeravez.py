@@ -22,7 +22,7 @@ consultaUsuarios=False
 consultaHorarios=False
 consultaHuellas=False
 consultaTags=False
-
+total=0
 
 ######################################
 #############CAPTAHUELLAS#############
@@ -96,8 +96,8 @@ while True:
                         nro_usu_local = len(usuarios_local)
                         nro_usu_servidor = len(usuariosServidor)
 
-                        # print(nro_usu_local)
-                        # print(nro_usu_servidor)
+                        print(f'usuarios en local: {nro_usu_local}')
+                        print(f'usuarios en servidor: {nro_usu_servidor}')
                         
                         if nro_usu_local!=nro_usu_servidor:
                             #cuando se va a eliminar un usuario
@@ -116,8 +116,11 @@ while True:
                                 #         listaUsuariosLocal.index(cedula)
                                 #     except ValueError:
                                 #         listaUsuariosLocal.append(cedula)
-
+                                contador=0
                                 for usuario in usuarios_local:
+                                    contador=contador+1
+                                    print(contador)
+                                    print(usuario)
                                     try:
                                         usuariosServidor.index(usuario)
                                     except ValueError:
@@ -168,8 +171,11 @@ while True:
                                 #         listaUsuariosLocal.index(cedula)
                                 #     except ValueError:
                                 #         listaUsuariosLocal.append(cedula)
-
+                                contador=0
                                 for usuario in usuariosServidor:
+                                    contador=contador+1
+                                    print(contador)
+                                    print(usuario)
                                     try:
                                         usuarios_local.index(usuario)
                                     except ValueError:
@@ -231,7 +237,14 @@ while True:
                         cursorlocal.execute('SELECT * FROM web_horariospermitidos')
                         horariosLocal= cursorlocal.fetchall()
 
+                        print(f'horarios en local: {len(horariosLocal)}')
+                        print(f'horarios en servidor: {len(horariosServidor)}')
+
+                        contador=0
                         for horario in horariosServidor:
+                            contador=contador+1
+                            print(contador)
+                            print(horario)
                             try:
                                 horariosLocal.index(horario)
                             except ValueError:
@@ -243,7 +256,11 @@ while True:
                                 VALUES (%s, %s, %s, %s);''', (entrada, salida, cedula, dia))
                                 connlocal.commit()
 
+                        contador=0
                         for horariosLocaliterar in horariosLocal:
+                            contador=contador+1
+                            print(contador)
+                            print(horariosLocaliterar)
                             try:
                                 horariosServidor.index(horariosLocaliterar)
                             except ValueError:
@@ -318,10 +335,17 @@ while True:
 
                         nro_huellas_local = len(huellas_local)
                         nro_huellas_servidor = len(huellasServidor)
+
+                        print(f'huellas en local: {len(nro_huellas_local)}')
+                        print(f'huellas en servidor: {len(nro_huellas_servidor)}')
+
                         #cuando se van a eliminar huellas
                         if nro_huellas_local > nro_huellas_servidor:
-
+                            contador=0
                             for huella in huellas_local:
+                                contador=contador+1
+                                print(contador)
+                                print(huella)
                                 try:
                                     huellasServidor.index(huella)
                                 except ValueError:
@@ -348,63 +372,66 @@ while True:
                             listaHuellasServidor=[]
                             listahuellaslocal=[]
 
-                            # cuando se van a agregar huellas
-                            if nro_huellas_servidor > nro_huellas_local:
-
-                                for huella in huellasServidor:
-                                    try:
-                                        huellas_local.index(huella)
-                                    except ValueError:
-                                        template=huella[0]
-                                        id_suprema=huella[1]
-                                        cedula=huella[2]
-                                        nroCaptahuellasConHuella=0
-                                        captahuella_actual=0
-                                        IdSupremaContador=0 #esto lo uso para ver si hay id de suprema disponibles
-                                        if not id_suprema:
-                                            cursorlocal.execute('SELECT id_suprema FROM web_huellas ORDER BY id_suprema ASC')
-                                            ids_suprema_local= cursorlocal.fetchall()
-                                            nro_ids_suprema_local=len(ids_suprema_local)
-                                            if not ids_suprema_local:
-                                                id_suprema = 1
-                                                if not cedula in listaempleadosseguricel:
-                                                    requests.put(url=f'{URL_API}agregaridsupremaportemplateapi/{template}/{id_suprema}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
-                                            else:
-                                                for id_suprema_local in ids_suprema_local:
-                                                    IdSupremaContador=IdSupremaContador+1
-                                                    if not id_suprema_local[0] == IdSupremaContador:
-                                                        id_suprema=IdSupremaContador
-                                                        if not cedula in listaempleadosseguricel:
-                                                            requests.put(url=f'{URL_API}agregaridsupremaportemplateapi/{template}/{id_suprema}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
-                                                        break
-                                                if nro_ids_suprema_local == IdSupremaContador:
-                                                    id_suprema=IdSupremaContador+1
+                        # cuando se van a agregar huellas
+                        if nro_huellas_servidor > nro_huellas_local:
+                            contador=0
+                            for huella in huellasServidor:
+                                contador=contador+1
+                                print(contador)
+                                print(huella)
+                                try:
+                                    huellas_local.index(huella)
+                                except ValueError:
+                                    template=huella[0]
+                                    id_suprema=huella[1]
+                                    cedula=huella[2]
+                                    nroCaptahuellasConHuella=0
+                                    captahuella_actual=0
+                                    IdSupremaContador=0 #esto lo uso para ver si hay id de suprema disponibles
+                                    if not id_suprema:
+                                        cursorlocal.execute('SELECT id_suprema FROM web_huellas ORDER BY id_suprema ASC')
+                                        ids_suprema_local= cursorlocal.fetchall()
+                                        nro_ids_suprema_local=len(ids_suprema_local)
+                                        if not ids_suprema_local:
+                                            id_suprema = 1
+                                            if not cedula in listaempleadosseguricel:
+                                                requests.put(url=f'{URL_API}agregaridsupremaportemplateapi/{template}/{id_suprema}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
+                                        else:
+                                            for id_suprema_local in ids_suprema_local:
+                                                IdSupremaContador=IdSupremaContador+1
+                                                if not id_suprema_local[0] == IdSupremaContador:
+                                                    id_suprema=IdSupremaContador
                                                     if not cedula in listaempleadosseguricel:
                                                         requests.put(url=f'{URL_API}agregaridsupremaportemplateapi/{template}/{id_suprema}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
-                                        id_suprema_hex = (id_suprema).to_bytes(4, byteorder='big').hex()
-                                        id_suprema_hex = id_suprema_hex[6:]+id_suprema_hex[4:6]+id_suprema_hex[2:4]+id_suprema_hex[0:2]
+                                                    break
+                                            if nro_ids_suprema_local == IdSupremaContador:
+                                                id_suprema=IdSupremaContador+1
+                                                if not cedula in listaempleadosseguricel:
+                                                    requests.put(url=f'{URL_API}agregaridsupremaportemplateapi/{template}/{id_suprema}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
+                                    id_suprema_hex = (id_suprema).to_bytes(4, byteorder='big').hex()
+                                    id_suprema_hex = id_suprema_hex[6:]+id_suprema_hex[4:6]+id_suprema_hex[2:4]+id_suprema_hex[0:2]
+                                    for captahuella in captahuellas:
+                                        if captahuella:
+                                            captahuella_actual=captahuella_actual+1
+                                            try:
+                                                peticion = requests.get(url=f'{captahuella}/anadir/{id_suprema_hex}/{template}0A', timeout=3)
+                                                if peticion.status_code == 200:
+                                                    nroCaptahuellasConHuella=nroCaptahuellasConHuella+1
+                                            except:
+                                                print(f"fallo al conectar con la esp8266 con la ip:{captahuella}")
+                                    if nroCaptahuellasConHuella == captahuella_actual and captahuella_actual != 0:
+                                        cursorlocal.execute('''INSERT INTO web_huellas (id_suprema, cedula, template)
+                                        VALUES (%s, %s, %s)''', (id_suprema, cedula, template))
+                                        connlocal.commit()
+                                    elif captahuella_actual != nroCaptahuellasConHuella and nroCaptahuellasConHuella != 0:
+                                        banderaHuellas=False
                                         for captahuella in captahuellas:
-                                            if captahuella:
-                                                captahuella_actual=captahuella_actual+1
-                                                try:
-                                                    peticion = requests.get(url=f'{captahuella}/anadir/{id_suprema_hex}/{template}0A', timeout=3)
-                                                    if peticion.status_code == 200:
-                                                        nroCaptahuellasConHuella=nroCaptahuellasConHuella+1
-                                                except:
-                                                    print(f"fallo al conectar con la esp8266 con la ip:{captahuella}")
-                                        if nroCaptahuellasConHuella == captahuella_actual and captahuella_actual != 0:
-                                            cursorlocal.execute('''INSERT INTO web_huellas (id_suprema, cedula, template)
-                                            VALUES (%s, %s, %s)''', (id_suprema, cedula, template))
-                                            connlocal.commit()
-                                        elif captahuella_actual != nroCaptahuellasConHuella and nroCaptahuellasConHuella != 0:
-                                            banderaHuellas=False
-                                            for captahuella in captahuellas:
-                                                try:
-                                                    peticion = requests.get(url=f'{captahuella}/quitar/{id_suprema_hex}', timeout=3)
-                                                except:
-                                                    print(f"fallo al conectar con la esp8266 con la ip:{captahuella}")
-                                listaHuellasServidor=[]
-                                listahuellaslocal=[]
+                                            try:
+                                                peticion = requests.get(url=f'{captahuella}/quitar/{id_suprema_hex}', timeout=3)
+                                            except:
+                                                print(f"fallo al conectar con la esp8266 con la ip:{captahuella}")
+                            listaHuellasServidor=[]
+                            listahuellaslocal=[]
                         print(f'banderahuella: {banderaHuellas}')
                         if banderaHuellas==True:
                             consultaHuellas=True 
@@ -433,7 +460,14 @@ while True:
                         nro_tags_local = len(tags_local)
                         nro_tags_servidor = len(tagsServidor)
 
+                        print(f'tags en local: {len(nro_tags_local)}')
+                        print(f'tags en servidor: {len(nro_tags_servidor)}')
+
+                        contador=0
                         for tagServidor in tagsServidor:
+                            contador=contador+1
+                            print(contador)
+                            print(tagServidor)
                             try:
                                 tags_local.index(tagServidor)
                             except ValueError:
@@ -443,7 +477,11 @@ while True:
                                 VALUES (%s, %s);''', (epc, cedula))
                                 connlocal.commit()
 
+                        contador=0
                         for taglocaliterar in tags_local:
+                            contador=contador+1
+                            print(contador)
+                            print(taglocaliterar)
                             try:
                                 tagsServidor.index(taglocaliterar)
                             except ValueError:
