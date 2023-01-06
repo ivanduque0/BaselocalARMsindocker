@@ -320,14 +320,13 @@ try:
                     request_json = requests.get(url=f'{URL_API}obtenerhuellascontratoapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
 
                     huellasServidor=[]
-                    idsSupremaServidor=[]
+                    idsSupremaOcupados=[]
                     for consultajson in request_json:
                         tuplaHuellaIndividual=(consultajson['template'],consultajson['id_suprema'],consultajson['cedula'])
                         huellasServidor.append(tuplaHuellaIndividual)
                         if consultajson['id_suprema']:
-                            idsSupremaServidor.append(consultajson['id_suprema'])
+                            idsSupremaOcupados.append(consultajson['id_suprema'])
 
-                    idsSupremaServidor.sort()
                     nro_huellas_local = len(huellas_local)
                     nro_huellas_servidor = len(huellasServidor)
 
@@ -373,6 +372,7 @@ try:
                             contador=contador+1
                             print(contador)
                             print(huella)
+                            idsSupremaOcupados.sort()
                             try:
                                 huellas_local.index(huella)
                             except ValueError:
@@ -385,23 +385,26 @@ try:
                                 if not id_suprema:
                                     # cursorlocal.execute('SELECT id_suprema FROM web_huellas ORDER BY id_suprema ASC')
                                     # ids_suprema_local= cursorlocal.fetchall()
-                                    nro_ids_suprema_local=len(idsSupremaServidor)
-                                    if not idsSupremaServidor:
+                                    nro_ids_suprema_ocupados=len(idsSupremaOcupados)
+                                    if not idsSupremaOcupados:
                                         id_suprema = 1
                                         if not cedula in listaempleadosseguricel:
                                             requests.put(url=f'{URL_API}agregaridsupremaportemplateapi/{template}/{id_suprema}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
+                                        idsSupremaOcupados.append(id_suprema)
                                     else:
-                                        for id_suprema_local in idsSupremaServidor:
+                                        for id_suprema_ocupado in idsSupremaOcupados:
                                             IdSupremaContador=IdSupremaContador+1
-                                            if not id_suprema_local == IdSupremaContador:
+                                            if not id_suprema_ocupado == IdSupremaContador:
                                                 id_suprema=IdSupremaContador
                                                 if not cedula in listaempleadosseguricel:
                                                     requests.put(url=f'{URL_API}agregaridsupremaportemplateapi/{template}/{id_suprema}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
+                                                idsSupremaOcupados.append(id_suprema)
                                                 break
-                                        if nro_ids_suprema_local == IdSupremaContador:
+                                        if nro_ids_suprema_ocupados == IdSupremaContador:
                                             id_suprema=IdSupremaContador+1
                                             if not cedula in listaempleadosseguricel:
                                                 requests.put(url=f'{URL_API}agregaridsupremaportemplateapi/{template}/{id_suprema}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
+                                            idsSupremaOcupados.append(id_suprema)
                                 id_suprema_hex = (id_suprema).to_bytes(4, byteorder='big').hex()
                                 id_suprema_hex = id_suprema_hex[6:]+id_suprema_hex[4:6]+id_suprema_hex[2:4]+id_suprema_hex[0:2]
                                 for captahuella in captahuellas:
