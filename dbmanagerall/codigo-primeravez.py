@@ -390,7 +390,6 @@ try:
                                         id_suprema = 1
                                         if not cedula in listaempleadosseguricel:
                                             requests.put(url=f'{URL_API}agregaridsupremaportemplateapi/{template}/{id_suprema}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
-                                        idsSupremaOcupados.append(id_suprema)
                                     else:
                                         for id_suprema_ocupado in idsSupremaOcupados:
                                             IdSupremaContador=IdSupremaContador+1
@@ -398,13 +397,11 @@ try:
                                                 id_suprema=IdSupremaContador
                                                 if not cedula in listaempleadosseguricel:
                                                     requests.put(url=f'{URL_API}agregaridsupremaportemplateapi/{template}/{id_suprema}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
-                                                idsSupremaOcupados.append(id_suprema)
                                                 break
                                         if nro_ids_suprema_ocupados == IdSupremaContador:
                                             id_suprema=IdSupremaContador+1
                                             if not cedula in listaempleadosseguricel:
                                                 requests.put(url=f'{URL_API}agregaridsupremaportemplateapi/{template}/{id_suprema}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
-                                            idsSupremaOcupados.append(id_suprema)
                                 id_suprema_hex = (id_suprema).to_bytes(4, byteorder='big').hex()
                                 id_suprema_hex = id_suprema_hex[6:]+id_suprema_hex[4:6]+id_suprema_hex[2:4]+id_suprema_hex[0:2]
                                 for captahuella in captahuellas:
@@ -419,6 +416,7 @@ try:
                                     cursorlocal.execute('''INSERT INTO web_huellas (id_suprema, cedula, template)
                                     VALUES (%s, %s, %s)''', (id_suprema, cedula, template))
                                     connlocal.commit()
+                                    idsSupremaOcupados.append(id_suprema)
                                 elif captahuella_actual != nroCaptahuellasConHuella and nroCaptahuellasConHuella != 0:
                                     banderaHuellas=False
                                     for captahuella in captahuellas:
