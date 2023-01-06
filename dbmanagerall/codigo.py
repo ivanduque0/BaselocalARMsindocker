@@ -1,11 +1,9 @@
 import psycopg2
 import os
-import subprocess
 import time as tm
 import pytz
 from datetime import datetime, date, time
 from ping3 import ping
-import urllib.request
 from dotenv import load_dotenv
 from pathlib import Path
 import requests
@@ -385,7 +383,7 @@ while True:
                                             if captahuella:
                                                 captahuella_actual=captahuella_actual+1
                                                 try:
-                                                    peticion = requests.get(url=f'{captahuella}/quitar/{id_suprema_hex}', timeout=3)
+                                                    requests.get(url=f'{captahuella}/quitar/{id_suprema_hex}', timeout=3)
                                                     nroCaptahuellasSinHuella=nroCaptahuellasSinHuella+1
                                                 except:
                                                     print(f"fallo al conectar con la esp8266 con la ip:{captahuella}")  
