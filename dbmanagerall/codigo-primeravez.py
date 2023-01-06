@@ -235,7 +235,7 @@ try:
                     for horario in horariosServidor:
                         contador=contador+1
                         print(contador)
-                        print(horario)
+                        #print(horario)
                         try:
                             horariosLocal.index(horario)
                         except ValueError:
@@ -251,7 +251,7 @@ try:
                     for horariosLocaliterar in horariosLocal:
                         contador=contador+1
                         print(contador)
-                        print(horariosLocaliterar)
+                        #print(horariosLocaliterar)
                         try:
                             horariosServidor.index(horariosLocaliterar)
                         except ValueError:
