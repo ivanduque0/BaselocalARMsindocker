@@ -413,8 +413,8 @@ try:
                                         try:
                                             requests.get(url=f'{captahuella}/anadir/{id_suprema_hex}/{template}0A', timeout=3)
                                             nroCaptahuellasConHuella=nroCaptahuellasConHuella+1
-                                        except:
-                                            print(f"fallo al conectar con la esp8266 con la ip:{captahuella}")
+                                        except Exception as e:
+                                            print(f"{e} - fallo al conectar con la esp8266 con la ip:{captahuella}")
                                 if nroCaptahuellasConHuella == captahuella_actual and captahuella_actual != 0:
                                     cursorlocal.execute('''INSERT INTO web_huellas (id_suprema, cedula, template)
                                     VALUES (%s, %s, %s)''', (id_suprema, cedula, template))
@@ -422,10 +422,11 @@ try:
                                 elif captahuella_actual != nroCaptahuellasConHuella and nroCaptahuellasConHuella != 0:
                                     banderaHuellas=False
                                     for captahuella in captahuellas:
-                                        try:
-                                            peticion = requests.get(url=f'{captahuella}/quitar/{id_suprema_hex}', timeout=3)
-                                        except:
-                                            print(f"fallo al conectar con la esp8266 con la ip:{captahuella}")
+                                        if captahuella:
+                                            try:
+                                                peticion = requests.get(url=f'{captahuella}/quitar/{id_suprema_hex}', timeout=3)
+                                            except Exception as e:
+                                                print(f" {e} - fallo al conectar con la esp8266 con la ip:{captahuella}")
                         listaHuellasServidor=[]
                         listahuellaslocal=[]
                     print(f'banderahuella: {banderaHuellas}')
