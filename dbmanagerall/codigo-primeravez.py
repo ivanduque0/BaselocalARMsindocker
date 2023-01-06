@@ -320,10 +320,14 @@ try:
                     request_json = requests.get(url=f'{URL_API}obtenerhuellascontratoapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
 
                     huellasServidor=[]
+                    idsSupremaServidor=[]
                     for consultajson in request_json:
                         tuplaHuellaIndividual=(consultajson['template'],consultajson['id_suprema'],consultajson['cedula'])
                         huellasServidor.append(tuplaHuellaIndividual)
+                        if consultajson['id_suprema']:
+                            idsSupremaServidor.append(consultajson['id_suprema'])
 
+                    idsSupremaServidor.sort()
                     nro_huellas_local = len(huellas_local)
                     nro_huellas_servidor = len(huellasServidor)
 
@@ -350,7 +354,7 @@ try:
                                     if captahuella:
                                         captahuella_actual=captahuella_actual+1
                                         try:
-                                            peticion = requests.get(url=f'{captahuella}/quitar/{id_suprema_hex}', timeout=3)
+                                            requests.get(url=f'{captahuella}/quitar/{id_suprema_hex}', timeout=3)
                                             nroCaptahuellasSinHuella=nroCaptahuellasSinHuella+1
                                         except:
                                             print(f"fallo al conectar con la esp8266 con la ip:{captahuella}")    
@@ -379,17 +383,17 @@ try:
                                 captahuella_actual=0
                                 IdSupremaContador=0 #esto lo uso para ver si hay id de suprema disponibles
                                 if not id_suprema:
-                                    cursorlocal.execute('SELECT id_suprema FROM web_huellas ORDER BY id_suprema ASC')
-                                    ids_suprema_local= cursorlocal.fetchall()
-                                    nro_ids_suprema_local=len(ids_suprema_local)
-                                    if not ids_suprema_local:
+                                    # cursorlocal.execute('SELECT id_suprema FROM web_huellas ORDER BY id_suprema ASC')
+                                    # ids_suprema_local= cursorlocal.fetchall()
+                                    nro_ids_suprema_local=len(idsSupremaServidor)
+                                    if not idsSupremaServidor:
                                         id_suprema = 1
                                         if not cedula in listaempleadosseguricel:
                                             requests.put(url=f'{URL_API}agregaridsupremaportemplateapi/{template}/{id_suprema}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
                                     else:
-                                        for id_suprema_local in ids_suprema_local:
+                                        for id_suprema_local in idsSupremaServidor:
                                             IdSupremaContador=IdSupremaContador+1
-                                            if not id_suprema_local[0] == IdSupremaContador:
+                                            if not id_suprema_local == IdSupremaContador:
                                                 id_suprema=IdSupremaContador
                                                 if not cedula in listaempleadosseguricel:
                                                     requests.put(url=f'{URL_API}agregaridsupremaportemplateapi/{template}/{id_suprema}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
@@ -404,7 +408,7 @@ try:
                                     if captahuella:
                                         captahuella_actual=captahuella_actual+1
                                         try:
-                                            peticion = requests.get(url=f'{captahuella}/anadir/{id_suprema_hex}/{template}0A', timeout=3)
+                                            requests.get(url=f'{captahuella}/anadir/{id_suprema_hex}/{template}0A', timeout=3)
                                             nroCaptahuellasConHuella=nroCaptahuellasConHuella+1
                                         except:
                                             print(f"fallo al conectar con la esp8266 con la ip:{captahuella}")
@@ -422,7 +426,7 @@ try:
                         listaHuellasServidor=[]
                         listahuellaslocal=[]
                     print(f'banderahuella: {banderaHuellas}')
-                    if banderaHuellas==True:
+                    if banderaHuellas:
                         consultaHuellas=True 
                         print(f'consultaHuellas: {consultaHuellas}')      
                     listaUsuariosServidor=[]
