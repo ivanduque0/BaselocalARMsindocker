@@ -338,6 +338,7 @@ while True:
                     elif tablaCambiada == 'Huellas':
                         try:
                             try:
+                                banderaHuella = True
                                 cursorlocal.execute('SELECT template, id_suprema FROM web_huellas where cedula=%s', (cedulaUsuario,))
                                 huellas_local= cursorlocal.fetchall()
 
@@ -385,14 +386,14 @@ while True:
                                                 captahuella_actual=captahuella_actual+1
                                                 try:
                                                     peticion = requests.get(url=f'{captahuella}/quitar/{id_suprema_hex}', timeout=3)
-                                                    if peticion.status_code == 200:
-                                                        nroCaptahuellasSinHuella=nroCaptahuellasSinHuella+1
+                                                    nroCaptahuellasSinHuella=nroCaptahuellasSinHuella+1
                                                 except:
-                                                    print(f"fallo al conectar con la esp8266 con la ip:{captahuella}")    
+                                                    print(f"fallo al conectar con la esp8266 con la ip:{captahuella}")  
                                         if nroCaptahuellasSinHuella == captahuella_actual:
                                             cursorlocal.execute('DELETE FROM web_huellas WHERE template=%s', (templateEnLista,))
                                             connlocal.commit()
-                                            request_json_usuario = requests.delete(url=f'{URL_API}eliminarcambioapi/{idCambio}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
+                                        else:
+                                            banderaHuella = False  
 
                                 for templateEnLista in listaHuellasServidor:
                                     try:
@@ -441,22 +442,23 @@ while True:
                                             if captahuella:
                                                 captahuella_actual=captahuella_actual+1
                                                 try:
-                                                    peticion = requests.get(url=f'{captahuella}/anadir/{id_suprema_hex}/{template}0A', timeout=3)
-                                                    if peticion.status_code == 200:
-                                                        nroCaptahuellasConHuella=nroCaptahuellasConHuella+1
+                                                    requests.get(url=f'{captahuella}/anadir/{id_suprema_hex}/{template}0A', timeout=3)
+                                                    nroCaptahuellasConHuella=nroCaptahuellasConHuella+1
                                                 except:
                                                     print(f"fallo al conectar con la esp8266 con la ip:{captahuella}")
                                         if nroCaptahuellasConHuella == captahuella_actual and captahuella_actual != 0:
                                             cursorlocal.execute('''INSERT INTO web_huellas (id_suprema, cedula, template)
                                             VALUES (%s, %s, %s)''', (id_suprema, cedula, template))
                                             connlocal.commit()
-                                            request_json_usuario = requests.delete(url=f'{URL_API}eliminarcambioapi/{idCambio}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
                                         elif captahuella_actual != nroCaptahuellasConHuella and nroCaptahuellasConHuella != 0:
+                                            banderaHuella = False  
                                             for captahuella in captahuellas:
                                                 try:
-                                                    peticion = requests.get(url=f'{captahuella}/quitar/{id_suprema_hex}', timeout=3)
+                                                    requests.get(url=f'{captahuella}/quitar/{id_suprema_hex}', timeout=3)
                                                 except:
                                                     print(f"fallo al conectar con la esp8266 con la ip:{captahuella}")
+                                if banderaHuella:
+                                    requests.delete(url=f'{URL_API}eliminarcambioapi/{idCambio}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
                             except requests.exceptions.ConnectionError:
                                     print("fallo consultando api en huellas")
                         except Exception as e:
