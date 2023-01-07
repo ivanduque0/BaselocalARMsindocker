@@ -4,7 +4,6 @@ import time as tm
 import pytz
 from datetime import datetime, date, time
 from ping3 import ping
-import urllib.request
 from dotenv import load_dotenv
 from pathlib import Path
 import requests
