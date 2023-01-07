@@ -1,6 +1,5 @@
 import psycopg2
 import os
-import subprocess
 import time as tm
 import pytz
 from datetime import datetime, date, time
@@ -94,27 +93,15 @@ try:
                         #cuando se va a eliminar un usuario
                         if nro_usu_local > nro_usu_servidor:
 
-                            # for usuario in usuariosServidor:
-                            #     cedula=usuario[0]
-                            #     try:
-                            #         listaUsuariosServidor.index(cedula)
-                            #     except ValueError:
-                            #         listaUsuariosServidor.append(cedula)
-                            
-                            # for usuario in usuarios_local:
-                            #     cedula=usuario[0]
-                            #     try:
-                            #         listaUsuariosLocal.index(cedula)
-                            #     except ValueError:
-                            #         listaUsuariosLocal.append(cedula)
                             contador=0
                             for usuario in usuarios_local:
                                 contador=contador+1
                                 print(contador)
                                 print(usuario)
-                                try:
-                                    usuariosServidor.index(usuario)
-                                except ValueError:
+                                # try:
+                                #     usuariosServidor.index(usuario)
+                                # except ValueError:
+                                if not usuario in usuariosServidor:
                                     cedula=usuario[0]
                                     cursorlocal.execute('SELECT id_suprema FROM web_huellas where cedula=%s', (cedula,))
                                     huellas_local= cursorlocal.fetchall()
@@ -143,33 +130,19 @@ try:
                                         cursorlocal.execute('DELETE FROM web_usuarios WHERE cedula=%s', (cedula,))
                                         cursorlocal.execute('DELETE FROM web_horariospermitidos WHERE cedula_id=%s', (cedula,))
                                         connlocal.commit()
-                            #listaUsuariosServidor=[]
-                            #listaUsuariosLocal=[]
 
                         # cuando se va a agregar usuarios
                         if nro_usu_servidor > nro_usu_local:
 
-                            # for usuario in usuariosServidor:
-                            #     cedula=usuario[0]
-                            #     try:
-                            #         listaUsuariosServidor.index(cedula)
-                            #     except ValueError:
-                            #         listaUsuariosServidor.append(cedula)
-                            
-                            # for usuario in usuarios_local:
-                            #     cedula=usuario[0]
-                            #     try:
-                            #         listaUsuariosLocal.index(cedula)
-                            #     except ValueError:
-                            #         listaUsuariosLocal.append(cedula)
                             contador=0
                             for usuario in usuariosServidor:
                                 contador=contador+1
                                 print(contador)
                                 print(usuario)
-                                try:
-                                    usuarios_local.index(usuario)
-                                except ValueError:
+                                # try:
+                                #     usuarios_local.index(usuario)
+                                # except ValueError:
+                                if not usuario in usuarios_local:
                                     cedula=usuario[0]
                                     nombre=usuario[1]
                                     telegram_id=usuario[2]
@@ -178,22 +151,16 @@ try:
                                     captahuella=usuario[5]
                                     rfid=usuario[6]
                                     facial=usuario[7]
-                                    # request_json = requests.get(url=f'{URL_API}usuarioindividualapi/{CONTRATO}/{usuario}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
-
-                                    # for consultajson in request_json:
-                                    #     cedula=consultajson['cedula']
-                                    #     nombre=consultajson['nombre']
-                                    #     telegram_id=consultajson['telegram_id']
-                                    #     internet=consultajson['telefonoInternet']
-                                    #     wifi=consultajson['telefonoWifi']
-                                    #     captahuella=consultajson['captahuella']
-                                    #     rfid=consultajson['rfid']
-                                    #     facial=consultajson['reconocimientoFacial']
                                     cursorlocal.execute('''INSERT INTO web_usuarios (cedula, nombre, telegram_id, internet, wifi, captahuella, rfid, facial)
                                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s)''', (cedula, nombre, telegram_id, internet, wifi, captahuella, rfid, facial))
                                     connlocal.commit()
                             #listaUsuariosServidor=[]
                             #listaUsuariosLocal=[]
+                        cursorlocal.execute('SELECT cedula, nombre, telegram_id, internet, wifi, captahuella, rfid, facial FROM web_usuarios')
+                        usuarios_local= cursorlocal.fetchall()
+                        nro_usu_local = len(usuarios_local)
+                        if nro_usu_local == nro_usu_servidor:
+                            consultaUsuarios=True
                     else:
                         consultaUsuarios=True
                         print(f'consultaUsuarios: {consultaUsuarios}')
@@ -207,14 +174,6 @@ try:
                 try:
                     cursorlocal.execute('SELECT cedula, telegram_id, internet, wifi, captahuella, rfid, facial FROM web_usuarios')
                     usuarios_local= cursorlocal.fetchall()
-
-                    # request_json = requests.get(url=f'{URL_API}obtenerusuariosapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
-
-                    # usuariosServidor=[]
-                    # for consultajson in request_json:
-                    #     tuplaUsuarioIndividual=(consultajson['cedula'],)
-                    #     usuariosServidor.append(tuplaUsuarioIndividual)
-
 
                     request_json = requests.get(url=f'{URL_API}obtenerhorariosapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
                     
@@ -236,9 +195,10 @@ try:
                         contador=contador+1
                         print(contador)
                         #print(horario)
-                        try:
-                            horariosLocal.index(horario)
-                        except ValueError:
+                        # try:
+                        #     horariosLocal.index(horario)
+                        # except ValueError:
+                        if not horario in horariosLocal:
                             entrada=horario[0]
                             salida=horario[1]
                             cedula=horario[2]
@@ -252,9 +212,10 @@ try:
                         contador=contador+1
                         print(contador)
                         #print(horariosLocaliterar)
-                        try:
-                            horariosServidor.index(horariosLocaliterar)
-                        except ValueError:
+                        # try:
+                        #     horariosServidor.index(horariosLocaliterar)
+                        # except ValueError:
+                        if not horariosLocaliterar in horariosServidor:
                             entrada=horariosLocaliterar[0]
                             salida=horariosLocaliterar[1]
                             cedula=horariosLocaliterar[2]
@@ -269,8 +230,6 @@ try:
                         print(f'consultaHorarios: {consultaHorarios}')
                     horariosLocal=[]
                     horariosServidor=[]
-                    #listaUsuariosServidor=[]
-                    #listaUsuariosLocal=[]
                 except requests.exceptions.ConnectionError:
                     print("fallo consultando api en la etapa de horarios")
             except Exception as e:
@@ -279,38 +238,13 @@ try:
         if consultaHorarios and consultarTodo:
             try:
                 try:
-                    # cursorlocal.execute('SELECT * FROM web_usuarios')
-                    # usuarios_local= cursorlocal.fetchall()
-
-                    # request_json = requests.get(url=f'{URL_API}obtenerusuariosapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
-
-                    #usuariosServidor=[]
-                    # empleados_seguricel=[]
-                    # for consultajson in request_json:
-                        #tuplaUsuarioIndividual=(consultajson['cedula'],)
-                        # if consultajson['contrato'] == 'SEGURICEL':
-                        #     empleados_seguricel.append(tuplaUsuarioIndividual)
-                        #usuariosServidor.append(tuplaUsuarioIndividual)
-                    
-                    # for usuario in usuarios_local:
-                    #     cedula=usuario[0]
-                    #     try:
-                    #         listaUsuariosLocal.index(cedula)
-                    #     except ValueError:
-                    #         listaUsuariosLocal.append(cedula)
-
-                    # for usuario in usuariosServidor:
-                    #     cedula=usuario[0]
-                    #     try:
-                    #         listaUsuariosServidor.index(cedula)
-                    #     except ValueError:
-                    #         listaUsuariosServidor.append(cedula)
-                    
+                    listaempleadosseguricel=[]
                     for empleado_seguricel in empleados_seguricel:
                         cedula=empleado_seguricel[0]
-                        try:
-                            listaempleadosseguricel.index(cedula)
-                        except ValueError:
+                        # try:
+                        #     listaempleadosseguricel.index(cedula)
+                        # except ValueError:
+                        if not cedula in listaempleadosseguricel
                             listaempleadosseguricel.append(cedula)
                     banderaHuellas=True
 
@@ -340,9 +274,10 @@ try:
                             contador=contador+1
                             print(contador)
                             #print(huella)
-                            try:
-                                huellasServidor.index(huella)
-                            except ValueError:
+                            # try:
+                            #     huellasServidor.index(huella)
+                            # except ValueError:
+                            if not huella in huellasServidor:
                                 nroCaptahuellasSinHuella=0
                                 captahuella_actual=0
                                 template=huella[0]
@@ -379,9 +314,10 @@ try:
                                 print(contador)
                                 #print(huella)
                                 idsSupremaOcupados.sort()
-                                try:
-                                    huellas_local.index(huella)
-                                except ValueError:
+                                # try:
+                                #     huellas_local.index(huella)
+                                # except ValueError:
+                                if not huella in huellas_local:
                                     template=huella[0]
                                     id_suprema=huella[1]
                                     cedula=huella[2]
@@ -469,9 +405,10 @@ try:
                         contador=contador+1
                         print(contador)
                         print(tagServidor)
-                        try:
-                            tags_local.index(tagServidor)
-                        except ValueError:
+                        # try:
+                        #     tags_local.index(tagServidor)
+                        # except ValueError:
+                        if not tagServidor in tags_local:
                             epc=tagServidor[0]
                             cedula=tagServidor[1]
                             cursorlocal.execute('''INSERT INTO web_tagsrfid (epc, cedula)
@@ -483,9 +420,10 @@ try:
                         contador=contador+1
                         print(contador)
                         print(taglocaliterar)
-                        try:
-                            tagsServidor.index(taglocaliterar)
-                        except ValueError:
+                        # try:
+                        #     tagsServidor.index(taglocaliterar)
+                        # except ValueError:
+                        if not taglocaliterar in tagsServidor:
                             epc=taglocaliterar[0]
                             cedula=taglocaliterar[1]
                             cursorlocal.execute('DELETE FROM web_tagsrfid WHERE epc=%s AND cedula=%s',(epc, cedula))
@@ -495,7 +433,6 @@ try:
                     tags_local= cursorlocal.fetchall()
                     
                     nro_tags_local = len(tags_local)
-                    nro_tags_servidor = len(tagsServidor)
 
                     if nro_tags_local == nro_tags_servidor:
                         consultaTags=True
