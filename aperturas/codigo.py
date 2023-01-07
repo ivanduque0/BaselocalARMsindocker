@@ -3,7 +3,6 @@ import psycopg2
 import os
 import pytz
 from datetime import datetime
-import urllib.request
 import requests
 from dotenv import load_dotenv
 from pathlib import Path
@@ -77,7 +76,7 @@ def aperturaConcedidaInternet(nombref, fechaf, horaf, contratof, cedulaf, cursor
     
     try:
         if accesodict[acceso]:
-            urllib.request.urlopen(f'{accesodict[acceso]}/on', timeout=1)
+            requests.get(f'{accesodict[acceso]}/on', timeout=1)
             cursorf.execute('''INSERT INTO web_interacciones (nombre, fecha, hora, razon, contrato, cedula_id)
             VALUES (%s, %s, %s, %s, %s, %s);''', (nombref, fechaf, horaf, f"{razondict[acceso]}-Internet", contratof, cedulaf))
             #cursorf.execute('''UPDATE led SET onoff=1 WHERE onoff=0;''')
@@ -97,7 +96,7 @@ def aperturaConcedidaWifi(nombref, fechaf, horaf, contratof, cedulaf, cursorf, c
     
     try:
         if accesodict[acceso]:
-            urllib.request.urlopen(f'{accesodict[acceso]}/on', timeout=1)
+            requests.get(f'{accesodict[acceso]}/on', timeout=1)
             cursorf.execute('''INSERT INTO web_interacciones (nombre, fecha, hora, razon, contrato, cedula_id)
             VALUES (%s, %s, %s, %s, %s, %s);''', (nombref, fechaf, horaf, f"{razondict[acceso]}-Wifi", contratof, cedulaf))
             #cursorf.execute('''UPDATE led SET onoff=1 WHERE onoff=0;''')
@@ -135,7 +134,7 @@ def aperturadenegada(cursorf, connf, acceso, id_solicitud):
     # cursorf.execute('''UPDATE led SET onoff=2 WHERE onoff=0;''')
     # connf.commit()
     try:
-        urllib.request.urlopen(f'{accesodict[acceso]}/off')
+        requests.get(f'{accesodict[acceso]}/off')
         cursorf.execute('UPDATE solicitud_aperturas SET estado=%s WHERE id=%s;', (1, id_solicitud))
         connf.commit()
     except:
