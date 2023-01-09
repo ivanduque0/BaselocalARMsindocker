@@ -558,7 +558,7 @@ while True:
                     print(f"{e} - fallo total eliminando peticiones de aperturas")
     
     except (Exception, psycopg2.Error) as error:
-        print("fallo en hacer las consultas")
+        print("fallo en hacer las consultas en base ded atos de managerall")
         if connlocal:
             cursorlocal.close()
             connlocal.close()
