@@ -185,6 +185,71 @@ while True:
             total_cambios=t2_cambios-t1_cambios
             total_log=t2_log-t1_log
 
+            try:
+                try:
+                    cursorlocal.execute('SELECT dispositivo, descripcion, estado, acceso FROM web_dispositivos')
+                    dispositivos_local= cursorlocal.fetchall()
+
+                    request_json = requests.get(url=f'{URL_API}obtenerdispositivosapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
+
+                    dispositivosServidor=[]
+                    for consultajson in request_json:
+                        tuplaDispositivoIndividual=(consultajson['dispositivo'],consultajson['descripcion'], consultajson['estado'], consultajson['acceso'],)
+                        dispositivosServidor.append(tuplaDispositivoIndividual)
+
+                    if len(dispositivosServidor) != len(dispositivos_local):
+                        request_json = requests.delete(url=f'{URL_API}eliminartodosdispositivosapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
+                        if request_json.status_code == 200:
+
+                            request_json = requests.get(url=f'{URL_API}obtenerdispositivosapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
+
+                            dispositivosServidor=[]
+                            for consultajson in request_json:
+                                tuplaDispositivoIndividual=(consultajson['dispositivo'],consultajson['descripcion'], consultajson['estado'], consultajson['acceso'],)
+                                dispositivosServidor.append(tuplaDispositivoIndividual)
+
+                            for dispositivolocal in dispositivos_local:
+                                try:
+                                    dispositivosServidor.index(dispositivolocal)
+                                except ValueError:
+                                    tz = pytz.timezone('America/Caracas')
+                                    caracas_now = datetime.now(tz)
+                                    fecha=str(caracas_now)[:10]
+                                    hora=str(caracas_now)[11:19]
+                                    dispositivo=dispositivolocal[0]
+                                    descripcion=dispositivolocal[1]
+                                    estado=dispositivolocal[2]
+                                    acceso=dispositivolocal[3]
+                                    agregarDispositivoJson = {
+                                        "dispositivo": dispositivo,
+                                        "descripcion": descripcion,
+                                        "estado": estado,
+                                        "contrato": CONTRATO,
+                                        "acceso": acceso,
+                                        "fecha": fecha,
+                                        "hora": hora
+                                    }
+                                    requests.post(url=f'{URL_API}registrardispositivosapi/', 
+                                    json=agregarDispositivoJson, auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
+                    else:
+                        for dispositivolocal in dispositivos_local:
+                            # try:
+                            #     dispositivosServidor.index(dispositivolocal)
+                            # except ValueError:
+                            if not dispositivolocal in dispositivosServidor:
+                                tz = pytz.timezone('America/Caracas')
+                                caracas_now = datetime.now(tz)
+                                fecha=str(caracas_now)[:10]
+                                hora=str(caracas_now)[11:19]
+                                dispositivo=dispositivolocal[0]
+                                descripcion=dispositivolocal[1]
+                                estado=dispositivolocal[2]
+                                requests.put(url=f'{URL_API}actualizardispositivosapi/{CONTRATO}/{dispositivo[7:]}/{estado}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
+                except requests.exceptions.ConnectionError:
+                    print("fallo consultando api de dispositivos")   
+            except Exception as e:
+                print(f"{e} - fallo total en los dispositivos")  
+
             if total_ping > TIEMPO_PING:
                 for dispositivo in dispositivos:
                     intentos_tabla=dispositivos.index(dispositivo)

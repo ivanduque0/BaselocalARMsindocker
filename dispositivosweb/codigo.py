@@ -179,9 +179,10 @@ while True:
                                     json=agregarDispositivoJson, auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
                     else:
                         for dispositivolocal in dispositivos_local:
-                            try:
-                                dispositivosServidor.index(dispositivolocal)
-                            except ValueError:
+                            # try:
+                            #     dispositivosServidor.index(dispositivolocal)
+                            # except ValueError:
+                            if not dispositivolocal in dispositivosServidor:
                                 tz = pytz.timezone('America/Caracas')
                                 caracas_now = datetime.now(tz)
                                 fecha=str(caracas_now)[:10]
