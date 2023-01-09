@@ -584,12 +584,6 @@ while True:
                                     }
                                     requests.post(url=f'{URL_API}registrarinteraccionesapi/', 
                                     json=anadirLogJson, auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
-                            
-                            nombre=None
-                            fecha=None
-                            hora=None
-                            razon=None
-                            cedula=None
                     except requests.exceptions.ConnectionError:
                         print("fallo consultando api de logs")
                 except Exception as e:
@@ -623,7 +617,7 @@ while True:
                     print(f"{e} - fallo total eliminando peticiones de aperturas")
     
     except (Exception, psycopg2.Error) as error:
-        print("fallo en hacer las consultas en base ded atos de managerall")
+        print(f"{error} - fallo en hacer las consultas en base ded atos de managerall")
         if connlocal:
             cursorlocal.close()
             connlocal.close()

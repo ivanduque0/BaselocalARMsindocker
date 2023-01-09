@@ -197,7 +197,7 @@ while True:
                 print(f"{e} - fallo total en los dispositivos")  
     
     except (Exception, psycopg2.Error) as error:
-        print("fallo en hacer las consultas de base de datos de dispositivos")
+        print(f"{error} - fallo en hacer las consultas de base de datos de dispositivos")
         if connlocal:
             cursorlocal.close()
             connlocal.close()
