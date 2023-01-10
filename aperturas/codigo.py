@@ -136,7 +136,7 @@ def aperturadenegada(cursorf, connf, acceso, id_solicitud):
     # connf.commit()
     try:
         requests.get(f'{accesodict[acceso]}/off')
-        cursorf.execute('UPDATE solicitud_aperturas SET estado=%s WHERE id=%s;', (1, id_solicitud))
+        cursorf.execute('UPDATE solicitud_aperturas SET estado=%s, feedback=%s WHERE id=%s;', (1,'t', id_solicitud))
         connf.commit()
     except Exception as e:
         print(f"{e} - fallo en peticion para denegar apertura")
