@@ -373,7 +373,6 @@ while True:
     except (Exception, psycopg2.Error) as error:
         print(f"{error} - fallo en hacer las consultas en base de datos de aperturas")
         total=0
-
     finally:
         print("se ha cerrado la conexion a la base de datos")
         if conn:
