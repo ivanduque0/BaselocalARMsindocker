@@ -76,7 +76,7 @@ def aperturaConcedidaInternet(nombref, fechaf, horaf, contratof, cedulaf, cursor
     
     try:
         if accesodict[acceso]:
-            requests.get(f'{accesodict[acceso]}/on', timeout=1)
+            requests.get(f'{accesodict[acceso]}/on', timeout=3)
             cursorf.execute('''INSERT INTO web_interacciones (nombre, fecha, hora, razon, contrato, cedula_id)
             VALUES (%s, %s, %s, %s, %s, %s);''', (nombref, fechaf, horaf, f"{razondict[acceso]}-Internet", contratof, cedulaf))
             #cursorf.execute('''UPDATE led SET onoff=1 WHERE onoff=0;''')
@@ -97,7 +97,7 @@ def aperturaConcedidaWifi(nombref, fechaf, horaf, contratof, cedulaf, cursorf, c
     
     try:
         if accesodict[acceso]:
-            requests.get(f'{accesodict[acceso]}/on', timeout=1)
+            requests.get(f'{accesodict[acceso]}/on', timeout=3)
             cursorf.execute('''INSERT INTO web_interacciones (nombre, fecha, hora, razon, contrato, cedula_id)
             VALUES (%s, %s, %s, %s, %s, %s);''', (nombref, fechaf, horaf, f"{razondict[acceso]}-Wifi", contratof, cedulaf))
             #cursorf.execute('''UPDATE led SET onoff=1 WHERE onoff=0;''')
@@ -135,7 +135,7 @@ def aperturadenegada(cursorf, connf, acceso, id_solicitud):
     # cursorf.execute('''UPDATE led SET onoff=2 WHERE onoff=0;''')
     # connf.commit()
     try:
-        requests.get(f'{accesodict[acceso]}/off')
+        requests.get(f'{accesodict[acceso]}/off', timeout=3)
         cursorf.execute('UPDATE solicitud_aperturas SET estado=%s, feedback=%s WHERE id=%s;', (1,'t', id_solicitud))
         connf.commit()
     except Exception as e:
@@ -163,42 +163,42 @@ while True:
         cursor = conn.cursor()
 
         while True:
-
-            aperturas_solicitadas = requests.get(url=f'{URL_API}aperturascontratoapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@')).json()
-            if len(aperturas_solicitadas):
-                tz = pytz.timezone('America/Caracas')
-                caracas_now = datetime.now(tz)
-                hora=str(caracas_now)[11:19]
-                hora_hora=int(hora[:2])
-                hora_minuto=int(hora[3:5])
-                fecha=str(caracas_now)[:10]
-                for apertura in aperturas_solicitadas:
-                    #print(dt['contrato'])
-                    solicitud_hora_completa = apertura['hora']
-                    solicitud_hora=int(solicitud_hora_completa[:2])
-                    solicitud_minuto=int(solicitud_hora_completa[3:5])
-                    diferencia_horas=hora_hora-solicitud_hora
-                    diferencia_minutos=hora_minuto-solicitud_minuto
-                    solicitud_id=apertura['id']
-                    id_usuario = apertura['id_usuario']
-                    solicitud_acceso=apertura['acceso']
-                    feedbackPeticion=apertura['feedback']
-                    cursor.execute('SELECT * FROM solicitud_aperturas WHERE id=%s',(solicitud_id,))
-                    aperturas_local_existente= cursor.fetchall()
-                    if not aperturas_local_existente:
-                        if apertura['fecha'] == fecha and diferencia_horas==0 and (diferencia_minutos >= -1 or diferencia_minutos <= 2):
+            try:
+                aperturas_solicitadas = requests.get(url=f'{URL_API}aperturascontratoapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@')).json()
+                if len(aperturas_solicitadas):
+                    tz = pytz.timezone('America/Caracas')
+                    caracas_now = datetime.now(tz)
+                    hora=str(caracas_now)[11:19]
+                    hora_hora=int(hora[:2])
+                    hora_minuto=int(hora[3:5])
+                    fecha=str(caracas_now)[:10]
+                    for apertura in aperturas_solicitadas:
+                        #print(dt['contrato'])
+                        solicitud_hora_completa = apertura['hora']
+                        solicitud_hora=int(solicitud_hora_completa[:2])
+                        solicitud_minuto=int(solicitud_hora_completa[3:5])
+                        diferencia_horas=hora_hora-solicitud_hora
+                        diferencia_minutos=hora_minuto-solicitud_minuto
+                        solicitud_id=apertura['id']
+                        id_usuario = apertura['id_usuario']
+                        solicitud_acceso=apertura['acceso']
+                        feedbackPeticion=apertura['feedback']
+                        cursor.execute('SELECT * FROM solicitud_aperturas WHERE id=%s',(solicitud_id,))
+                        aperturas_local_existente= cursor.fetchall()
+                        if not aperturas_local_existente:
+                            if apertura['fecha'] == fecha and diferencia_horas==0 and (diferencia_minutos >= -1 or diferencia_minutos <= 2):
+                                    cursor.execute('''INSERT INTO solicitud_aperturas (id, id_usuario, acceso, estado, peticionInternet, feedback)
+                                        VALUES (%s, %s, %s, %s, %s, %s)''', (solicitud_id, id_usuario, solicitud_acceso, 0, 't', 'f'))
+                                    conn.commit()
+                            else:   
                                 cursor.execute('''INSERT INTO solicitud_aperturas (id, id_usuario, acceso, estado, peticionInternet, feedback)
-                                    VALUES (%s, %s, %s, %s, %s, %s)''', (solicitud_id, id_usuario, solicitud_acceso, 0, 't', 'f'))
+                                    VALUES (%s, %s, %s, %s, %s, %s)''', (solicitud_id, id_usuario, solicitud_acceso, 1, 't', 't'))
                                 conn.commit()
-                        else:   
-                            cursor.execute('''INSERT INTO solicitud_aperturas (id, id_usuario, acceso, estado, peticionInternet, feedback)
-                                VALUES (%s, %s, %s, %s, %s, %s)''', (solicitud_id, id_usuario, solicitud_acceso, 1, 't', 't'))
+                        elif aperturas_local_existente and feedbackPeticion:
+                            cursor.execute('UPDATE solicitud_aperturas SET feedback=%s WHERE id=%s', ('t',solicitud_id))
                             conn.commit()
-                    elif aperturas_local_existente and feedbackPeticion:
-                        cursor.execute('UPDATE solicitud_aperturas SET feedback=%s WHERE id=%s', ('t',solicitud_id))
-                        conn.commit()
-
-
+            except Exception as error:
+                print(f"{error} - fallo en api solicitud de aperturas")
 
             cursor.execute('SELECT id, id_usuario, acceso, estado, peticionInternet FROM solicitud_aperturas')
             aperturas_local= cursor.fetchall()
