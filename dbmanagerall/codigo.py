@@ -30,6 +30,7 @@ TIEMPO_PING=int(os.environ.get('TIEMPO_PING'))
 TIEMPO_CAMBIOS=int(os.environ.get('TIEMPO_CAMBIOS'))
 TIEMPO_LOG=int(os.environ.get('TIEMPO_LOG'))
 BorrarPeticionesListas= True
+AccesosSinCerrar=True
 
 ######################################
 #############ACCESOS###################
@@ -619,6 +620,39 @@ while True:
                 except Exception as e:
                     print(f"{e} - fallo total eliminando peticiones de aperturas")
     
+            if AccesosSinCerrar:
+                try:
+                    cursorlocal.execute('SELECT cedula, acceso, fecha, hora, estado FROM accesos_abiertos')
+                    accesosAbiertos = cursorlocal.fetchall()
+
+                    if accesosAbiertos:
+                        for acceso_abierto in accesosAbiertos:
+                            estado=acceso_abierto[4]
+                            if estado:
+                                cedula=acceso_abierto[0]
+                                fecha=acceso_abierto[2]
+                                hora=acceso_abierto[3]
+                                cursorlocal.execute('DELETE FROM accesos_abiertos WHERE cedula=%s AND fecha=%s AND hora=%s', (cedula, fecha, hora))
+                                connlocal.commit()
+                            else:
+                                tz = pytz.timezone('America/Caracas')
+                                caracas_now = datetime.now(tz)
+                                hora=str(caracas_now)[11:19]
+                                hora_hora=int(hora[:2])
+                                hora_minuto=int(hora[3:5])
+                                fecha=str(caracas_now)[:10]
+
+                                fecha_apertura=acceso_abierto[2]
+                                apertura_hora_completa = acceso_abierto[3]
+                                apertura_hora=int(apertura_hora_completa[:2])
+                                apertura_minuto=int(apertura_hora_completa[3:5])
+                                diferencia_horas=hora_hora-apertura_hora
+                                diferencia_minutos=hora_minuto-apertura_minuto
+
+                                if fecha_apertura != fecha or diferencia_horas!=0 or diferencia_minutos != 0:
+                                    print("La puerta ha permanecido demasiado tiempo abierta!")
+                except Exception as e:
+                    print(f"{e} - fallo total manejando los accesos sin cerrar")
     except (Exception, psycopg2.Error) as error:
         print(f"{error} - fallo en hacer las consultas en base ded atos de managerall")
         if connlocal:

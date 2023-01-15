@@ -174,6 +174,8 @@ def aperturaconcedidahuella(nombref, fechaf, horaf, contratof, cedulaf, cursorf,
             cursorf.execute('''INSERT INTO web_interacciones (nombre, fecha, hora, razon, contrato, cedula_id)
             VALUES (%s, %s, %s, %s, %s, %s);''', (nombref, fechaf, horaf, razondicthuellas[acceso], contratof, cedulaf))
             #cursorf.execute('''UPDATE led SET onoff=1 WHERE onoff=0;''')
+            cursorf.execute('''INSERT INTO accesos_abiertos (cedula, acceso, fecha, hora, estado) 
+            VALUES (%s, %s, %s, %s, %s)''', (cedulaf, acceso, fechaf, horaf, 'f'))
             connf.commit()
     except:
         cursorf.execute('''INSERT INTO web_interacciones (nombre, fecha, hora, razon, contrato, cedula_id)
@@ -191,6 +193,8 @@ def aperturaconcedidarfid(nombref, fechaf, horaf, contratof, cedulaf, cursorf, c
             cursorf.execute('''INSERT INTO web_interacciones (nombre, fecha, hora, razon, contrato, cedula_id)
             VALUES (%s, %s, %s, %s, %s, %s);''', (nombref, fechaf, horaf, razondictrfids[acceso], contratof, cedulaf))
             #cursorf.execute('''UPDATE led SET onoff=1 WHERE onoff=0;''')
+            cursorf.execute('''INSERT INTO accesos_abiertos (cedula, acceso, fecha, hora, estado) 
+            VALUES (%s, %s, %s, %s, %s)''', (cedulaf, acceso, fechaf, horaf, 'f'))
             connf.commit()
     except:
         cursorf.execute('''INSERT INTO web_interacciones (nombre, fecha, hora, razon, contrato, cedula_id)
@@ -231,7 +235,18 @@ class MyServer(BaseHTTPRequestHandler):
     def do_POST(self):
         peticion=self.path[1::].split("/")
 
+        if len(peticion) == 2 and peticion[1] == "cerrandoacceso":
+            self.send_response(200)
+            self.send_header("Content-type", "utf-8")
+            self.end_headers()
+            acceso_solicitud, _ = peticion
+            cursor.execute('UPDATE accesos_abiertos SET estado=%s WHERE acceso=%s', ('t', acceso_solicitud))
+            conn.commit()
+        
         if len(peticion) == 2 and peticion[1] == "noregistrado":
+            self.send_response(200)
+            self.send_header("Content-type", "utf-8")
+            self.end_headers()
             acceso_solicitud, _ = peticion
             aperturadenegada(cursor, conn, acceso_solicitud)
 

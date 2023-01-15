@@ -82,6 +82,8 @@ def aperturaConcedidaInternet(nombref, fechaf, horaf, contratof, cedulaf, cursor
             #cursorf.execute('''UPDATE led SET onoff=1 WHERE onoff=0;''')
             # connf.commit()
             cursorf.execute('UPDATE solicitud_aperturas SET estado=%s WHERE id=%s;', (1, id_solicitud))
+            cursorf.execute('''INSERT INTO accesos_abiertos (cedula, acceso, fecha, hora, estado) 
+            VALUES (%s, %s, %s, %s, %s)''', (cedulaf, acceso, fechaf, horaf, 'f'))
             connf.commit()
             requests.put(url=f'{URL_API}aperturasusuarioapi/{id_solicitud}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'))
     except Exception as e:
@@ -103,6 +105,8 @@ def aperturaConcedidaWifi(nombref, fechaf, horaf, contratof, cedulaf, cursorf, c
             #cursorf.execute('''UPDATE led SET onoff=1 WHERE onoff=0;''')
             connf.commit()
             cursorf.execute('UPDATE solicitud_aperturas SET estado=%s WHERE id=%s;', (1, id_solicitud))
+            cursorf.execute('''INSERT INTO accesos_abiertos (cedula, acceso, fecha, hora, estado) 
+            VALUES (%s, %s, %s, %s, %s)''', (cedulaf, acceso, fechaf, horaf, 'f'))
             connf.commit()
     except Exception as e:
         print(f"{e} - fallo intentando aperturar desde wifi en la peticion con id {id_solicitud}")
