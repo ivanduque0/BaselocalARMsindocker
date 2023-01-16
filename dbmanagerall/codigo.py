@@ -642,8 +642,8 @@ while True:
                                 hora_minuto=int(hora[3:5])
                                 fecha=str(caracas_now)[:10]
 
-                                fecha_apertura=acceso_abierto[2]
-                                apertura_hora_completa = acceso_abierto[3]
+                                fecha_apertura=acceso_abierto[2].isoformat()
+                                apertura_hora_completa = acceso_abierto[3].isoformat()
                                 apertura_hora=int(apertura_hora_completa[:2])
                                 apertura_minuto=int(apertura_hora_completa[3:5])
                                 diferencia_horas=hora_hora-apertura_hora
