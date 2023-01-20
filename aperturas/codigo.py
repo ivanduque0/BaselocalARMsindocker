@@ -168,7 +168,7 @@ while True:
 
         while True:
             try:
-                aperturas_solicitadas = requests.get(url=f'{URL_API}aperturascontratoapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@')).json()
+                aperturas_solicitadas = requests.get(url=f'{URL_API}aperturascontratoapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
                 if len(aperturas_solicitadas):
                     tz = pytz.timezone('America/Caracas')
                     caracas_now = datetime.now(tz)
