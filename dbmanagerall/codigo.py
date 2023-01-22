@@ -285,64 +285,90 @@ while True:
                             try:
                                 try:
                                     banderaUsuario=True
-                                    cursorlocal.execute('SELECT cedula, nombre, telegram_id, internet, wifi, captahuella, rfid, facial FROM web_usuarios WHERE cedula=%s',(cedulaUsuario,))
-                                    usuario_local= cursorlocal.fetchall()
+                                    if cedulaUsuario == 'completo':
+                                        cursorlocal.execute('SELECT cedula, nombre, telegram_id, internet, wifi, captahuella, rfid, facial FROM web_usuarios')
+                                        usuarios_local= cursorlocal.fetchall()
+                                        
+                                        request_json_usuario = requests.get(url=f'{URL_API}obtenerusuariosapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
 
-                                    request_json_usuario = requests.get(url=f'{URL_API}usuarioindividualapi/{CONTRATO}/{cedulaUsuario}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
-                                    usuarioLocal=len(usuario_local)
-                                    usuarioServidor=len(request_json_usuario)
-                                    if usuarioLocal and not usuarioServidor:
-                                        cursorlocal.execute('SELECT id_suprema FROM web_huellas where cedula=%s', (cedulaUsuario,))
-                                        huellas_local= cursorlocal.fetchall()
-                                        HuellasPorBorrar=len(huellas_local)
-                                        HuellasBorradas=0
-                                        nroCaptahuellasSinHuella=0
-                                        captahuella_actual=0
-                                        for huella_local in huellas_local:
-                                            id_suprema = huella_local[0]
-                                            id_suprema_hex = (id_suprema).to_bytes(4, byteorder='big').hex()
-                                            id_suprema_hex = id_suprema_hex[6:]+id_suprema_hex[4:6]+id_suprema_hex[2:4]+id_suprema_hex[0:2]
-                                            for captahuella in captahuellas:
-                                                if captahuella:
-                                                    captahuella_actual=captahuella_actual+1
-                                                    try:
-                                                        requests.get(url=f'{captahuella}/quitar/{id_suprema_hex}', timeout=3)
-                                                        nroCaptahuellasSinHuella=nroCaptahuellasSinHuella+1
-                                                    except:
-                                                        print(f"fallo al conectar con la esp8266 con la ip:{captahuella}")
-                                                        banderaUsuario=False
-                                            if nroCaptahuellasSinHuella == captahuella_actual:
-                                                cursorlocal.execute('DELETE FROM web_huellas WHERE id_suprema=%s', (id_suprema,))
+                                        usuariosServidor=[]
+                                        for consultajson in request_json_usuario:
+                                            tuplaUsuarioIndividual=(consultajson['cedula'],consultajson['nombre'],consultajson['telegram_id'], consultajson['telefonoInternet'], consultajson['telefonoWifi'], consultajson['captahuella'], consultajson['rfid'], consultajson['reconocimientoFacial'],)
+                                            usuariosServidor.append(tuplaUsuarioIndividual)
+                                        for usuario in usuariosServidor:
+                                            # contador=contador+1
+                                            # print(contador)
+                                            # print(usuario)
+                                            if not usuario in usuarios_local:
+                                                cedula=usuario[0]
+                                                telegram_id=usuario[2]
+                                                internet=usuario[3]
+                                                wifi=usuario[4]
+                                                captahuella=usuario[5]
+                                                rfid=usuario[6]
+                                                facial=usuario[7]
+                                                cursorlocal.execute("UPDATE web_usuarios SET telegram_id=%s, internet=%s, wifi=%s, captahuella=%s, rfid=%s, facial=%s WHERE cedula=%s", (telegram_id,internet,wifi,captahuella,rfid,facial,cedula))
                                                 connlocal.commit()
-                                                HuellasBorradas=HuellasBorradas+1
-                                        if HuellasBorradas == HuellasPorBorrar:
-                                            cursorlocal.execute('DELETE FROM web_usuarios WHERE cedula=%s', (cedulaUsuario,))
-                                            cursorlocal.execute('DELETE FROM web_horariospermitidos WHERE cedula_id=%s', (cedulaUsuario,))
+                                        usuariosServidor=[]
+                                    else:
+                                        cursorlocal.execute('SELECT cedula, nombre, telegram_id, internet, wifi, captahuella, rfid, facial FROM web_usuarios WHERE cedula=%s',(cedulaUsuario,))
+                                        usuario_local= cursorlocal.fetchall()
+
+                                        request_json_usuario = requests.get(url=f'{URL_API}usuarioindividualapi/{CONTRATO}/{cedulaUsuario}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
+                                        usuarioLocal=len(usuario_local)
+                                        usuarioServidor=len(request_json_usuario)
+                                        if usuarioLocal and not usuarioServidor:
+                                            cursorlocal.execute('SELECT id_suprema FROM web_huellas where cedula=%s', (cedulaUsuario,))
+                                            huellas_local= cursorlocal.fetchall()
+                                            HuellasPorBorrar=len(huellas_local)
+                                            HuellasBorradas=0
+                                            nroCaptahuellasSinHuella=0
+                                            captahuella_actual=0
+                                            for huella_local in huellas_local:
+                                                id_suprema = huella_local[0]
+                                                id_suprema_hex = (id_suprema).to_bytes(4, byteorder='big').hex()
+                                                id_suprema_hex = id_suprema_hex[6:]+id_suprema_hex[4:6]+id_suprema_hex[2:4]+id_suprema_hex[0:2]
+                                                for captahuella in captahuellas:
+                                                    if captahuella:
+                                                        captahuella_actual=captahuella_actual+1
+                                                        try:
+                                                            requests.get(url=f'{captahuella}/quitar/{id_suprema_hex}', timeout=3)
+                                                            nroCaptahuellasSinHuella=nroCaptahuellasSinHuella+1
+                                                        except:
+                                                            print(f"fallo al conectar con la esp8266 con la ip:{captahuella}")
+                                                            banderaUsuario=False
+                                                if nroCaptahuellasSinHuella == captahuella_actual:
+                                                    cursorlocal.execute('DELETE FROM web_huellas WHERE id_suprema=%s', (id_suprema,))
+                                                    connlocal.commit()
+                                                    HuellasBorradas=HuellasBorradas+1
+                                            if HuellasBorradas == HuellasPorBorrar:
+                                                cursorlocal.execute('DELETE FROM web_usuarios WHERE cedula=%s', (cedulaUsuario,))
+                                                cursorlocal.execute('DELETE FROM web_horariospermitidos WHERE cedula_id=%s', (cedulaUsuario,))
+                                                connlocal.commit()
+                                        elif not usuarioLocal and usuarioServidor: 
+                                            for consultajson in request_json_usuario:
+                                                cedula=consultajson['cedula']
+                                                nombre=consultajson['nombre']
+                                                telegram_id=consultajson['telegram_id']
+                                                internet=consultajson['telefonoInternet']
+                                                wifi=consultajson['telefonoWifi']
+                                                captahuella=consultajson['captahuella']
+                                                rfid=consultajson['rfid']
+                                                facial=consultajson['reconocimientoFacial']
+                                            cursorlocal.execute('''INSERT INTO web_usuarios (cedula, nombre, telegram_id, internet, wifi, captahuella, rfid, facial)
+                                            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)''', (cedula, nombre, telegram_id, internet, wifi, captahuella, rfid, facial))
                                             connlocal.commit()
-                                    elif not usuarioLocal and usuarioServidor: 
-                                        for consultajson in request_json_usuario:
-                                            cedula=consultajson['cedula']
-                                            nombre=consultajson['nombre']
-                                            telegram_id=consultajson['telegram_id']
-                                            internet=consultajson['telefonoInternet']
-                                            wifi=consultajson['telefonoWifi']
-                                            captahuella=consultajson['captahuella']
-                                            rfid=consultajson['rfid']
-                                            facial=consultajson['reconocimientoFacial']
-                                        cursorlocal.execute('''INSERT INTO web_usuarios (cedula, nombre, telegram_id, internet, wifi, captahuella, rfid, facial)
-                                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)''', (cedula, nombre, telegram_id, internet, wifi, captahuella, rfid, facial))
-                                        connlocal.commit()
-                                    elif usuarioLocal and usuarioServidor:
-                                        for consultajson in request_json_usuario:
-                                            cedula=consultajson['cedula']
-                                            telegram_id=consultajson['telegram_id']
-                                            internet=consultajson['telefonoInternet']
-                                            wifi=consultajson['telefonoWifi']
-                                            captahuella=consultajson['captahuella']
-                                            rfid=consultajson['rfid']
-                                            facial=consultajson['reconocimientoFacial']
-                                        cursorlocal.execute("UPDATE web_usuarios SET telegram_id=%s, internet=%s, wifi=%s, captahuella=%s, rfid=%s, facial=%s WHERE cedula=%s", (telegram_id,internet,wifi,captahuella,rfid,facial,cedula))
-                                        connlocal.commit()
+                                        elif usuarioLocal and usuarioServidor:
+                                            for consultajson in request_json_usuario:
+                                                cedula=consultajson['cedula']
+                                                telegram_id=consultajson['telegram_id']
+                                                internet=consultajson['telefonoInternet']
+                                                wifi=consultajson['telefonoWifi']
+                                                captahuella=consultajson['captahuella']
+                                                rfid=consultajson['rfid']
+                                                facial=consultajson['reconocimientoFacial']
+                                            cursorlocal.execute("UPDATE web_usuarios SET telegram_id=%s, internet=%s, wifi=%s, captahuella=%s, rfid=%s, facial=%s WHERE cedula=%s", (telegram_id,internet,wifi,captahuella,rfid,facial,cedula))
+                                            connlocal.commit()
                                 except requests.exceptions.ConnectionError:
                                     print("fallo consultando api en usuarios")
                                     banderaUsuario=False
