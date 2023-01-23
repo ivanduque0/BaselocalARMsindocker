@@ -243,9 +243,14 @@ while True:
                                 fecha=str(caracas_now)[:10]
                                 hora=str(caracas_now)[11:19]
                                 dispositivo=dispositivolocal[0]
-                                descripcion=dispositivolocal[1]
                                 estado=dispositivolocal[2]
-                                requests.put(url=f'{URL_API}actualizardispositivosapi/{CONTRATO}/{dispositivo[7:]}/{estado}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
+                                jsonActualizarDispositivo= {
+                                    "estado": estado,
+                                    "fecha": fecha,
+                                    "hora": hora
+                                }
+                                requests.put(url=f'{URL_API}actualizardispositivosapi/{CONTRATO}/{dispositivo[7:]}/{estado}/',
+                                json=jsonActualizarDispositivo, auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
                 except requests.exceptions.ConnectionError:
                     print("fallo consultando api de dispositivos")   
             except Exception as e:
