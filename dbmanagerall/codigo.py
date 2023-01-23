@@ -243,8 +243,12 @@ while True:
                                 fecha=str(caracas_now)[:10]
                                 hora=str(caracas_now)[11:19]
                                 dispositivo=dispositivolocal[0]
+                                descripcion=dispositivolocal[1]
                                 estado=dispositivolocal[2]
                                 jsonActualizarDispositivo= {
+                                    "contrato": CONTRATO,
+                                    "dispositivo": dispositivo,
+                                    "descripcion": descripcion,
                                     "estado": estado,
                                     "fecha": fecha,
                                     "hora": hora
