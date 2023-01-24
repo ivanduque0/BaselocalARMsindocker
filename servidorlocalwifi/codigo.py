@@ -302,7 +302,7 @@ class MyServer(BaseHTTPRequestHandler):
                             fecha=str(caracas_now)[:10]
                             etapadia=1
                             #aperturaconcedida(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
-                            aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud, cedula, fecha, horahoy)
+                            aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud, cedula, nombre, fecha, horahoy)
                             etapadiaapertura=1
                         elif dia==diahoy and cantidaddias==1:
                             hora=str(caracas_now)[11:19]
@@ -313,7 +313,7 @@ class MyServer(BaseHTTPRequestHandler):
                                 if horahoy >= entrada and horahoy <= salida:
                                     #print('entrada concedida')
                                     #aperturaconcedida(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
-                                    aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud, cedula, fecha, horahoy)
+                                    aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud, cedula, nombre, fecha, horahoy)
                                     etapadiaapertura=1
                                 else:
                                     aperturadenegada(cursor, conn, acceso_solicitud)
@@ -322,7 +322,7 @@ class MyServer(BaseHTTPRequestHandler):
                                 if (horahoy>=entrada and horahoy <=ultimahora) or (horahoy>=primerahora and horahoy <= salida):
                                     #print('entrada concedida')
                                     #aperturaconcedida(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
-                                    aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud, cedula, fecha, horahoy)
+                                    aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud, cedula, nombre, fecha, horahoy)
                                     etapadiaapertura=1
                                 else:
                                     aperturadenegada(cursor, conn, acceso_solicitud)
@@ -336,7 +336,7 @@ class MyServer(BaseHTTPRequestHandler):
                                 if horahoy >= entrada and horahoy <= salida:
                                     #print('entrada concedida')
                                     #aperturaconcedida(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
-                                    aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud, cedula, fecha, horahoy)
+                                    aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud, cedula, nombre, fecha, horahoy)
                                     etapadiaapertura=1
                                     contadoraux=0
                                 else:
@@ -348,7 +348,7 @@ class MyServer(BaseHTTPRequestHandler):
                                 if (horahoy>=entrada and horahoy <=ultimahora) or (horahoy>=primerahora and horahoy <= salida):
                                     #print('entrada concedida')
                                     #aperturaconcedida(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
-                                    aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud, cedula, fecha, horahoy)
+                                    aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud, cedula, nombre, fecha, horahoy)
                                     etapadiaapertura=1
                                     contadoraux=0
                                 else:
@@ -408,7 +408,7 @@ class MyServer(BaseHTTPRequestHandler):
                             fecha=str(caracas_now)[:10]
                             etapadia=1
                             #aperturaconcedida(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
-                            aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud, cedula, fecha, horahoy)
+                            aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud, cedula, nombre, fecha, horahoy)
                             etapadiaapertura=1
                         elif dia==diahoy and cantidaddias==1:
                             hora=str(caracas_now)[11:19]
@@ -419,7 +419,7 @@ class MyServer(BaseHTTPRequestHandler):
                                 if horahoy >= entrada and horahoy <= salida:
                                     #print('entrada concedida')
                                     #aperturaconcedida(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
-                                    aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud, cedula, fecha, horahoy)
+                                    aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud, cedula, nombre, fecha, horahoy)
                                     etapadiaapertura=1
                                 else:
                                     aperturadenegada(cursor, conn, acceso_solicitud)
@@ -428,7 +428,7 @@ class MyServer(BaseHTTPRequestHandler):
                                 if (horahoy>=entrada and horahoy <=ultimahora) or (horahoy>=primerahora and horahoy <= salida):
                                     #print('entrada concedida')
                                     #aperturaconcedida(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
-                                    aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud, cedula, fecha, horahoy)
+                                    aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud, cedula, nombre, fecha, horahoy)
                                     etapadiaapertura=1
                                 else:
                                     aperturadenegada(cursor, conn, acceso_solicitud)
@@ -442,7 +442,7 @@ class MyServer(BaseHTTPRequestHandler):
                                 if horahoy >= entrada and horahoy <= salida:
                                     #print('entrada concedida')
                                     #aperturaconcedida(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
-                                    aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud, cedula, fecha, horahoy)
+                                    aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud, cedula, nombre, fecha, horahoy)
                                     etapadiaapertura=1
                                     contadoraux=0
                                 else:
@@ -454,7 +454,7 @@ class MyServer(BaseHTTPRequestHandler):
                                 if (horahoy>=entrada and horahoy <=ultimahora) or (horahoy>=primerahora and horahoy <= salida):
                                     #print('entrada concedida')
                                     #aperturaconcedida(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
-                                    aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud, cedula, fecha, horahoy)
+                                    aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud, cedula, nombre, fecha, horahoy)
                                     etapadiaapertura=1
                                     contadoraux=0
                                 else:
