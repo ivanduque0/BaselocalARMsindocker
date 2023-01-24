@@ -10,7 +10,7 @@ from pathlib import Path
 
 dotenv_path = Path('/BaselocalARMsindocker/.env.manager')
 load_dotenv(dotenv_path=dotenv_path)
-
+URL_API = os.environ.get("URL_API")
 
 hostName = '0.0.0.0'
 serverPort = 43157
@@ -144,27 +144,39 @@ razondictrfids = {'1':razonrfid1, '2':razonrfid2, '3':razonrfid3, '4':razonrfid4
 #     finally:
 #         pass
 
-def aperturaconcedida(id_usuariof, cursorf, connf, acceso):
-    IdContador=0
-    cursorf.execute('SELECT id FROM solicitud_aperturas ORDER BY id ASC')
-    ids_peticiones_local= cursorf.fetchall()
-    nro_ids_peticiones_local=len(ids_peticiones_local)
-    if not ids_peticiones_local:
-        idPeticion = 1
-    else:
-        for id_peticion_local in ids_peticiones_local:
-            IdContador=IdContador+1
-            if not id_peticion_local[0] == IdContador:
-                idPeticion=IdContador
-                break
-        if nro_ids_peticiones_local == IdContador:
-            idPeticion=IdContador+1
+def aperturaconcedida(id_usuariof, cursorf, connf, acceso, cedulaf, nombref, fechaf, horaf):
 
-    if accesodict[acceso]:
-        cursorf.execute('''INSERT INTO solicitud_aperturas (id, id_usuario, acceso, estado, peticionInternet, feedback)
-        VALUES (%s, %s, %s, %s, %s, %s);''', (idPeticion, id_usuariof, acceso, 0, 'f', 'f'))
-        #cursorf.execute('''UPDATE led SET onoff=1 WHERE onoff=0;''')
-        connf.commit()
+    try:
+        if accesodict[acceso]:
+            requests.get(f'{accesodict[acceso]}/on', timeout=2)
+            cursorf.execute('''INSERT INTO web_interacciones (nombre, fecha, hora, razon, contrato, cedula_id)
+            VALUES (%s, %s, %s, %s, %s, %s);''', (nombref, fechaf, horaf, f"{razondict[acceso]}-Wifi", CONTRATO, cedulaf))
+            #cursorf.execute('''UPDATE led SET onoff=1 WHERE onoff=0;''')
+            # connf.commit()
+            cursorf.execute('''INSERT INTO accesos_abiertos (cedula, acceso, fecha, hora, estado) 
+            VALUES (%s, %s, %s, %s, %s)''', (cedulaf, acceso, fechaf, horaf, 'f'))
+            connf.commit()
+    except:
+        IdContador=0
+        cursorf.execute('SELECT id FROM solicitud_aperturas ORDER BY id ASC')
+        ids_peticiones_local= cursorf.fetchall()
+        nro_ids_peticiones_local=len(ids_peticiones_local)
+        if not ids_peticiones_local:
+            idPeticion = 1
+        else:
+            for id_peticion_local in ids_peticiones_local:
+                IdContador=IdContador+1
+                if not id_peticion_local[0] == IdContador:
+                    idPeticion=IdContador
+                    break
+            if nro_ids_peticiones_local == IdContador:
+                idPeticion=IdContador+1
+
+        if accesodict[acceso]:
+            cursorf.execute('''INSERT INTO solicitud_aperturas (id, id_usuario, acceso, estado, peticionInternet, feedback)
+            VALUES (%s, %s, %s, %s, %s, %s);''', (idPeticion, id_usuariof, acceso, 0, 'f', 'f'))
+            #cursorf.execute('''UPDATE led SET onoff=1 WHERE onoff=0;''')
+            connf.commit()
 
 def aperturaconcedidahuella(nombref, fechaf, horaf, contratof, cedulaf, cursorf, connf, acceso):
 
@@ -290,7 +302,7 @@ class MyServer(BaseHTTPRequestHandler):
                             fecha=str(caracas_now)[:10]
                             etapadia=1
                             #aperturaconcedida(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
-                            aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud)
+                            aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud, cedula, fecha, horahoy)
                             etapadiaapertura=1
                         elif dia==diahoy and cantidaddias==1:
                             hora=str(caracas_now)[11:19]
@@ -301,7 +313,7 @@ class MyServer(BaseHTTPRequestHandler):
                                 if horahoy >= entrada and horahoy <= salida:
                                     #print('entrada concedida')
                                     #aperturaconcedida(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
-                                    aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud)
+                                    aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud, cedula, fecha, horahoy)
                                     etapadiaapertura=1
                                 else:
                                     aperturadenegada(cursor, conn, acceso_solicitud)
@@ -310,7 +322,7 @@ class MyServer(BaseHTTPRequestHandler):
                                 if (horahoy>=entrada and horahoy <=ultimahora) or (horahoy>=primerahora and horahoy <= salida):
                                     #print('entrada concedida')
                                     #aperturaconcedida(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
-                                    aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud)
+                                    aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud, cedula, fecha, horahoy)
                                     etapadiaapertura=1
                                 else:
                                     aperturadenegada(cursor, conn, acceso_solicitud)
@@ -324,7 +336,7 @@ class MyServer(BaseHTTPRequestHandler):
                                 if horahoy >= entrada and horahoy <= salida:
                                     #print('entrada concedida')
                                     #aperturaconcedida(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
-                                    aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud)
+                                    aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud, cedula, fecha, horahoy)
                                     etapadiaapertura=1
                                     contadoraux=0
                                 else:
@@ -336,7 +348,7 @@ class MyServer(BaseHTTPRequestHandler):
                                 if (horahoy>=entrada and horahoy <=ultimahora) or (horahoy>=primerahora and horahoy <= salida):
                                     #print('entrada concedida')
                                     #aperturaconcedida(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
-                                    aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud)
+                                    aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud, cedula, fecha, horahoy)
                                     etapadiaapertura=1
                                     contadoraux=0
                                 else:
@@ -396,7 +408,7 @@ class MyServer(BaseHTTPRequestHandler):
                             fecha=str(caracas_now)[:10]
                             etapadia=1
                             #aperturaconcedida(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
-                            aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud)
+                            aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud, cedula, fecha, horahoy)
                             etapadiaapertura=1
                         elif dia==diahoy and cantidaddias==1:
                             hora=str(caracas_now)[11:19]
@@ -407,7 +419,7 @@ class MyServer(BaseHTTPRequestHandler):
                                 if horahoy >= entrada and horahoy <= salida:
                                     #print('entrada concedida')
                                     #aperturaconcedida(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
-                                    aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud)
+                                    aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud, cedula, fecha, horahoy)
                                     etapadiaapertura=1
                                 else:
                                     aperturadenegada(cursor, conn, acceso_solicitud)
@@ -416,7 +428,7 @@ class MyServer(BaseHTTPRequestHandler):
                                 if (horahoy>=entrada and horahoy <=ultimahora) or (horahoy>=primerahora and horahoy <= salida):
                                     #print('entrada concedida')
                                     #aperturaconcedida(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
-                                    aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud)
+                                    aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud, cedula, fecha, horahoy)
                                     etapadiaapertura=1
                                 else:
                                     aperturadenegada(cursor, conn, acceso_solicitud)
@@ -430,7 +442,7 @@ class MyServer(BaseHTTPRequestHandler):
                                 if horahoy >= entrada and horahoy <= salida:
                                     #print('entrada concedida')
                                     #aperturaconcedida(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
-                                    aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud)
+                                    aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud, cedula, fecha, horahoy)
                                     etapadiaapertura=1
                                     contadoraux=0
                                 else:
@@ -442,7 +454,7 @@ class MyServer(BaseHTTPRequestHandler):
                                 if (horahoy>=entrada and horahoy <=ultimahora) or (horahoy>=primerahora and horahoy <= salida):
                                     #print('entrada concedida')
                                     #aperturaconcedida(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
-                                    aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud)
+                                    aperturaconcedida(idUsuario, cursor, conn, acceso_solicitud, cedula, fecha, horahoy)
                                     etapadiaapertura=1
                                     contadoraux=0
                                 else:
