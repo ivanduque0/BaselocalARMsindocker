@@ -663,18 +663,19 @@ while True:
                     comprobarAccesos = requests.get(url=f'{URL_API}eliminarpuertaabiertaapi/{CONTRATO}/blank/blank/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
                     accesoAbiertosServidor=[]
                     for consultajson in comprobarAccesos:
-                        tuplaAccesoAbiertoIndividual=(consultajson['cedula'],consultajson['acceso'],date.fromisoformat(consultajson['fecha']), time.fromisoformat(consultajson['hora']),False)
+                        tuplaAccesoAbiertoIndividual=(consultajson['cedula'],consultajson['acceso'])
                         accesoAbiertosServidor.append(tuplaAccesoAbiertoIndividual)
                     
                     if accesosAbiertos:
                         for acceso_abierto in accesosAbiertos:
+                            cedula=acceso_abierto[0]
+                            accesoo=acceso_abierto[1]
+                            AccesoAbiertoLocal=(cedula,accesoo)
                             estado=acceso_abierto[4]
                             if estado:
                                 try:
-                                    cedula=acceso_abierto[0]
                                     # fecha=acceso_abierto[2]
                                     # hora=acceso_abierto[3]
-                                    accesoo=acceso_abierto[1]
                                     requests.delete(url=f'{URL_API}eliminarpuertaabiertaapi/{CONTRATO}/{cedula}/{accesoo}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
                                     cursorlocal.execute('DELETE FROM accesos_abiertos WHERE cedula=%s AND acceso=%s', (cedula, accesoo))
                                     connlocal.commit()
@@ -698,9 +699,9 @@ while True:
                                 if fecha_apertura != fecha or diferencia_horas!=0 or diferencia_minutos != 0:
                                     try:
                                         # comprobarAccesos = requests.get(url=f'{URL_API}eliminarpuertaabiertaapi/{CONTRATO}/{cedula}/{accesoo}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
-                                        if not acceso_abierto in accesoAbiertosServidor:
-                                            cedula=acceso_abierto[0]
-                                            accesoo=acceso_abierto[1]
+                                        if not AccesoAbiertoLocal in accesoAbiertosServidor:
+                                            # cedula=acceso_abierto[0]
+                                            # accesoo=acceso_abierto[1]
                                             anadirJson = {
                                                 "contrato": CONTRATO,
                                                 "cedula": cedula,
