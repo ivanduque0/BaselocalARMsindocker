@@ -663,7 +663,7 @@ while True:
                     comprobarAccesos = requests.get(url=f'{URL_API}eliminarpuertaabiertaapi/{CONTRATO}/blank/blank/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
                     accesoAbiertosServidor=[]
                     for consultajson in comprobarAccesos:
-                        tuplaAccesoAbiertoIndividual=(consultajson['cedula'],consultajson['acceso'],consultajson['fecha'], consultajson['hora'],False)
+                        tuplaAccesoAbiertoIndividual=(consultajson['cedula'],consultajson['acceso'],date.fromisoformat(consultajson['fecha']), time.fromisoformat(consultajson['hora']),False)
                         accesoAbiertosServidor.append(tuplaAccesoAbiertoIndividual)
                     
                     if accesosAbiertos:
