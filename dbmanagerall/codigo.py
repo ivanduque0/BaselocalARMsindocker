@@ -660,6 +660,12 @@ while True:
                     cursorlocal.execute('SELECT cedula, acceso, fecha, hora, estado FROM accesos_abiertos')
                     accesosAbiertos = cursorlocal.fetchall()
 
+                    comprobarAccesos = requests.get(url=f'{URL_API}eliminarpuertaabiertaapi/{CONTRATO}/blank/blank/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
+                    accesoAbiertosServidor=[]
+                    for consultajson in comprobarAccesos:
+                        tuplaAccesoAbiertoIndividual=(consultajson['cedula'],consultajson['acceso'],consultajson['fecha'], consultajson['hora'],False)
+                        accesoAbiertosServidor.append(tuplaAccesoAbiertoIndividual)
+                    
                     if accesosAbiertos:
                         for acceso_abierto in accesosAbiertos:
                             estado=acceso_abierto[4]
@@ -691,10 +697,10 @@ while True:
 
                                 if fecha_apertura != fecha or diferencia_horas!=0 or diferencia_minutos != 0:
                                     try:
-                                        cedula=acceso_abierto[0]
-                                        accesoo=acceso_abierto[1]
-                                        comprobarAccesos = requests.get(url=f'{URL_API}eliminarpuertaabiertaapi/{CONTRATO}/{cedula}/{accesoo}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
-                                        if not comprobarAccesos:
+                                        # comprobarAccesos = requests.get(url=f'{URL_API}eliminarpuertaabiertaapi/{CONTRATO}/{cedula}/{accesoo}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
+                                        if not acceso_abierto in accesoAbiertosServidor:
+                                            cedula=acceso_abierto[0]
+                                            accesoo=acceso_abierto[1]
                                             anadirJson = {
                                                 "contrato": CONTRATO,
                                                 "cedula": cedula,
