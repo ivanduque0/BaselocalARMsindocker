@@ -672,11 +672,11 @@ while True:
                             if estado:
                                 try:
                                     cedula=acceso_abierto[0]
-                                    fecha=acceso_abierto[2]
-                                    hora=acceso_abierto[3]
+                                    # fecha=acceso_abierto[2]
+                                    # hora=acceso_abierto[3]
                                     accesoo=acceso_abierto[1]
                                     requests.delete(url=f'{URL_API}eliminarpuertaabiertaapi/{CONTRATO}/{cedula}/{accesoo}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
-                                    cursorlocal.execute('DELETE FROM accesos_abiertos WHERE cedula=%s AND fecha=%s AND hora=%s', (cedula, fecha, hora))
+                                    cursorlocal.execute('DELETE FROM accesos_abiertos WHERE cedula=%s AND acceso=%s', (cedula, accesoo))
                                     connlocal.commit()
                                 except Exception as e:
                                     print(f"{e} - fallo total borrando puerta abierta del acceso:{accesoo}")    
