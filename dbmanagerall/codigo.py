@@ -656,6 +656,7 @@ while True:
                     print(f"{e} - fallo total eliminando peticiones de aperturas")
     
             if AccesosSinCerrar:
+                listaAccesosAbiertos=[]
                 try:
                     cursorlocal.execute('SELECT cedula, acceso, fecha, hora, estado FROM accesos_abiertos')
                     accesosAbiertos = cursorlocal.fetchall()
@@ -695,23 +696,26 @@ while True:
                                 apertura_minuto=int(apertura_hora_completa[3:5])
                                 diferencia_horas=hora_hora-apertura_hora
                                 diferencia_minutos=hora_minuto-apertura_minuto
-
+                                
                                 if fecha_apertura != fecha or diferencia_horas!=0 or diferencia_minutos != 0:
                                     try:
                                         # comprobarAccesos = requests.get(url=f'{URL_API}eliminarpuertaabiertaapi/{CONTRATO}/{cedula}/{accesoo}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
                                         if not AccesoAbiertoLocal in accesoAbiertosServidor:
                                             # cedula=acceso_abierto[0]
                                             # accesoo=acceso_abierto[1]
-                                            anadirJson = {
-                                                "contrato": CONTRATO,
-                                                "cedula": cedula,
-                                                "acceso": accesoo,
-                                                "fecha": fecha_apertura,
-                                                "hora": apertura_hora_completa
-                                                }
-                                            requests.post(url=f'{URL_API}agregarpuertaabiertaapi/', 
-                                            json=anadirJson, auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
-                                            #print("La puerta ha permanecido demasiado tiempo abierta!")
+                                            if not cedula in listaAccesosAbiertos and not accesoo in listaAccesosAbiertos:
+                                                anadirJson = {
+                                                    "contrato": CONTRATO,
+                                                    "cedula": cedula,
+                                                    "acceso": accesoo,
+                                                    "fecha": fecha_apertura,
+                                                    "hora": apertura_hora_completa
+                                                    }
+                                                requests.post(url=f'{URL_API}agregarpuertaabiertaapi/', 
+                                                json=anadirJson, auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
+                                                #print("La puerta ha permanecido demasiado tiempo abierta!")
+                                                listaAccesosAbiertos.append(cedula)
+                                                listaAccesosAbiertos.append(accesoo)
                                     except Exception as e:
                                         print(f"{e} - fallo total agregando puerta abierta del acceso:{accesoo}")    
                 except Exception as e:
