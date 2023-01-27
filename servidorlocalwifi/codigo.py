@@ -405,7 +405,7 @@ class MyServer(BaseHTTPRequestHandler):
             etapadiaapertura=0
             cantidaddias = 0
             contadoraux = 0
-            cursor.execute("SELECT cedula, nombre, bluetooth FROM web_usuarios where uuid=%s", (uuid_usuario,))
+            cursor.execute("SELECT cedula, nombre, bluetooth FROM web_usuarios where beacon_uuid=%s", (uuid_usuario,))
             datosUsuario = cursor.fetchall()
             #print(datosUsuario)
             if len(datosUsuario)!=0:

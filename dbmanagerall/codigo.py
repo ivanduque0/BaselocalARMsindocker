@@ -295,7 +295,7 @@ while True:
                                 try:
                                     banderaUsuario=True
                                     if cedulaUsuario == 'completo':
-                                        cursorlocal.execute('SELECT cedula, nombre, telegram_id, uuid, internet, wifi, bluetooth, captahuella, rfid, facial FROM web_usuarios')
+                                        cursorlocal.execute('SELECT cedula, nombre, telegram_id, beacon_uuid, internet, wifi, bluetooth, captahuella, rfid, facial FROM web_usuarios')
                                         usuarios_local= cursorlocal.fetchall()
                                         
                                         request_json_usuario = requests.get(url=f'{URL_API}obtenerusuariosapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
@@ -311,18 +311,18 @@ while True:
                                             if not usuario in usuarios_local:
                                                 cedula=usuario[0]
                                                 telegram_id=usuario[2]
-                                                uuid=usuario[3]
+                                                beacon_uuid=usuario[3]
                                                 internet=usuario[4]
                                                 wifi=usuario[5]
                                                 bluetooth=usuario[6]
                                                 captahuella=usuario[7]
                                                 rfid=usuario[8]
                                                 facial=usuario[9]
-                                                cursorlocal.execute("UPDATE web_usuarios SET telegram_id=%s, uuid=%s, internet=%s, wifi=%s, bluetooth=%s, captahuella=%s, rfid=%s, facial=%s WHERE cedula=%s", (telegram_id,uuid,internet,wifi,bluetooth,captahuella,rfid,facial,cedula))
+                                                cursorlocal.execute("UPDATE web_usuarios SET telegram_id=%s, beacon_uuid=%s, internet=%s, wifi=%s, bluetooth=%s, captahuella=%s, rfid=%s, facial=%s WHERE cedula=%s", (telegram_id,beacon_uuid,internet,wifi,bluetooth,captahuella,rfid,facial,cedula))
                                                 connlocal.commit()
                                         usuariosServidor=[]
                                     else:
-                                        cursorlocal.execute('SELECT cedula, nombre, telegram_id, uuid, internet, wifi, bluetooth, captahuella, rfid, facial FROM web_usuarios WHERE cedula=%s',(cedulaUsuario,))
+                                        cursorlocal.execute('SELECT cedula, nombre, telegram_id, beacon_uuid, internet, wifi, bluetooth, captahuella, rfid, facial FROM web_usuarios WHERE cedula=%s',(cedulaUsuario,))
                                         usuario_local= cursorlocal.fetchall()
 
                                         request_json_usuario = requests.get(url=f'{URL_API}usuarioindividualapi/{CONTRATO}/{cedulaUsuario}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
@@ -361,28 +361,28 @@ while True:
                                                 cedula=consultajson['cedula']
                                                 nombre=consultajson['nombre']
                                                 telegram_id=consultajson['telegram_id']
-                                                uuid=consultajson['beacon_uuid']
+                                                beacon_uuid=consultajson['beacon_uuid']
                                                 internet=consultajson['telefonoInternet']
                                                 wifi=consultajson['telefonoWifi']
                                                 bluetooth=consultajson['telefonoBluetooth']
                                                 captahuella=consultajson['captahuella']
                                                 rfid=consultajson['rfid']
                                                 facial=consultajson['reconocimientoFacial']
-                                            cursorlocal.execute('''INSERT INTO web_usuarios (cedula, nombre, telegram_id, uuid, internet, wifi, bluetooth, captahuella, rfid, facial)
-                                            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)''', (cedula, nombre, telegram_id, uuid, internet, wifi, bluetooth, captahuella, rfid, facial))
+                                            cursorlocal.execute('''INSERT INTO web_usuarios (cedula, nombre, telegram_id, beacon_uuid, internet, wifi, bluetooth, captahuella, rfid, facial)
+                                            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)''', (cedula, nombre, telegram_id, beacon_uuid, internet, wifi, bluetooth, captahuella, rfid, facial))
                                             connlocal.commit()
                                         elif usuarioLocal and usuarioServidor:
                                             for consultajson in request_json_usuario:
                                                 cedula=consultajson['cedula']
                                                 telegram_id=consultajson['telegram_id']
-                                                uuid=consultajson['beacon_uuid']
+                                                beacon_uuid=consultajson['beacon_uuid']
                                                 internet=consultajson['telefonoInternet']
                                                 wifi=consultajson['telefonoWifi']
                                                 bluetooth=consultajson['telefonoBluetooth']
                                                 captahuella=consultajson['captahuella']
                                                 rfid=consultajson['rfid']
                                                 facial=consultajson['reconocimientoFacial']
-                                            cursorlocal.execute("UPDATE web_usuarios SET telegram_id=%s, uuid=%s, internet=%s, wifi=%s, bluetooth=%s, captahuella=%s, rfid=%s, facial=%s WHERE cedula=%s", (telegram_id,uuid,internet,wifi,bluetooth,captahuella,rfid,facial,cedula))
+                                            cursorlocal.execute("UPDATE web_usuarios SET telegram_id=%s, beacon_uuid=%s, internet=%s, wifi=%s, bluetooth=%s, captahuella=%s, rfid=%s, facial=%s WHERE cedula=%s", (telegram_id,beacon_uuid,internet,wifi,bluetooth,captahuella,rfid,facial,cedula))
                                             connlocal.commit()
                                 except requests.exceptions.ConnectionError:
                                     print("fallo consultando api en usuarios")
