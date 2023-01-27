@@ -186,79 +186,79 @@ while True:
             total_cambios=t2_cambios-t1_cambios
             total_log=t2_log-t1_log
 
-            try:
-                try:
-                    cursorlocal.execute('SELECT dispositivo, descripcion, estado, acceso FROM web_dispositivos')
-                    dispositivos_local= cursorlocal.fetchall()
+            # try:
+            #     try:
+            #         cursorlocal.execute('SELECT dispositivo, descripcion, estado, acceso FROM web_dispositivos')
+            #         dispositivos_local= cursorlocal.fetchall()
 
-                    request_json = requests.get(url=f'{URL_API}obtenerdispositivosapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
+            #         request_json = requests.get(url=f'{URL_API}obtenerdispositivosapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
 
-                    dispositivosServidor=[]
-                    for consultajson in request_json:
-                        tuplaDispositivoIndividual=(consultajson['dispositivo'],consultajson['descripcion'], consultajson['estado'], consultajson['acceso'],)
-                        dispositivosServidor.append(tuplaDispositivoIndividual)
+            #         dispositivosServidor=[]
+            #         for consultajson in request_json:
+            #             tuplaDispositivoIndividual=(consultajson['dispositivo'],consultajson['descripcion'], consultajson['estado'], consultajson['acceso'],)
+            #             dispositivosServidor.append(tuplaDispositivoIndividual)
 
-                    if len(dispositivosServidor) != len(dispositivos_local):
-                        request_json = requests.delete(url=f'{URL_API}eliminartodosdispositivosapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
-                        if request_json.status_code == 200:
+            #         if len(dispositivosServidor) != len(dispositivos_local):
+            #             request_json = requests.delete(url=f'{URL_API}eliminartodosdispositivosapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
+            #             if request_json.status_code == 200:
 
-                            request_json = requests.get(url=f'{URL_API}obtenerdispositivosapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
+            #                 request_json = requests.get(url=f'{URL_API}obtenerdispositivosapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
 
-                            dispositivosServidor=[]
-                            for consultajson in request_json:
-                                tuplaDispositivoIndividual=(consultajson['dispositivo'],consultajson['descripcion'], consultajson['estado'], consultajson['acceso'],)
-                                dispositivosServidor.append(tuplaDispositivoIndividual)
+            #                 dispositivosServidor=[]
+            #                 for consultajson in request_json:
+            #                     tuplaDispositivoIndividual=(consultajson['dispositivo'],consultajson['descripcion'], consultajson['estado'], consultajson['acceso'],)
+            #                     dispositivosServidor.append(tuplaDispositivoIndividual)
 
-                            for dispositivolocal in dispositivos_local:
-                                try:
-                                    dispositivosServidor.index(dispositivolocal)
-                                except ValueError:
-                                    tz = pytz.timezone('America/Caracas')
-                                    caracas_now = datetime.now(tz)
-                                    fecha=str(caracas_now)[:10]
-                                    hora=str(caracas_now)[11:19]
-                                    dispositivo=dispositivolocal[0]
-                                    descripcion=dispositivolocal[1]
-                                    estado=dispositivolocal[2]
-                                    acceso=dispositivolocal[3]
-                                    agregarDispositivoJson = {
-                                        "dispositivo": dispositivo,
-                                        "descripcion": descripcion,
-                                        "estado": estado,
-                                        "contrato": CONTRATO,
-                                        "acceso": acceso,
-                                        "fecha": fecha,
-                                        "hora": hora
-                                    }
-                                    requests.post(url=f'{URL_API}registrardispositivosapi/', 
-                                    json=agregarDispositivoJson, auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
-                    else:
-                        for dispositivolocal in dispositivos_local:
-                            # try:
-                            #     dispositivosServidor.index(dispositivolocal)
-                            # except ValueError:
-                            if not dispositivolocal in dispositivosServidor:
-                                tz = pytz.timezone('America/Caracas')
-                                caracas_now = datetime.now(tz)
-                                fecha=str(caracas_now)[:10]
-                                hora=str(caracas_now)[11:19]
-                                dispositivo=dispositivolocal[0]
-                                descripcion=dispositivolocal[1]
-                                estado=dispositivolocal[2]
-                                jsonActualizarDispositivo= {
-                                    "contrato": CONTRATO,
-                                    "dispositivo": dispositivo,
-                                    "descripcion": descripcion,
-                                    "estado": estado,
-                                    "fecha": fecha,
-                                    "hora": hora
-                                }
-                                requests.put(url=f'{URL_API}actualizardispositivosapi/{CONTRATO}/{dispositivo[7:]}/{estado}/',
-                                json=jsonActualizarDispositivo, auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
-                except requests.exceptions.ConnectionError:
-                    print("fallo consultando api de dispositivos")   
-            except Exception as e:
-                print(f"{e} - fallo total en los dispositivos")  
+            #                 for dispositivolocal in dispositivos_local:
+            #                     try:
+            #                         dispositivosServidor.index(dispositivolocal)
+            #                     except ValueError:
+            #                         tz = pytz.timezone('America/Caracas')
+            #                         caracas_now = datetime.now(tz)
+            #                         fecha=str(caracas_now)[:10]
+            #                         hora=str(caracas_now)[11:19]
+            #                         dispositivo=dispositivolocal[0]
+            #                         descripcion=dispositivolocal[1]
+            #                         estado=dispositivolocal[2]
+            #                         acceso=dispositivolocal[3]
+            #                         agregarDispositivoJson = {
+            #                             "dispositivo": dispositivo,
+            #                             "descripcion": descripcion,
+            #                             "estado": estado,
+            #                             "contrato": CONTRATO,
+            #                             "acceso": acceso,
+            #                             "fecha": fecha,
+            #                             "hora": hora
+            #                         }
+            #                         requests.post(url=f'{URL_API}registrardispositivosapi/', 
+            #                         json=agregarDispositivoJson, auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
+            #         else:
+            #             for dispositivolocal in dispositivos_local:
+            #                 # try:
+            #                 #     dispositivosServidor.index(dispositivolocal)
+            #                 # except ValueError:
+            #                 if not dispositivolocal in dispositivosServidor:
+            #                     tz = pytz.timezone('America/Caracas')
+            #                     caracas_now = datetime.now(tz)
+            #                     fecha=str(caracas_now)[:10]
+            #                     hora=str(caracas_now)[11:19]
+            #                     dispositivo=dispositivolocal[0]
+            #                     descripcion=dispositivolocal[1]
+            #                     estado=dispositivolocal[2]
+            #                     jsonActualizarDispositivo= {
+            #                         "contrato": CONTRATO,
+            #                         "dispositivo": dispositivo,
+            #                         "descripcion": descripcion,
+            #                         "estado": estado,
+            #                         "fecha": fecha,
+            #                         "hora": hora
+            #                     }
+            #                     requests.put(url=f'{URL_API}actualizardispositivosapi/{CONTRATO}/{dispositivo[7:]}/{estado}/',
+            #                     json=jsonActualizarDispositivo, auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
+            #     except requests.exceptions.ConnectionError:
+            #         print("fallo consultando api de dispositivos")   
+            # except Exception as e:
+            #     print(f"{e} - fallo total en los dispositivos")  
 
             if total_ping > TIEMPO_PING:
                 for dispositivo in dispositivos:
@@ -295,14 +295,14 @@ while True:
                                 try:
                                     banderaUsuario=True
                                     if cedulaUsuario == 'completo':
-                                        cursorlocal.execute('SELECT cedula, nombre, telegram_id, internet, wifi, captahuella, rfid, facial FROM web_usuarios')
+                                        cursorlocal.execute('SELECT cedula, nombre, telegram_id, uuid, internet, wifi, bluetooth, captahuella, rfid, facial FROM web_usuarios')
                                         usuarios_local= cursorlocal.fetchall()
                                         
                                         request_json_usuario = requests.get(url=f'{URL_API}obtenerusuariosapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
 
                                         usuariosServidor=[]
                                         for consultajson in request_json_usuario:
-                                            tuplaUsuarioIndividual=(consultajson['cedula'],consultajson['nombre'],consultajson['telegram_id'], consultajson['telefonoInternet'], consultajson['telefonoWifi'], consultajson['captahuella'], consultajson['rfid'], consultajson['reconocimientoFacial'],)
+                                            tuplaUsuarioIndividual=(consultajson['cedula'],consultajson['nombre'],consultajson['telegram_id'], consultajson['beacon_uuid'], consultajson['telefonoInternet'], consultajson['telefonoWifi'], consultajson['telefonoBluetooth'], consultajson['captahuella'], consultajson['rfid'], consultajson['reconocimientoFacial'],)
                                             usuariosServidor.append(tuplaUsuarioIndividual)
                                         for usuario in usuariosServidor:
                                             # contador=contador+1
@@ -311,16 +311,18 @@ while True:
                                             if not usuario in usuarios_local:
                                                 cedula=usuario[0]
                                                 telegram_id=usuario[2]
-                                                internet=usuario[3]
-                                                wifi=usuario[4]
-                                                captahuella=usuario[5]
-                                                rfid=usuario[6]
-                                                facial=usuario[7]
-                                                cursorlocal.execute("UPDATE web_usuarios SET telegram_id=%s, internet=%s, wifi=%s, captahuella=%s, rfid=%s, facial=%s WHERE cedula=%s", (telegram_id,internet,wifi,captahuella,rfid,facial,cedula))
+                                                uuid=usuario[3]
+                                                internet=usuario[4]
+                                                wifi=usuario[5]
+                                                bluetooth=usuario[6]
+                                                captahuella=usuario[7]
+                                                rfid=usuario[8]
+                                                facial=usuario[9]
+                                                cursorlocal.execute("UPDATE web_usuarios SET telegram_id=%s, uuid=%s, internet=%s, wifi=%s, bluetooth=%s, captahuella=%s, rfid=%s, facial=%s WHERE cedula=%s", (telegram_id,uuid,internet,wifi,bluetooth,captahuella,rfid,facial,cedula))
                                                 connlocal.commit()
                                         usuariosServidor=[]
                                     else:
-                                        cursorlocal.execute('SELECT cedula, nombre, telegram_id, internet, wifi, captahuella, rfid, facial FROM web_usuarios WHERE cedula=%s',(cedulaUsuario,))
+                                        cursorlocal.execute('SELECT cedula, nombre, telegram_id, uuid, internet, wifi, bluetooth, captahuella, rfid, facial FROM web_usuarios WHERE cedula=%s',(cedulaUsuario,))
                                         usuario_local= cursorlocal.fetchall()
 
                                         request_json_usuario = requests.get(url=f'{URL_API}usuarioindividualapi/{CONTRATO}/{cedulaUsuario}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
@@ -359,24 +361,28 @@ while True:
                                                 cedula=consultajson['cedula']
                                                 nombre=consultajson['nombre']
                                                 telegram_id=consultajson['telegram_id']
+                                                uuid=consultajson['beacon_uuid']
                                                 internet=consultajson['telefonoInternet']
                                                 wifi=consultajson['telefonoWifi']
+                                                bluetooth=consultajson['telefonoBluetooth']
                                                 captahuella=consultajson['captahuella']
                                                 rfid=consultajson['rfid']
                                                 facial=consultajson['reconocimientoFacial']
-                                            cursorlocal.execute('''INSERT INTO web_usuarios (cedula, nombre, telegram_id, internet, wifi, captahuella, rfid, facial)
-                                            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)''', (cedula, nombre, telegram_id, internet, wifi, captahuella, rfid, facial))
+                                            cursorlocal.execute('''INSERT INTO web_usuarios (cedula, nombre, telegram_id, uuid, internet, wifi, bluetooth, captahuella, rfid, facial)
+                                            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)''', (cedula, nombre, telegram_id, uuid, internet, wifi, bluetooth, captahuella, rfid, facial))
                                             connlocal.commit()
                                         elif usuarioLocal and usuarioServidor:
                                             for consultajson in request_json_usuario:
                                                 cedula=consultajson['cedula']
                                                 telegram_id=consultajson['telegram_id']
+                                                uuid=consultajson['beacon_uuid']
                                                 internet=consultajson['telefonoInternet']
                                                 wifi=consultajson['telefonoWifi']
+                                                bluetooth=consultajson['telefonoBluetooth']
                                                 captahuella=consultajson['captahuella']
                                                 rfid=consultajson['rfid']
                                                 facial=consultajson['reconocimientoFacial']
-                                            cursorlocal.execute("UPDATE web_usuarios SET telegram_id=%s, internet=%s, wifi=%s, captahuella=%s, rfid=%s, facial=%s WHERE cedula=%s", (telegram_id,internet,wifi,captahuella,rfid,facial,cedula))
+                                            cursorlocal.execute("UPDATE web_usuarios SET telegram_id=%s, uuid=%s, internet=%s, wifi=%s, bluetooth=%s, captahuella=%s, rfid=%s, facial=%s WHERE cedula=%s", (telegram_id,uuid,internet,wifi,bluetooth,captahuella,rfid,facial,cedula))
                                             connlocal.commit()
                                 except requests.exceptions.ConnectionError:
                                     print("fallo consultando api en usuarios")

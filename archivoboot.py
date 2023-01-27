@@ -3,7 +3,7 @@ import os
 comandos = [
     "python3.7 /BaselocalARMsindocker/dbmaker/codigo.py &",
     "python3.7 /BaselocalARMsindocker/dbmanagerall/codigo.py &",
-    #"python3.7 /BaselocalARMsindocker/dispositivosweb/codigo.py &",
+    "python3.7 /BaselocalARMsindocker/dispositivosweb/codigo.py &",
     # "python3.7 /BaselocalARMsindocker/dbmanagerusuarios/codigo.py &",
     # "python3.7 /BaselocalARMsindocker/dbmanagerhorarios/codigo.py &",
     # "python3.7 /BaselocalARMsindocker/dbmanagertelegramid/codigo.py &",

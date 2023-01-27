@@ -69,7 +69,7 @@ try:
         if not consultaUsuarios and consultarTodo:
             try:
                 try:
-                    cursorlocal.execute('SELECT cedula, nombre, telegram_id, internet, wifi, captahuella, rfid, facial FROM web_usuarios')
+                    cursorlocal.execute('SELECT cedula, nombre, telegram_id, uuid, internet, wifi, bluetooth, captahuella, rfid, facial FROM web_usuarios')
                     usuarios_local= cursorlocal.fetchall()
 
                     request_json = requests.get(url=f'{URL_API}obtenerusuariosapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
@@ -77,7 +77,7 @@ try:
                     usuariosServidor=[]
                     empleados_seguricel=[]
                     for consultajson in request_json:
-                        tuplaUsuarioIndividual=(consultajson['cedula'],consultajson['nombre'],consultajson['telegram_id'], consultajson['telefonoInternet'], consultajson['telefonoWifi'], consultajson['captahuella'], consultajson['rfid'], consultajson['reconocimientoFacial'],)
+                        tuplaUsuarioIndividual=(consultajson['cedula'],consultajson['nombre'],consultajson['telegram_id'], consultajson['beacon_uuid'], consultajson['telefonoInternet'], consultajson['telefonoWifi'], consultajson['telefonoBluetooth'], consultajson['captahuella'], consultajson['rfid'], consultajson['reconocimientoFacial'],)
                         usuariosServidor.append(tuplaUsuarioIndividual)
                         if consultajson['contrato'] == 'SEGURICEL':
                             empleados_seguricel.append(tuplaUsuarioIndividual)
@@ -145,17 +145,19 @@ try:
                                     cedula=usuario[0]
                                     nombre=usuario[1]
                                     telegram_id=usuario[2]
-                                    internet=usuario[3]
-                                    wifi=usuario[4]
-                                    captahuella=usuario[5]
-                                    rfid=usuario[6]
-                                    facial=usuario[7]
+                                    uuid=usuario[3]
+                                    internet=usuario[4]
+                                    wifi=usuario[5]
+                                    bluetooth=usuario[6]
+                                    captahuella=usuario[7]
+                                    rfid=usuario[8]
+                                    facial=usuario[9]
                                     cursorlocal.execute('''INSERT INTO web_usuarios (cedula, nombre, telegram_id, internet, wifi, captahuella, rfid, facial)
-                                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)''', (cedula, nombre, telegram_id, internet, wifi, captahuella, rfid, facial))
+                                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)''', (cedula, nombre, telegram_id, uuid, internet, wifi, bluetooth, captahuella, rfid, facial))
                                     connlocal.commit()
                             #listaUsuariosServidor=[]
                             #listaUsuariosLocal=[]
-                        cursorlocal.execute('SELECT cedula, nombre, telegram_id, internet, wifi, captahuella, rfid, facial FROM web_usuarios')
+                        cursorlocal.execute('SELECT cedula, nombre, telegram_id, uuid, internet, wifi, bluetooth, captahuella, rfid, facial FROM web_usuarios')
                         usuarios_local= cursorlocal.fetchall()
                         nro_usu_local = len(usuarios_local)
                         if nro_usu_local == nro_usu_servidor:
@@ -171,7 +173,7 @@ try:
         if consultaUsuarios and consultarTodo:
             try:
                 try:
-                    cursorlocal.execute('SELECT cedula, telegram_id, internet, wifi, captahuella, rfid, facial FROM web_usuarios')
+                    cursorlocal.execute('SELECT cedula, telegram_id, uuid, internet, wifi, bluetooth, captahuella, rfid, facial FROM web_usuarios')
                     usuarios_local= cursorlocal.fetchall()
 
                     request_json = requests.get(url=f'{URL_API}obtenerhorariosapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
