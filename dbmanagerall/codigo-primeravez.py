@@ -152,7 +152,7 @@ try:
                                     captahuella=usuario[7]
                                     rfid=usuario[8]
                                     facial=usuario[9]
-                                    cursorlocal.execute('''INSERT INTO web_usuarios (cedula, nombre, telegram_id, internet, wifi, captahuella, rfid, facial)
+                                    cursorlocal.execute('''INSERT INTO web_usuarios (cedula, nombre, telegram_id, beacon_uuid internet, wifi, captahuella, rfid, facial)
                                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)''', (cedula, nombre, telegram_id, beacon_uuid, internet, wifi, bluetooth, captahuella, rfid, facial))
                                     connlocal.commit()
                             #listaUsuariosServidor=[]
