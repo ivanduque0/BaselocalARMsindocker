@@ -230,7 +230,7 @@ def aperturaconcedidabluetooth(nombref, fechaf, horaf, contratof, cedulaf, curso
             connf.commit()
     except:
         cursorf.execute('''INSERT INTO web_interacciones (nombre, fecha, hora, razon, contrato, cedula_id)
-        VALUES (%s, %s, %s, %s, %s, %s);''', (nombref, fechaf, horaf, f'fallo_{razondictrfids[acceso]}', contratof, cedulaf))
+        VALUES (%s, %s, %s, %s, %s, %s);''', (nombref, fechaf, horaf, f'fallo_{razondict[acceso]}-Bluetooth', contratof, cedulaf))
         #cursorf.execute('''UPDATE led SET onoff=1 WHERE onoff=0;''')
         connf.commit()
     finally:
@@ -246,6 +246,27 @@ def aperturadenegada(cursorf, connf, acceso):
         print("fallo en peticion http")
     finally:
         pass
+
+def invertir_uuid(uuid_beacon):
+    uuidInvertido=''
+    cont=36
+    for char in range(1,17):
+        uuidInvertido=uuidInvertido+uuid_beacon[cont-2:cont]
+        cont=cont-2
+        if char==4:
+            uuidInvertido+='-'
+        if char==6:
+            cont=cont-1
+            uuidInvertido+='-'
+        if char==8:
+            cont=cont-1
+            uuidInvertido+='-'
+        if char==10:
+            cont=cont-1
+            uuidInvertido+='-'
+        if char==12:
+            cont=cont-1
+    return uuidInvertido
 
 class MyServer(BaseHTTPRequestHandler):
     def do_GET(self):
@@ -399,6 +420,7 @@ class MyServer(BaseHTTPRequestHandler):
             uuid_usuario, acceso_solicitud, _ = peticion
             #print(id_usuario)
             #print(acceso_solicitud)
+            uuid_usuario = invertir_uuid(uuid_usuario)
 
             diasusuario = []
             etapadia=0
