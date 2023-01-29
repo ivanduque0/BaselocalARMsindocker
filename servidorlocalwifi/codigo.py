@@ -420,7 +420,7 @@ class MyServer(BaseHTTPRequestHandler):
             uuid_usuario, acceso_solicitud, _ = peticion
             #print(id_usuario)
             #print(acceso_solicitud)
-            uuid_usuario = invertir_uuid(uuid_usuario)
+            #uuid_usuario = invertir_uuid(uuid_usuario)
 
             diasusuario = []
             etapadia=0
