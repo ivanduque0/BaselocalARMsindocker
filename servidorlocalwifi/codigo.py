@@ -144,13 +144,13 @@ razondictrfids = {'1':razonrfid1, '2':razonrfid2, '3':razonrfid3, '4':razonrfid4
 #     finally:
 #         pass
 
-def aperturaconcedidawifi(id_usuariof, cursorf, connf, acceso, cedulaf, nombref, fechaf, horaf):
-
+def aperturaconcedidawifi(id_usuariof, cursorf, connf, acceso, cedulaf, nombref, fechaf, horaf, razon):
     try:
         if accesodict[acceso]:
+            razonRegistrar=f"{razondict[acceso]}(Wifi)" if (razon in razondict[acceso].lower()) else f"{razondict[acceso]}(Wifi)-{razon}"
             requests.get(f'{accesodict[acceso]}/on', timeout=2)
             cursorf.execute('''INSERT INTO web_interacciones (nombre, fecha, hora, razon, contrato, cedula_id)
-            VALUES (%s, %s, %s, %s, %s, %s);''', (nombref, fechaf, horaf, f"{razondict[acceso]}-Wifi", CONTRATO, cedulaf))
+            VALUES (%s, %s, %s, %s, %s, %s);''', (nombref, fechaf, horaf, razonRegistrar, CONTRATO, cedulaf))
             #cursorf.execute('''UPDATE led SET onoff=1 WHERE onoff=0;''')
             # connf.commit()
             cursorf.execute('''INSERT INTO accesos_abiertos (cedula, acceso, fecha, hora, estado) 
@@ -173,25 +173,26 @@ def aperturaconcedidawifi(id_usuariof, cursorf, connf, acceso, cedulaf, nombref,
                 idPeticion=IdContador+1
 
         if accesodict[acceso]:
-            cursorf.execute('''INSERT INTO solicitud_aperturas (id, id_usuario, acceso, estado, peticionInternet, feedback)
-            VALUES (%s, %s, %s, %s, %s, %s);''', (idPeticion, id_usuariof, acceso, 0, 'f', 'f'))
+            cursorf.execute('''INSERT INTO solicitud_aperturas (id, id_usuario, acceso, razon, estado, peticionInternet, feedback)
+            VALUES (%s, %s, %s, %s, %s, %s, %s);''', (idPeticion, id_usuariof, acceso, razon, 0, 'f', 'f'))
             #cursorf.execute('''UPDATE led SET onoff=1 WHERE onoff=0;''')
             connf.commit()
 
-def aperturaconcedidahuella(nombref, fechaf, horaf, contratof, cedulaf, cursorf, connf, acceso):
+def aperturaconcedidahuella(nombref, fechaf, horaf, contratof, cedulaf, cursorf, connf, acceso, razon):
 
     try:
         if accesodict[acceso]:
+            razonRegistrar=razondicthuellas[acceso] if (razon in razondicthuellas[acceso].lower()) else f"{razondicthuellas[acceso]}-{razon}"
             requests.get(url=f'{accesodict[acceso]}/onrh', timeout=3)
             cursorf.execute('''INSERT INTO web_interacciones (nombre, fecha, hora, razon, contrato, cedula_id)
-            VALUES (%s, %s, %s, %s, %s, %s);''', (nombref, fechaf, horaf, razondicthuellas[acceso], contratof, cedulaf))
+            VALUES (%s, %s, %s, %s, %s, %s);''', (nombref, fechaf, horaf, razonRegistrar, contratof, cedulaf))
             #cursorf.execute('''UPDATE led SET onoff=1 WHERE onoff=0;''')
             cursorf.execute('''INSERT INTO accesos_abiertos (cedula, acceso, fecha, hora, estado) 
             VALUES (%s, %s, %s, %s, %s)''', (cedulaf, acceso, fechaf, horaf, 'f'))
             connf.commit()
     except:
         cursorf.execute('''INSERT INTO web_interacciones (nombre, fecha, hora, razon, contrato, cedula_id)
-        VALUES (%s, %s, %s, %s, %s, %s);''', (nombref, fechaf, horaf, f'fallo_{razondicthuellas[acceso]}', contratof, cedulaf))
+        VALUES (%s, %s, %s, %s, %s, %s);''', (nombref, fechaf, horaf, f'fallo_{razonRegistrar}', contratof, cedulaf))
         #cursorf.execute('''UPDATE led SET onoff=1 WHERE onoff=0;''')
         connf.commit()
     finally:
@@ -201,28 +202,30 @@ def aperturaconcedidarfid(nombref, fechaf, horaf, contratof, cedulaf, cursorf, c
 
     try:
         if accesodict[acceso]:
+            razonRegistrar=razondictrfids[acceso] if (razon in razondictrfids[acceso].lower()) else f"{razondictrfids[acceso]}-{razon}"
             requests.get(url=f'{accesodict[acceso]}/onrh', timeout=3)
             cursorf.execute('''INSERT INTO web_interacciones (nombre, fecha, hora, razon, contrato, cedula_id)
-            VALUES (%s, %s, %s, %s, %s, %s);''', (nombref, fechaf, horaf, razondictrfids[acceso], contratof, cedulaf))
+            VALUES (%s, %s, %s, %s, %s, %s);''', (nombref, fechaf, horaf, razonRegistrar, contratof, cedulaf))
             #cursorf.execute('''UPDATE led SET onoff=1 WHERE onoff=0;''')
             cursorf.execute('''INSERT INTO accesos_abiertos (cedula, acceso, fecha, hora, estado) 
             VALUES (%s, %s, %s, %s, %s)''', (cedulaf, acceso, fechaf, horaf, 'f'))
             connf.commit()
     except:
         cursorf.execute('''INSERT INTO web_interacciones (nombre, fecha, hora, razon, contrato, cedula_id)
-        VALUES (%s, %s, %s, %s, %s, %s);''', (nombref, fechaf, horaf, f'fallo_{razondictrfids[acceso]}', contratof, cedulaf))
+        VALUES (%s, %s, %s, %s, %s, %s);''', (nombref, fechaf, horaf, f'fallo_{razonRegistrar}', contratof, cedulaf))
         #cursorf.execute('''UPDATE led SET onoff=1 WHERE onoff=0;''')
         connf.commit()
     finally:
         pass
 
-def aperturaconcedidabluetooth(nombref, fechaf, horaf, contratof, cedulaf, cursorf, connf, acceso):
+def aperturaconcedidabluetooth(nombref, fechaf, horaf, contratof, cedulaf, cursorf, connf, acceso, razon):
 
     try:
         if accesodict[acceso]:
+            razonRegistrar=f"{razondict[acceso]}(Bluetooth)" if (razon in razondict[acceso].lower()) else f"{razondict[acceso]}(Bluetooth)-{razon}"
             requests.get(f'{accesodict[acceso]}/on', timeout=2)
             cursorf.execute('''INSERT INTO web_interacciones (nombre, fecha, hora, razon, contrato, cedula_id)
-            VALUES (%s, %s, %s, %s, %s, %s);''', (nombref, fechaf, horaf, f"{razondict[acceso]}-Bluetooth", CONTRATO, cedulaf))
+            VALUES (%s, %s, %s, %s, %s, %s);''', (nombref, fechaf, horaf, razonRegistrar, CONTRATO, cedulaf))
             #cursorf.execute('''UPDATE led SET onoff=1 WHERE onoff=0;''')
             # connf.commit()
             cursorf.execute('''INSERT INTO accesos_abiertos (cedula, acceso, fecha, hora, estado) 
@@ -230,7 +233,7 @@ def aperturaconcedidabluetooth(nombref, fechaf, horaf, contratof, cedulaf, curso
             connf.commit()
     except:
         cursorf.execute('''INSERT INTO web_interacciones (nombre, fecha, hora, razon, contrato, cedula_id)
-        VALUES (%s, %s, %s, %s, %s, %s);''', (nombref, fechaf, horaf, f'fallo_{razondict[acceso]}-Bluetooth', contratof, cedulaf))
+        VALUES (%s, %s, %s, %s, %s, %s);''', (nombref, fechaf, horaf, f'fallo_{razonRegistrar}', contratof, cedulaf))
         #cursorf.execute('''UPDATE led SET onoff=1 WHERE onoff=0;''')
         connf.commit()
     finally:
@@ -304,13 +307,13 @@ class MyServer(BaseHTTPRequestHandler):
             acceso_solicitud, _ = peticion
             aperturadenegada(cursor, conn, acceso_solicitud)
 
-        if len(peticion) == 3 and peticion[2] == "seguricel_wifi_activo":
+        if len(peticion) == 4 and peticion[3] == "seguricel_wifi_activo":
             self.send_response(200)
             self.send_header("Content-type", "utf-8")
             self.end_headers()
             # self.wfile.write(bytes(f"{self.path[1::]}", "utf-8"))
 
-            id_usuario, acceso_solicitud, _ = peticion
+            id_usuario, acceso_solicitud, razonApertura, _ = peticion
             #print(id_usuario)
             #print(acceso_solicitud)
 
@@ -344,7 +347,7 @@ class MyServer(BaseHTTPRequestHandler):
                             fecha=str(caracas_now)[:10]
                             etapadia=1
                             #aperturaconcedidawifi(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
-                            aperturaconcedidawifi(idUsuario, cursor, conn, acceso_solicitud, cedula, nombre, fecha, horahoy)
+                            aperturaconcedidawifi(idUsuario, cursor, conn, acceso_solicitud, cedula, nombre, fecha, horahoy, razonApertura)
                             etapadiaapertura=1
                         elif dia==diahoy and cantidaddias==1:
                             hora=str(caracas_now)[11:19]
@@ -355,7 +358,7 @@ class MyServer(BaseHTTPRequestHandler):
                                 if horahoy >= entrada and horahoy <= salida:
                                     #print('entrada concedida')
                                     #aperturaconcedidawifi(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
-                                    aperturaconcedidawifi(idUsuario, cursor, conn, acceso_solicitud, cedula, nombre, fecha, horahoy)
+                                    aperturaconcedidawifi(idUsuario, cursor, conn, acceso_solicitud, cedula, nombre, fecha, horahoy, razonApertura)
                                     etapadiaapertura=1
                                 else:
                                     aperturadenegada(cursor, conn, acceso_solicitud)
@@ -364,7 +367,7 @@ class MyServer(BaseHTTPRequestHandler):
                                 if (horahoy>=entrada and horahoy <=ultimahora) or (horahoy>=primerahora and horahoy <= salida):
                                     #print('entrada concedida')
                                     #aperturaconcedidawifi(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
-                                    aperturaconcedidawifi(idUsuario, cursor, conn, acceso_solicitud, cedula, nombre, fecha, horahoy)
+                                    aperturaconcedidawifi(idUsuario, cursor, conn, acceso_solicitud, cedula, nombre, fecha, horahoy, razonApertura)
                                     etapadiaapertura=1
                                 else:
                                     aperturadenegada(cursor, conn, acceso_solicitud)
@@ -378,7 +381,7 @@ class MyServer(BaseHTTPRequestHandler):
                                 if horahoy >= entrada and horahoy <= salida:
                                     #print('entrada concedida')
                                     #aperturaconcedidawifi(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
-                                    aperturaconcedidawifi(idUsuario, cursor, conn, acceso_solicitud, cedula, nombre, fecha, horahoy)
+                                    aperturaconcedidawifi(idUsuario, cursor, conn, acceso_solicitud, cedula, nombre, fecha, horahoy, razonApertura)
                                     etapadiaapertura=1
                                     contadoraux=0
                                 else:
@@ -390,7 +393,7 @@ class MyServer(BaseHTTPRequestHandler):
                                 if (horahoy>=entrada and horahoy <=ultimahora) or (horahoy>=primerahora and horahoy <= salida):
                                     #print('entrada concedida')
                                     #aperturaconcedidawifi(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
-                                    aperturaconcedidawifi(idUsuario, cursor, conn, acceso_solicitud, cedula, nombre, fecha, horahoy)
+                                    aperturaconcedidawifi(idUsuario, cursor, conn, acceso_solicitud, cedula, nombre, fecha, horahoy, razonApertura)
                                     etapadiaapertura=1
                                     contadoraux=0
                                 else:
@@ -411,13 +414,13 @@ class MyServer(BaseHTTPRequestHandler):
             else:
                 aperturadenegada(cursor, conn, acceso_solicitud)
 
-        if len(peticion) == 3 and peticion[2] == "seguricel_bluetooth_activo":
+        if len(peticion) == 4 and peticion[3] == "seguricel_bluetooth_activo":
             self.send_response(200)
             self.send_header("Content-type", "utf-8")
             self.end_headers()
             # self.wfile.write(bytes(f"{self.path[1::]}", "utf-8"))
 
-            uuid_usuario, acceso_solicitud, _ = peticion
+            uuid_usuario, acceso_solicitud, razonApertura, _ = peticion
             #print(id_usuario)
             #print(acceso_solicitud)
             #uuid_usuario = invertir_uuid(uuid_usuario)
@@ -451,7 +454,7 @@ class MyServer(BaseHTTPRequestHandler):
                             fecha=str(caracas_now)[:10]
                             etapadia=1
                             #aperturaconcedidawifi(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
-                            aperturaconcedidabluetooth(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
+                            aperturaconcedidabluetooth(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, razonApertura)
                             etapadiaapertura=1
                         elif dia==diahoy and cantidaddias==1:
                             hora=str(caracas_now)[11:19]
@@ -462,7 +465,7 @@ class MyServer(BaseHTTPRequestHandler):
                                 if horahoy >= entrada and horahoy <= salida:
                                     #print('entrada concedida')
                                     #aperturaconcedidawifi(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
-                                    aperturaconcedidabluetooth(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
+                                    aperturaconcedidabluetooth(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, razonApertura)
                                     etapadiaapertura=1
                                 else:
                                     aperturadenegada(cursor, conn, acceso_solicitud)
@@ -471,7 +474,7 @@ class MyServer(BaseHTTPRequestHandler):
                                 if (horahoy>=entrada and horahoy <=ultimahora) or (horahoy>=primerahora and horahoy <= salida):
                                     #print('entrada concedida')
                                     #aperturaconcedidawifi(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
-                                    aperturaconcedidabluetooth(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
+                                    aperturaconcedidabluetooth(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, razonApertura)
                                     etapadiaapertura=1
                                 else:
                                     aperturadenegada(cursor, conn, acceso_solicitud)
@@ -485,7 +488,7 @@ class MyServer(BaseHTTPRequestHandler):
                                 if horahoy >= entrada and horahoy <= salida:
                                     #print('entrada concedida')
                                     #aperturaconcedidawifi(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
-                                    aperturaconcedidabluetooth(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
+                                    aperturaconcedidabluetooth(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, razonApertura)
                                     etapadiaapertura=1
                                     contadoraux=0
                                 else:
@@ -497,7 +500,7 @@ class MyServer(BaseHTTPRequestHandler):
                                 if (horahoy>=entrada and horahoy <=ultimahora) or (horahoy>=primerahora and horahoy <= salida):
                                     #print('entrada concedida')
                                     #aperturaconcedidawifi(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
-                                    aperturaconcedidabluetooth(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
+                                    aperturaconcedidabluetooth(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, razonApertura)
                                     etapadiaapertura=1
                                     contadoraux=0
                                 else:
@@ -516,13 +519,13 @@ class MyServer(BaseHTTPRequestHandler):
             else:
                 aperturadenegada(cursor, conn, acceso_solicitud)
 
-        if len(peticion) == 3 and peticion[2] == "seguricel_captahuella_activo":
+        if len(peticion) == 4 and peticion[3] == "seguricel_captahuella_activo":
             self.send_response(200)
             self.send_header("Content-type", "utf-8")
             self.end_headers()
             # self.wfile.write(bytes(f"{self.path[1::]}", "utf-8"))
 
-            id_suprema, acceso_solicitud, _ = peticion
+            id_suprema, acceso_solicitud, razonApertura, _ = peticion
             id_suprema = id_suprema[6:]+id_suprema[4:6]+id_suprema[2:4]+id_suprema[0:2]
             id_suprema = int(id_suprema, 16)
             #print(id_suprema)
@@ -558,7 +561,7 @@ class MyServer(BaseHTTPRequestHandler):
                             horahoy = datetime.strptime(hora, '%H:%M:%S').time()
                             fecha=str(caracas_now)[:10]
                             etapadia=1
-                            aperturaconcedidahuella(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
+                            aperturaconcedidahuella(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, razonApertura)
                             etapadiaapertura=1
                         elif dia==diahoy and cantidaddias==1:
                             hora=str(caracas_now)[11:19]
@@ -568,7 +571,7 @@ class MyServer(BaseHTTPRequestHandler):
                             if entrada<salida:
                                 if horahoy >= entrada and horahoy <= salida:
                                     #print('entrada concedida')
-                                    aperturaconcedidahuella(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
+                                    aperturaconcedidahuella(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, razonApertura)
                                     etapadiaapertura=1
                                 else:
                                     aperturadenegada(cursor, conn, acceso_solicitud)
@@ -576,7 +579,7 @@ class MyServer(BaseHTTPRequestHandler):
                             if entrada>salida:
                                 if (horahoy>=entrada and horahoy <=ultimahora) or (horahoy>=primerahora and horahoy <= salida):
                                     #print('entrada concedida')
-                                    aperturaconcedidahuella(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
+                                    aperturaconcedidahuella(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, razonApertura)
                                     etapadiaapertura=1
                                 else:
                                     aperturadenegada(cursor, conn, acceso_solicitud)
@@ -589,7 +592,7 @@ class MyServer(BaseHTTPRequestHandler):
                             if entrada<salida:
                                 if horahoy >= entrada and horahoy <= salida:
                                     #print('entrada concedida')
-                                    aperturaconcedidahuella(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
+                                    aperturaconcedidahuella(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, razonApertura)
                                     etapadiaapertura=1
                                     contadoraux=0
                                 else:
@@ -600,7 +603,7 @@ class MyServer(BaseHTTPRequestHandler):
                             if entrada>salida:
                                 if (horahoy>=entrada and horahoy <=ultimahora) or (horahoy>=primerahora and horahoy <= salida):
                                     #print('entrada concedida')
-                                    aperturaconcedidahuella(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
+                                    aperturaconcedidahuella(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, razonApertura)
                                     etapadiaapertura=1
                                     contadoraux=0
                                 else:
@@ -621,12 +624,12 @@ class MyServer(BaseHTTPRequestHandler):
             else:
                 aperturadenegada(cursor, conn, acceso_solicitud)
 
-        if len(peticion) == 3 and peticion[2] == "seguricel_rfid_activo":
+        if len(peticion) == 4 and peticion[3] == "seguricel_rfid_activo":
             self.send_response(200)
             self.send_header("Content-type", "utf-8")
             self.end_headers()
             # self.wfile.write(bytes(f"{self.path[1::]}", "utf-8"))
-            epc, acceso_solicitud, _ = peticion
+            epc, acceso_solicitud, razonApertura, _ = peticion
             diasusuario = []
             etapadia=0
             etapadiaapertura=0
@@ -657,7 +660,7 @@ class MyServer(BaseHTTPRequestHandler):
                             horahoy = datetime.strptime(hora, '%H:%M:%S').time()
                             fecha=str(caracas_now)[:10]
                             etapadia=1
-                            aperturaconcedidarfid(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
+                            aperturaconcedidarfid(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, razonApertura)
                             etapadiaapertura=1
                         elif dia==diahoy and cantidaddias==1:
                             hora=str(caracas_now)[11:19]
@@ -667,7 +670,7 @@ class MyServer(BaseHTTPRequestHandler):
                             if entrada<salida:
                                 if horahoy >= entrada and horahoy <= salida:
                                     #print('entrada concedida')
-                                    aperturaconcedidarfid(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
+                                    aperturaconcedidarfid(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, razonApertura)
                                     etapadiaapertura=1
                                 else:
                                     aperturadenegada(cursor, conn, acceso_solicitud)
@@ -675,7 +678,7 @@ class MyServer(BaseHTTPRequestHandler):
                             if entrada>salida:
                                 if (horahoy>=entrada and horahoy <=ultimahora) or (horahoy>=primerahora and horahoy <= salida):
                                     #print('entrada concedida')
-                                    aperturaconcedidarfid(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
+                                    aperturaconcedidarfid(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, razonApertura)
                                     etapadiaapertura=1
                                 else:
                                     aperturadenegada(cursor, conn, acceso_solicitud)
@@ -688,7 +691,7 @@ class MyServer(BaseHTTPRequestHandler):
                             if entrada<salida:
                                 if horahoy >= entrada and horahoy <= salida:
                                     #print('entrada concedida')
-                                    aperturaconcedidarfid(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
+                                    aperturaconcedidarfid(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, razonApertura)
                                     etapadiaapertura=1
                                     contadoraux=0
                                 else:
@@ -699,7 +702,7 @@ class MyServer(BaseHTTPRequestHandler):
                             if entrada>salida:
                                 if (horahoy>=entrada and horahoy <=ultimahora) or (horahoy>=primerahora and horahoy <= salida):
                                     #print('entrada concedida')
-                                    aperturaconcedidarfid(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
+                                    aperturaconcedidarfid(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, razonApertura)
                                     etapadiaapertura=1
                                     contadoraux=0
                                 else:
