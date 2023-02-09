@@ -86,7 +86,7 @@ def aperturaConcedidaInternet(nombref, fechaf, horaf, contratof, cedulaf, cursor
             cursorf.execute('''INSERT INTO accesos_abiertos (cedula, acceso, fecha, hora, estado) 
             VALUES (%s, %s, %s, %s, %s)''', (cedulaf, acceso, fechaf, horaf, 'f'))
             connf.commit()
-            requests.put(url=f'{URL_API}aperturasusuarioapi/{id_solicitud}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'))
+            requests.put(url=f'{URL_API}aperturasusuarioapi/{id_solicitud}/{contratof}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'))
     except Exception as e:
         print(f"{e} - fallo intentando aperturar desde internet en la peticion con id {id_solicitud}")
         # cursorf.execute('''INSERT INTO web_interacciones (nombre, fecha, hora, razon, contrato, cedula_id)
