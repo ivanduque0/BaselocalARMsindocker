@@ -284,7 +284,7 @@ while True:
                     for consultajson in request_json:
                         idCambio=consultajson['id']
                         tablaCambiada=consultajson['tabla']
-                        cedulaUsuario=consultajson['cedula']
+                        idUsuario=consultajson['usuario']
 
                         # print(f'idCambio:{idCambio}')
                         # print(f'tablaCambiada:{tablaCambiada}')
@@ -294,42 +294,42 @@ while True:
                             try:
                                 try:
                                     banderaUsuario=True
-                                    if cedulaUsuario == 'completo':
-                                        cursorlocal.execute('SELECT cedula, nombre, telegram_id, beacon_uuid, internet, wifi, bluetooth, captahuella, rfid, facial FROM web_usuarios')
+                                    if not idUsuario:
+                                        cursorlocal.execute('SELECT id, telegram_id, beacon_uuid, internet, wifi, bluetooth, captahuella, rfid, facial FROM web_usuarios')
                                         usuarios_local= cursorlocal.fetchall()
                                         
                                         request_json_usuario = requests.get(url=f'{URL_API}obtenerusuariosapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
 
                                         usuariosServidor=[]
                                         for consultajson in request_json_usuario:
-                                            tuplaUsuarioIndividual=(consultajson['cedula'],consultajson['nombre'],consultajson['telegram_id'], consultajson['beacon_uuid'], consultajson['telefonoInternet'], consultajson['telefonoWifi'], consultajson['telefonoBluetooth'], consultajson['captahuella'], consultajson['rfid'], consultajson['reconocimientoFacial'],)
+                                            tuplaUsuarioIndividual=(consultajson['id'],consultajson['telegram_id'], consultajson['beacon_uuid'], consultajson['telefonoInternet'], consultajson['telefonoWifi'], consultajson['telefonoBluetooth'], consultajson['captahuella'], consultajson['rfid'], consultajson['reconocimientoFacial'],)
                                             usuariosServidor.append(tuplaUsuarioIndividual)
                                         for usuario in usuariosServidor:
                                             # contador=contador+1
                                             # print(contador)
                                             # print(usuario)
                                             if not usuario in usuarios_local:
-                                                cedula=usuario[0]
-                                                telegram_id=usuario[2]
-                                                beacon_uuid=usuario[3]
-                                                internet=usuario[4]
-                                                wifi=usuario[5]
-                                                bluetooth=usuario[6]
-                                                captahuella=usuario[7]
-                                                rfid=usuario[8]
-                                                facial=usuario[9]
-                                                cursorlocal.execute("UPDATE web_usuarios SET telegram_id=%s, beacon_uuid=%s, internet=%s, wifi=%s, bluetooth=%s, captahuella=%s, rfid=%s, facial=%s WHERE cedula=%s", (telegram_id,beacon_uuid,internet,wifi,bluetooth,captahuella,rfid,facial,cedula))
+                                                id_usuario=usuario[0]
+                                                telegram_id=usuario[1]
+                                                beacon_uuid=usuario[2]
+                                                internet=usuario[3]
+                                                wifi=usuario[4]
+                                                bluetooth=usuario[5]
+                                                captahuella=usuario[6]
+                                                rfid=usuario[7]
+                                                facial=usuario[8]
+                                                cursorlocal.execute("UPDATE web_usuarios SET telegram_id=%s, beacon_uuid=%s, internet=%s, wifi=%s, bluetooth=%s, captahuella=%s, rfid=%s, facial=%s WHERE id=%s", (telegram_id,beacon_uuid,internet,wifi,bluetooth,captahuella,rfid,facial,id_usuario))
                                                 connlocal.commit()
                                         usuariosServidor=[]
                                     else:
-                                        cursorlocal.execute('SELECT cedula, nombre, telegram_id, beacon_uuid, internet, wifi, bluetooth, captahuella, rfid, facial FROM web_usuarios WHERE cedula=%s',(cedulaUsuario,))
+                                        cursorlocal.execute('SELECT rol, cedula, nombre, telegram_id, beacon_uuid, internet, wifi, bluetooth, captahuella, rfid, facial FROM web_usuarios WHERE id=%s',(idUsuario,))
                                         usuario_local= cursorlocal.fetchall()
 
-                                        request_json_usuario = requests.get(url=f'{URL_API}usuarioindividualapi/{CONTRATO}/{cedulaUsuario}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
+                                        request_json_usuario = requests.get(url=f'{URL_API}usuarioindividualapi/{CONTRATO}/{idUsuario}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
                                         usuarioLocal=len(usuario_local)
                                         usuarioServidor=len(request_json_usuario)
                                         if usuarioLocal and not usuarioServidor:
-                                            cursorlocal.execute('SELECT id_suprema FROM web_huellas where cedula=%s', (cedulaUsuario,))
+                                            cursorlocal.execute('SELECT id_suprema FROM web_huellas where cedula=%s', (usuario_local[0][2],))
                                             huellas_local= cursorlocal.fetchall()
                                             HuellasPorBorrar=len(huellas_local)
                                             HuellasBorradas=0
@@ -358,6 +358,8 @@ while True:
                                                 connlocal.commit()
                                         elif not usuarioLocal and usuarioServidor: 
                                             for consultajson in request_json_usuario:
+                                                id_usuario=consultajson['id']
+                                                rol=consultajson['rol']
                                                 cedula=consultajson['cedula']
                                                 nombre=consultajson['nombre']
                                                 telegram_id=consultajson['telegram_id']
@@ -368,11 +370,12 @@ while True:
                                                 captahuella=consultajson['captahuella']
                                                 rfid=consultajson['rfid']
                                                 facial=consultajson['reconocimientoFacial']
-                                            cursorlocal.execute('''INSERT INTO web_usuarios (cedula, nombre, telegram_id, beacon_uuid, internet, wifi, bluetooth, captahuella, rfid, facial)
-                                            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)''', (cedula, nombre, telegram_id, beacon_uuid, internet, wifi, bluetooth, captahuella, rfid, facial))
+                                            cursorlocal.execute('''INSERT INTO web_usuarios (id, rol, cedula, nombre, telegram_id, beacon_uuid, internet, wifi, bluetooth, captahuella, rfid, facial)
+                                            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)''', (id_usuario, rol, cedula, nombre, telegram_id, beacon_uuid, internet, wifi, bluetooth, captahuella, rfid, facial))
                                             connlocal.commit()
                                         elif usuarioLocal and usuarioServidor:
                                             for consultajson in request_json_usuario:
+                                                id_usuario=consultajson['id']
                                                 cedula=consultajson['cedula']
                                                 telegram_id=consultajson['telegram_id']
                                                 beacon_uuid=consultajson['beacon_uuid']
@@ -382,7 +385,7 @@ while True:
                                                 captahuella=consultajson['captahuella']
                                                 rfid=consultajson['rfid']
                                                 facial=consultajson['reconocimientoFacial']
-                                            cursorlocal.execute("UPDATE web_usuarios SET telegram_id=%s, beacon_uuid=%s, internet=%s, wifi=%s, bluetooth=%s, captahuella=%s, rfid=%s, facial=%s WHERE cedula=%s", (telegram_id,beacon_uuid,internet,wifi,bluetooth,captahuella,rfid,facial,cedula))
+                                            cursorlocal.execute("UPDATE web_usuarios SET telegram_id=%s, beacon_uuid=%s, internet=%s, wifi=%s, bluetooth=%s, captahuella=%s, rfid=%s, facial=%s WHERE id=%s", (telegram_id,beacon_uuid,internet,wifi,bluetooth,captahuella,rfid,facial,id_usuario))
                                             connlocal.commit()
                                 except requests.exceptions.ConnectionError:
                                     print("fallo consultando api en usuarios")
@@ -396,35 +399,41 @@ while True:
                             try:
                                 try:
                                     banderaHorario=True
-                                    request_json_horarios = requests.get(url=f'{URL_API}obtenerhorariosindividualapi/{CONTRATO}/{cedulaUsuario}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
+                                    request_json_horarios = requests.get(url=f'{URL_API}obtenerhorariosindividualapi/{CONTRATO}/{idUsuario}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
                                             
                                     horariosServidor=[]
                                     for consultajson in request_json_horarios:
                                         entradaObjetohora=time.fromisoformat(consultajson['entrada'])
                                         salidaObjetohora=time.fromisoformat(consultajson['salida'])
-                                        TuplaHorarioIndividual=(entradaObjetohora,salidaObjetohora,consultajson['cedula'],consultajson['dia'],)
+                                        TuplaHorarioIndividual=(consultajson['usuario'],consultajson['fecha_entrada'],consultajson['fecha_salida'],entradaObjetohora,salidaObjetohora,consultajson['cedula'],consultajson['dia'],)
                                         horariosServidor.append(TuplaHorarioIndividual)
                                     
-                                    cursorlocal.execute('SELECT * FROM web_horariospermitidos WHERE cedula_id=%s',(cedulaUsuario,))
+                                    cursorlocal.execute('SELECT usuario, fecha_entrada, fecha_salida, entrada, salida, cedula_id, dia FROM web_horariospermitidos WHERE cedula_id=%s',(cedulaUsuario,))
                                     horariosLocal= cursorlocal.fetchall()
 
                                     for horario in horariosServidor:
                                         if not horario in horariosLocal:
-                                            entrada=horario[0]
-                                            salida=horario[1]
-                                            cedula=horario[2]
-                                            dia=horario[3]
-                                            cursorlocal.execute('''INSERT INTO web_horariospermitidos (entrada, salida, cedula_id, dia)
-                                            VALUES (%s, %s, %s, %s);''', (entrada, salida, cedula, dia))
+                                            usuario_id=horario[0]
+                                            fecha_entrada=horario[1]
+                                            fecha_salida=horario[2]
+                                            entrada=horario[3]
+                                            salida=horario[4]
+                                            cedula=horario[5]
+                                            dia=horario[6]
+                                            cursorlocal.execute('''INSERT INTO web_horariospermitidos (usuario, fecha_entrada, fecha_salida, entrada, salida, cedula_id, dia)
+                                            VALUES (%s, %s, %s, %s, %s, %s, %s);''', (usuario_id, fecha_entrada, fecha_salida, entrada, salida, cedula, dia))
                                             connlocal.commit()
 
                                     for horariosLocaliterar in horariosLocal:
                                         if not horariosLocaliterar in horariosServidor:
-                                            entrada=horariosLocaliterar[0]
-                                            salida=horariosLocaliterar[1]
-                                            cedula=horariosLocaliterar[2]
-                                            dia=horariosLocaliterar[3]
-                                            cursorlocal.execute('DELETE FROM web_horariospermitidos WHERE entrada=%s AND salida=%s AND cedula_id=%s AND dia=%s',(entrada, salida, cedula, dia))
+                                            usuario_id=horariosLocaliterar[0]
+                                            fecha_entrada=horariosLocaliterar[1]
+                                            fecha_salida=horariosLocaliterar[2]
+                                            entrada=horariosLocaliterar[3]
+                                            salida=horariosLocaliterar[4]
+                                            cedula=horariosLocaliterar[5]
+                                            dia=horariosLocaliterar[6]
+                                            cursorlocal.execute('DELETE FROM web_horariospermitidos WHERE fecha_entrada=%s AND  fecha_salida=%s AND entrada=%s AND salida=%s AND usuario=%s AND dia=%s',(fecha_entrada, fecha_salida, entrada, salida, usuario_id, dia))
                                             connlocal.commit()
                                 except requests.exceptions.ConnectionError:
                                     print("fallo consultando api en horarios")
@@ -438,10 +447,12 @@ while True:
                             try:
                                 try:
                                     banderaHuella = True
-                                    cursorlocal.execute('SELECT template, id_suprema, cedula FROM web_huellas where cedula=%s', (cedulaUsuario,))
+                                    cursorlocal.execute('SELECT cedula WHERE id=%s',(idUsuario,))
+                                    usuario_local= cursorlocal.fetchall()
+                                    cursorlocal.execute('SELECT template, id_suprema, cedula FROM web_huellas where cedula=%s', (usuario_local[0][0],))
                                     huellas_local= cursorlocal.fetchall()
 
-                                    request_json = requests.get(url=f'{URL_API}obtenerhuellasapi/{cedulaUsuario}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
+                                    request_json = requests.get(url=f'{URL_API}obtenerhuellasapi/{usuario_local[0][0]}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
 
                                     huellasServidor=[]
                                     for consultajson in request_json:
@@ -531,10 +542,12 @@ while True:
                             try:
                                 try:
                                     banderaTag=True
-                                    cursorlocal.execute('SELECT epc, cedula FROM web_tagsrfid WHERE cedula=%s', (cedulaUsuario,))
+                                    cursorlocal.execute('SELECT cedula WHERE id=%s',(idUsuario,))
+                                    usuario_local= cursorlocal.fetchall()
+                                    cursorlocal.execute('SELECT epc, cedula FROM web_tagsrfid WHERE cedula=%s', (usuario_local[0][0],))
                                     tags_local= cursorlocal.fetchall()
                                     
-                                    request_json = requests.get(url=f'{URL_API}obtenertagsrfidindividualapi/{CONTRATO}/{cedulaUsuario}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
+                                    request_json = requests.get(url=f'{URL_API}obtenertagsrfidindividualapi/{CONTRATO}/{usuario_local[0][0]}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
                                     tagsServidor=[]
                                     for consultajson in request_json:
                                         tuplaTagIndividual=(consultajson['epc'],consultajson['cedula'],)
