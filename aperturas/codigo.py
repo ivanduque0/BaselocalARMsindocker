@@ -226,7 +226,7 @@ while True:
                         id_solicitud=aperturalocal[0]
                         peticion_internet=aperturalocal[4]
                         razonApertura=aperturalocal[5]
-                        cursor.execute("SELECT cedula, nombre, internet, wifi FROM web_usuarios where telegram_id=%s", (id_usuario,))
+                        cursor.execute("SELECT cedula, nombre, internet, wifi, rol, id FROM web_usuarios where telegram_id=%s", (id_usuario,))
                         datosUsuario = cursor.fetchall()
                         #print(datosUsuario)
                         if len(datosUsuario)!=0:
@@ -234,9 +234,11 @@ while True:
                             nombre=datosUsuario[0][1]
                             permisoAperturaInternet = datosUsuario[0][2]
                             permisoAperturaWifi = datosUsuario[0][3]
-                            cursor.execute('SELECT * FROM web_horariospermitidos where cedula_id=%s', (cedula,))
+                            rol=datosUsuario[0][4]
+                            usuario_id=datosUsuario[0][5]
+                            cursor.execute('SELECT * FROM web_horariospermitidos where usuario=%s', (usuario_id,))
                             horarios_permitidos = cursor.fetchall()
-                            if horarios_permitidos != [] and permisoAperturaInternet == True and peticion_internet==True:
+                            if (horarios_permitidos != [] and permisoAperturaInternet == True and peticion_internet==True) or (rol=='Propietario' and permisoAperturaInternet == True and peticion_internet==True):
                                 tz = pytz.timezone('America/Caracas')
                                 caracas_now = datetime.now(tz)
                                 dia = caracas_now.weekday()
@@ -245,7 +247,7 @@ while True:
                                     diasusuario.append(dia)
                                 cantidaddias = diasusuario.count(dia)
                                 for entrada, salida, _, dia in horarios_permitidos:
-                                    if 'Siempre' in diasusuario:
+                                    if 'Siempre' in diasusuario or rol=='Propietario':
                                         hora=str(caracas_now)[11:19]
                                         horahoy = datetime.strptime(hora, '%H:%M:%S').time()
                                         fecha=str(caracas_now)[:10]
@@ -304,7 +306,7 @@ while True:
                                 if etapadia==0 and etapadiaapertura==0:
                                     aperturadenegada(cursor, conn, acceso_solicitud, id_solicitud)
                                     #print('Dia no permitido')
-                            elif horarios_permitidos != [] and permisoAperturaWifi == True and peticion_internet == False:
+                            elif (horarios_permitidos != [] and permisoAperturaWifi == True and peticion_internet == False) or (rol=='Propietario' and permisoAperturaWifi == True and peticion_internet == False):
                                 tz = pytz.timezone('America/Caracas')
                                 caracas_now = datetime.now(tz)
                                 dia = caracas_now.weekday()
@@ -313,7 +315,7 @@ while True:
                                     diasusuario.append(dia)
                                 cantidaddias = diasusuario.count(dia)
                                 for entrada, salida, _, dia in horarios_permitidos:
-                                    if 'Siempre' in diasusuario:
+                                    if 'Siempre' in diasusuario or rol=='Propietario':
                                         hora=str(caracas_now)[11:19]
                                         horahoy = datetime.strptime(hora, '%H:%M:%S').time()
                                         fecha=str(caracas_now)[:10]

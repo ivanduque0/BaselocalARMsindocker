@@ -322,7 +322,7 @@ class MyServer(BaseHTTPRequestHandler):
             etapadiaapertura=0
             cantidaddias = 0
             contadoraux = 0
-            cursor.execute("SELECT cedula, nombre, wifi, telegram_id FROM web_usuarios where telegram_id=%s", (id_usuario,))
+            cursor.execute("SELECT cedula, nombre, wifi, telegram_id, rol, id FROM web_usuarios where telegram_id=%s", (id_usuario,))
             datosUsuario = cursor.fetchall()
             #print(datosUsuario)
             if len(datosUsuario)!=0:
@@ -330,9 +330,11 @@ class MyServer(BaseHTTPRequestHandler):
                 nombre=datosUsuario[0][1]
                 permisoAperturaWifi = datosUsuario[0][2]
                 idUsuario = datosUsuario[0][3]
-                cursor.execute('SELECT * FROM web_horariospermitidos where cedula_id=%s', (cedula,))
+                rol=datosUsuario[0][4]
+                usuario_id=datosUsuario[0][5]
+                cursor.execute('SELECT * FROM web_horariospermitidos where usuario=%s', (usuario_id,))
                 horarios_permitidos = cursor.fetchall()
-                if horarios_permitidos != [] and permisoAperturaWifi == True:
+                if (horarios_permitidos != [] and permisoAperturaWifi == True) or (rol=='Propietario' and permisoAperturaWifi == True):
                     tz = pytz.timezone('America/Caracas')
                     caracas_now = datetime.now(tz)
                     dia = caracas_now.weekday()
@@ -341,7 +343,7 @@ class MyServer(BaseHTTPRequestHandler):
                         diasusuario.append(dia)
                     cantidaddias = diasusuario.count(dia)
                     for entrada, salida, _, dia in horarios_permitidos:
-                        if 'Siempre' in diasusuario:
+                        if 'Siempre' in diasusuario or rol=='Propietario':
                             hora=str(caracas_now)[11:19]
                             horahoy = datetime.strptime(hora, '%H:%M:%S').time()
                             fecha=str(caracas_now)[:10]
@@ -430,16 +432,18 @@ class MyServer(BaseHTTPRequestHandler):
             etapadiaapertura=0
             cantidaddias = 0
             contadoraux = 0
-            cursor.execute("SELECT cedula, nombre, bluetooth FROM web_usuarios where beacon_uuid=%s", (uuid_usuario,))
+            cursor.execute("SELECT cedula, nombre, bluetooth, rol, id FROM web_usuarios where beacon_uuid=%s", (uuid_usuario,))
             datosUsuario = cursor.fetchall()
             #print(datosUsuario)
             if len(datosUsuario)!=0:
                 cedula=datosUsuario[0][0]
                 nombre=datosUsuario[0][1]
                 permisoAperturaBluetooth = datosUsuario[0][2]
-                cursor.execute('SELECT * FROM web_horariospermitidos where cedula_id=%s', (cedula,))
+                rol=datosUsuario[0][3]
+                usuario_id=datosUsuario[0][4]
+                cursor.execute('SELECT * FROM web_horariospermitidos where usuario=%s', (usuario_id,))
                 horarios_permitidos = cursor.fetchall()
-                if horarios_permitidos != [] and permisoAperturaBluetooth == True:
+                if (horarios_permitidos != [] and permisoAperturaBluetooth == True) or (rol=='Propietario' and permisoAperturaBluetooth == True):
                     tz = pytz.timezone('America/Caracas')
                     caracas_now = datetime.now(tz)
                     dia = caracas_now.weekday()
@@ -448,7 +452,7 @@ class MyServer(BaseHTTPRequestHandler):
                         diasusuario.append(dia)
                     cantidaddias = diasusuario.count(dia)
                     for entrada, salida, _, dia in horarios_permitidos:
-                        if 'Siempre' in diasusuario:
+                        if 'Siempre' in diasusuario or rol=='Propietario':
                             hora=str(caracas_now)[11:19]
                             horahoy = datetime.strptime(hora, '%H:%M:%S').time()
                             fecha=str(caracas_now)[:10]
@@ -540,14 +544,16 @@ class MyServer(BaseHTTPRequestHandler):
             datosusuario_huella = cursor.fetchall()
             #print(datosUsuario)
             if len(datosusuario_huella)!=0:
-                cursor.execute("SELECT cedula, nombre, captahuella FROM web_usuarios where cedula=%s", (datosusuario_huella[0][0],))
+                cursor.execute("SELECT cedula, nombre, captahuella, rol, id FROM web_usuarios where cedula=%s", (datosusuario_huella[0][0],))
                 datosUsuario = cursor.fetchall()
                 cedula=datosUsuario[0][0]
                 nombre=datosUsuario[0][1]
                 permisoAperturaHuella = datosUsuario[0][2]
-                cursor.execute('SELECT * FROM web_horariospermitidos where cedula_id=%s', (cedula,))
+                rol=datosUsuario[0][3]
+                usuario_id=datosUsuario[0][4]
+                cursor.execute('SELECT * FROM web_horariospermitidos where usuario=%s', (usuario_id,))
                 horarios_permitidos = cursor.fetchall()
-                if horarios_permitidos != [] and permisoAperturaHuella == True:
+                if (horarios_permitidos != [] and permisoAperturaHuella == True) or (rol=='Propietario' and permisoAperturaHuella == True):
                     tz = pytz.timezone('America/Caracas')
                     caracas_now = datetime.now(tz)
                     dia = caracas_now.weekday()
@@ -556,7 +562,7 @@ class MyServer(BaseHTTPRequestHandler):
                         diasusuario.append(dia)
                     cantidaddias = diasusuario.count(dia)
                     for entrada, salida, _, dia in horarios_permitidos:
-                        if 'Siempre' in diasusuario:
+                        if 'Siempre' in diasusuario or rol=='Propietario':
                             hora=str(caracas_now)[11:19]
                             horahoy = datetime.strptime(hora, '%H:%M:%S').time()
                             fecha=str(caracas_now)[:10]
@@ -639,14 +645,16 @@ class MyServer(BaseHTTPRequestHandler):
             datosusuario_rfid = cursor.fetchall()
             #print(datosusuario)
             if len(datosusuario_rfid)!=0:
-                cursor.execute("SELECT cedula, nombre, rfid  FROM web_usuarios where cedula=%s", (datosusuario_rfid[0][0],))
+                cursor.execute("SELECT cedula, nombre, rfid, rol, id  FROM web_usuarios where cedula=%s", (datosusuario_rfid[0][0],))
                 datosUsuario = cursor.fetchall()
                 cedula=datosUsuario[0][0]
                 nombre=datosUsuario[0][1]
                 permisoAperturaRFID = datosUsuario[0][2]
-                cursor.execute('SELECT * FROM web_horariospermitidos where cedula_id=%s', (cedula,))
+                rol=datosUsuario[0][3]
+                usuario_id=datosUsuario[0][4]
+                cursor.execute('SELECT * FROM web_horariospermitidos where usuario=%s', (usuario_id,))
                 horarios_permitidos = cursor.fetchall()
-                if horarios_permitidos != [] and permisoAperturaRFID == True:
+                if (horarios_permitidos != [] and permisoAperturaRFID == True) or (rol=='Propietario' and permisoAperturaRFID == True):
                     tz = pytz.timezone('America/Caracas')
                     caracas_now = datetime.now(tz)
                     dia = caracas_now.weekday()
@@ -655,7 +663,7 @@ class MyServer(BaseHTTPRequestHandler):
                         diasusuario.append(dia)
                     cantidaddias = diasusuario.count(dia)
                     for entrada, salida, _, dia in horarios_permitidos:
-                        if 'Siempre' in diasusuario:
+                        if 'Siempre' in diasusuario or rol=='Propietario':
                             hora=str(caracas_now)[11:19]
                             horahoy = datetime.strptime(hora, '%H:%M:%S').time()
                             fecha=str(caracas_now)[:10]
