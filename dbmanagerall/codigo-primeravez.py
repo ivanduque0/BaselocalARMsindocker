@@ -182,8 +182,12 @@ try:
                     
                     horariosServidor=[]
                     for consultajson in request_json:
-                        entradaObjetohora=time.fromisoformat(consultajson['entrada'])
-                        salidaObjetohora=time.fromisoformat(consultajson['salida'])
+                        if consultajson['entrada'] and consultajson['salida']:
+                            entradaObjetohora=time.fromisoformat(consultajson['entrada'])
+                            salidaObjetohora=time.fromisoformat(consultajson['salida'])
+                        else:
+                            entradaObjetohora=None
+                            salidaObjetohora=None
                         TuplaHorarioIndividual=(consultajson['usuario'],consultajson['fecha_entrada'],consultajson['fecha_salida'],entradaObjetohora,salidaObjetohora,consultajson['cedula'],consultajson['dia'],)
                         horariosServidor.append(TuplaHorarioIndividual)
                     
