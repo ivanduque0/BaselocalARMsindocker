@@ -377,6 +377,8 @@ while True:
                                             for consultajson in request_json_usuario:
                                                 id_usuario=consultajson['id']
                                                 cedula=consultajson['cedula']
+                                                nombre=consultajson['nombre']
+                                                rol=consultajson['rol']
                                                 telegram_id=consultajson['telegram_id']
                                                 beacon_uuid=consultajson['beacon_uuid']
                                                 internet=consultajson['telefonoInternet']
@@ -385,7 +387,7 @@ while True:
                                                 captahuella=consultajson['captahuella']
                                                 rfid=consultajson['rfid']
                                                 facial=consultajson['reconocimientoFacial']
-                                            cursorlocal.execute("UPDATE web_usuarios SET telegram_id=%s, beacon_uuid=%s, internet=%s, wifi=%s, bluetooth=%s, captahuella=%s, rfid=%s, facial=%s WHERE id=%s", (telegram_id,beacon_uuid,internet,wifi,bluetooth,captahuella,rfid,facial,id_usuario))
+                                            cursorlocal.execute("UPDATE web_usuarios SET rol=%s, cedula=%s, nombre=%s, telegram_id=%s, beacon_uuid=%s, internet=%s, wifi=%s, bluetooth=%s, captahuella=%s, rfid=%s, facial=%s WHERE id=%s", (rol, cedula, nombre, telegram_id,beacon_uuid,internet,wifi,bluetooth,captahuella,rfid,facial,id_usuario))
                                             connlocal.commit()
                                 except requests.exceptions.ConnectionError:
                                     print("fallo consultando api en usuarios")
@@ -412,7 +414,7 @@ while True:
                                         TuplaHorarioIndividual=(consultajson['usuario'],consultajson['fecha_entrada'],consultajson['fecha_salida'],entradaObjetohora,salidaObjetohora,consultajson['cedula'],consultajson['dia'],)
                                         horariosServidor.append(TuplaHorarioIndividual)
                                     
-                                    cursorlocal.execute('SELECT usuario, fecha_entrada, fecha_salida, entrada, salida, cedula_id, dia FROM web_horariospermitidos WHERE cedula_id=%s',(cedulaUsuario,))
+                                    cursorlocal.execute('SELECT usuario, fecha_entrada, fecha_salida, entrada, salida, cedula_id, dia FROM web_horariospermitidos WHERE usuario=%s',(idUsuario,))
                                     horariosLocal= cursorlocal.fetchall()
 
                                     for horario in horariosServidor:
