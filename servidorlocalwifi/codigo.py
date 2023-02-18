@@ -334,7 +334,7 @@ class MyServer(BaseHTTPRequestHandler):
                 usuario_id=datosUsuario[0][5]
                 cursor.execute('SELECT * FROM web_horariospermitidos where usuario=%s', (usuario_id,))
                 horarios_permitidos = cursor.fetchall()
-                if (horarios_permitidos != [] and permisoAperturaWifi == True) or (rol=='Propietario' and permisoAperturaWifi == True):
+                if (horarios_permitidos != [] and permisoAperturaWifi == True and rol=='Secundario'):
                     tz = pytz.timezone('America/Caracas')
                     caracas_now = datetime.now(tz)
                     dia = caracas_now.weekday()
@@ -343,7 +343,7 @@ class MyServer(BaseHTTPRequestHandler):
                         diasusuario.append(dia)
                     cantidaddias = diasusuario.count(dia)
                     for entrada, salida, _, dia in horarios_permitidos:
-                        if 'Siempre' in diasusuario or rol=='Propietario':
+                        if 'Siempre' in diasusuario:
                             hora=str(caracas_now)[11:19]
                             horahoy = datetime.strptime(hora, '%H:%M:%S').time()
                             fecha=str(caracas_now)[:10]
@@ -407,6 +407,11 @@ class MyServer(BaseHTTPRequestHandler):
                     if etapadia==0 and etapadiaapertura==0:
                         aperturadenegada(cursor, conn, acceso_solicitud)
                         #print('Dia no permitido')
+                elif rol=='Propietario' and permisoAperturaWifi == True:
+                    hora=str(caracas_now)[11:19]
+                    horahoy = datetime.strptime(hora, '%H:%M:%S').time()
+                    fecha=str(caracas_now)[:10]
+                    aperturaconcedidawifi(idUsuario, cursor, conn, acceso_solicitud, cedula, nombre, fecha, horahoy, razonApertura)
                 else:
                     aperturadenegada(cursor, conn, acceso_solicitud)
                 # if horarios_permitidos == []:
@@ -443,7 +448,7 @@ class MyServer(BaseHTTPRequestHandler):
                 usuario_id=datosUsuario[0][4]
                 cursor.execute('SELECT * FROM web_horariospermitidos where usuario=%s', (usuario_id,))
                 horarios_permitidos = cursor.fetchall()
-                if (horarios_permitidos != [] and permisoAperturaBluetooth == True) or (rol=='Propietario' and permisoAperturaBluetooth == True):
+                if horarios_permitidos != [] and permisoAperturaBluetooth == True and rol=='Secundario':
                     tz = pytz.timezone('America/Caracas')
                     caracas_now = datetime.now(tz)
                     dia = caracas_now.weekday()
@@ -452,7 +457,7 @@ class MyServer(BaseHTTPRequestHandler):
                         diasusuario.append(dia)
                     cantidaddias = diasusuario.count(dia)
                     for entrada, salida, _, dia in horarios_permitidos:
-                        if 'Siempre' in diasusuario or rol=='Propietario':
+                        if 'Siempre' in diasusuario:
                             hora=str(caracas_now)[11:19]
                             horahoy = datetime.strptime(hora, '%H:%M:%S').time()
                             fecha=str(caracas_now)[:10]
@@ -516,6 +521,12 @@ class MyServer(BaseHTTPRequestHandler):
                     if etapadia==0 and etapadiaapertura==0:
                         aperturadenegada(cursor, conn, acceso_solicitud)
                         #print('Dia no permitido')
+                elif rol=='Propietario' and permisoAperturaBluetooth == True:
+                    hora=str(caracas_now)[11:19]
+                    horahoy = datetime.strptime(hora, '%H:%M:%S').time()
+                    fecha=str(caracas_now)[:10]
+                    #aperturaconcedidawifi(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
+                    aperturaconcedidabluetooth(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, razonApertura)
                 else:
                     aperturadenegada(cursor, conn, acceso_solicitud)
                     #print('este usuario no tiene horarios establecidos')
@@ -553,7 +564,7 @@ class MyServer(BaseHTTPRequestHandler):
                 usuario_id=datosUsuario[0][4]
                 cursor.execute('SELECT * FROM web_horariospermitidos where usuario=%s', (usuario_id,))
                 horarios_permitidos = cursor.fetchall()
-                if (horarios_permitidos != [] and permisoAperturaHuella == True) or (rol=='Propietario' and permisoAperturaHuella == True):
+                if horarios_permitidos != [] and permisoAperturaHuella == True and rol=='Secundario':
                     tz = pytz.timezone('America/Caracas')
                     caracas_now = datetime.now(tz)
                     dia = caracas_now.weekday()
@@ -562,7 +573,7 @@ class MyServer(BaseHTTPRequestHandler):
                         diasusuario.append(dia)
                     cantidaddias = diasusuario.count(dia)
                     for entrada, salida, _, dia in horarios_permitidos:
-                        if 'Siempre' in diasusuario or rol=='Propietario':
+                        if 'Siempre' in diasusuario:
                             hora=str(caracas_now)[11:19]
                             horahoy = datetime.strptime(hora, '%H:%M:%S').time()
                             fecha=str(caracas_now)[:10]
@@ -621,6 +632,11 @@ class MyServer(BaseHTTPRequestHandler):
                     if etapadia==0 and etapadiaapertura==0:
                         aperturadenegada(cursor, conn, acceso_solicitud)
                         #print('Dia no permitido')
+                elif rol=='Propietario' and permisoAperturaHuella == True:
+                    hora=str(caracas_now)[11:19]
+                    horahoy = datetime.strptime(hora, '%H:%M:%S').time()
+                    fecha=str(caracas_now)[:10]
+                    aperturaconcedidahuella(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, razonApertura)
                 else:
                     aperturadenegada(cursor, conn, acceso_solicitud)
                 # if horarios_permitidos == []:
@@ -654,7 +670,7 @@ class MyServer(BaseHTTPRequestHandler):
                 usuario_id=datosUsuario[0][4]
                 cursor.execute('SELECT * FROM web_horariospermitidos where usuario=%s', (usuario_id,))
                 horarios_permitidos = cursor.fetchall()
-                if (horarios_permitidos != [] and permisoAperturaRFID == True) or (rol=='Propietario' and permisoAperturaRFID == True):
+                if horarios_permitidos != [] and permisoAperturaRFID == True and rol=='Secundario':
                     tz = pytz.timezone('America/Caracas')
                     caracas_now = datetime.now(tz)
                     dia = caracas_now.weekday()
@@ -663,7 +679,7 @@ class MyServer(BaseHTTPRequestHandler):
                         diasusuario.append(dia)
                     cantidaddias = diasusuario.count(dia)
                     for entrada, salida, _, dia in horarios_permitidos:
-                        if 'Siempre' in diasusuario or rol=='Propietario':
+                        if 'Siempre' in diasusuario:
                             hora=str(caracas_now)[11:19]
                             horahoy = datetime.strptime(hora, '%H:%M:%S').time()
                             fecha=str(caracas_now)[:10]
@@ -722,6 +738,11 @@ class MyServer(BaseHTTPRequestHandler):
                     if etapadia==0 and etapadiaapertura==0:
                         aperturadenegada(cursor, conn, acceso_solicitud)
                         #print('Dia no permitido')
+                elif rol=='Propietario' and permisoAperturaRFID == True:
+                    hora=str(caracas_now)[11:19]
+                    horahoy = datetime.strptime(hora, '%H:%M:%S').time()
+                    fecha=str(caracas_now)[:10]
+                    aperturaconcedidarfid(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, razonApertura)
                 else:
                     aperturadenegada(cursor, conn, acceso_solicitud)    
                 # if horarios_permitidos == []:
