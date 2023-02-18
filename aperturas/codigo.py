@@ -238,7 +238,7 @@ while True:
                             usuario_id=datosUsuario[0][5]
                             cursor.execute('SELECT * FROM web_horariospermitidos where usuario=%s', (usuario_id,))
                             horarios_permitidos = cursor.fetchall()
-                            if (horarios_permitidos != [] and permisoAperturaInternet == True and peticion_internet==True) or (rol=='Propietario' and permisoAperturaInternet == True and peticion_internet==True):
+                            if horarios_permitidos != [] and permisoAperturaInternet == True and peticion_internet==True and rol=='Secundario':
                                 tz = pytz.timezone('America/Caracas')
                                 caracas_now = datetime.now(tz)
                                 dia = caracas_now.weekday()
@@ -247,7 +247,7 @@ while True:
                                     diasusuario.append(dia)
                                 cantidaddias = diasusuario.count(dia)
                                 for entrada, salida, _, dia in horarios_permitidos:
-                                    if 'Siempre' in diasusuario or rol=='Propietario':
+                                    if 'Siempre' in diasusuario:
                                         hora=str(caracas_now)[11:19]
                                         horahoy = datetime.strptime(hora, '%H:%M:%S').time()
                                         fecha=str(caracas_now)[:10]
@@ -306,7 +306,15 @@ while True:
                                 if etapadia==0 and etapadiaapertura==0:
                                     aperturadenegada(cursor, conn, acceso_solicitud, id_solicitud)
                                     #print('Dia no permitido')
-                            elif (horarios_permitidos != [] and permisoAperturaWifi == True and peticion_internet == False) or (rol=='Propietario' and permisoAperturaWifi == True and peticion_internet == False):
+                            elif rol=='Propietario' and permisoAperturaInternet == True and peticion_internet==True:
+                                tz = pytz.timezone('America/Caracas')
+                                caracas_now = datetime.now(tz)
+                                hora=str(caracas_now)[11:19]
+                                horahoy = datetime.strptime(hora, '%H:%M:%S').time()
+                                fecha=str(caracas_now)[:10]
+                                etapadia=1
+                                aperturaConcedidaInternet(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, id_solicitud, razonApertura)   
+                            elif horarios_permitidos != [] and permisoAperturaWifi == True and peticion_internet == False and rol=='Secundario':
                                 tz = pytz.timezone('America/Caracas')
                                 caracas_now = datetime.now(tz)
                                 dia = caracas_now.weekday()
@@ -374,6 +382,14 @@ while True:
                                 if etapadia==0 and etapadiaapertura==0:
                                     aperturadenegada(cursor, conn, acceso_solicitud, id_solicitud)
                                     #print('Dia no permitido')
+                            elif rol=='Propietario' and permisoAperturaWifi == True and peticion_internet == False:
+                                tz = pytz.timezone('America/Caracas')
+                                caracas_now = datetime.now(tz)
+                                hora=str(caracas_now)[11:19]
+                                horahoy = datetime.strptime(hora, '%H:%M:%S').time()
+                                fecha=str(caracas_now)[:10]
+                                etapadia=1
+                                aperturaConcedidaWifi(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, id_solicitud, razonApertura)
                             else:
                                 aperturadenegada(cursor, conn, acceso_solicitud, id_solicitud) 
                                 #print('este usuario no tiene horarios establecidos')
