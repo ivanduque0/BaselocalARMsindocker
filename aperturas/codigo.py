@@ -186,7 +186,7 @@ while True:
                         diferencia_horas=hora_hora-solicitud_hora
                         diferencia_minutos=hora_minuto-solicitud_minuto
                         solicitud_id=apertura['id']
-                        id_usuario = apertura['id_usuario']
+                        id_usuario = apertura['codigo_usuario']
                         solicitud_acceso=apertura['acceso']
                         razon=apertura['razon']
                         feedbackPeticion=apertura['feedback']
@@ -221,12 +221,12 @@ while True:
                         etapadiaapertura=0
                         cantidaddias = 0
                         contadoraux = 0
-                        id_usuario = aperturalocal[1]
+                        codigo_usuario = aperturalocal[1]
                         acceso_solicitud=aperturalocal[2]
                         id_solicitud=aperturalocal[0]
                         peticion_internet=aperturalocal[4]
                         razonApertura=aperturalocal[5]
-                        cursor.execute("SELECT cedula, nombre, internet, wifi, rol, id FROM web_usuarios where telegram_id=%s", (id_usuario,))
+                        cursor.execute("SELECT cedula, nombre, internet, wifi, rol, id FROM web_usuarios where telegram_id=%s", (codigo_usuario,))
                         datosUsuario = cursor.fetchall()
                         #print(datosUsuario)
                         if len(datosUsuario)!=0:
