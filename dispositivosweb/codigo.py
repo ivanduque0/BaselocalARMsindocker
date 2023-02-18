@@ -10,6 +10,7 @@ import requests
 dotenv_path = Path('/BaselocalARMsindocker/.env.manager')
 load_dotenv(dotenv_path=dotenv_path)
 CONTRATO=os.environ.get("CONTRATO")
+CONTRATO_ID=os.environ.get("CONTRATO_ID")
 URL_API=os.environ.get("URL_API")
 connlocal = None
 connheroku = None
@@ -170,7 +171,7 @@ while True:
                                         "dispositivo": dispositivo,
                                         "descripcion": descripcion,
                                         "estado": estado,
-                                        "contrato": CONTRATO,
+                                        "contrato": CONTRATO_ID,
                                         "acceso": acceso,
                                         "fecha": fecha,
                                         "hora": hora
@@ -191,7 +192,7 @@ while True:
                                 descripcion=dispositivolocal[1]
                                 estado=dispositivolocal[2]
                                 jsonActualizarDispositivo= {
-                                    "contrato": CONTRATO,
+                                    "contrato": CONTRATO_ID,
                                     "dispositivo": dispositivo,
                                     "descripcion": descripcion,
                                     "estado": estado,
