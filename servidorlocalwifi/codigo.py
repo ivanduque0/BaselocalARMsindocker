@@ -408,6 +408,8 @@ class MyServer(BaseHTTPRequestHandler):
                         aperturadenegada(cursor, conn, acceso_solicitud)
                         #print('Dia no permitido')
                 elif rol=='Propietario' and permisoAperturaWifi == True:
+                    tz = pytz.timezone('America/Caracas')
+                    caracas_now = datetime.now(tz)
                     hora=str(caracas_now)[11:19]
                     horahoy = datetime.strptime(hora, '%H:%M:%S').time()
                     fecha=str(caracas_now)[:10]
@@ -522,6 +524,8 @@ class MyServer(BaseHTTPRequestHandler):
                         aperturadenegada(cursor, conn, acceso_solicitud)
                         #print('Dia no permitido')
                 elif rol=='Propietario' and permisoAperturaBluetooth == True:
+                    tz = pytz.timezone('America/Caracas')
+                    caracas_now = datetime.now(tz)
                     hora=str(caracas_now)[11:19]
                     horahoy = datetime.strptime(hora, '%H:%M:%S').time()
                     fecha=str(caracas_now)[:10]
@@ -633,6 +637,8 @@ class MyServer(BaseHTTPRequestHandler):
                         aperturadenegada(cursor, conn, acceso_solicitud)
                         #print('Dia no permitido')
                 elif rol=='Propietario' and permisoAperturaHuella == True:
+                    tz = pytz.timezone('America/Caracas')
+                    caracas_now = datetime.now(tz)
                     hora=str(caracas_now)[11:19]
                     horahoy = datetime.strptime(hora, '%H:%M:%S').time()
                     fecha=str(caracas_now)[:10]
@@ -739,6 +745,8 @@ class MyServer(BaseHTTPRequestHandler):
                         aperturadenegada(cursor, conn, acceso_solicitud)
                         #print('Dia no permitido')
                 elif rol=='Propietario' and permisoAperturaRFID == True:
+                    tz = pytz.timezone('America/Caracas')
+                    caracas_now = datetime.now(tz)
                     hora=str(caracas_now)[11:19]
                     horahoy = datetime.strptime(hora, '%H:%M:%S').time()
                     fecha=str(caracas_now)[:10]
