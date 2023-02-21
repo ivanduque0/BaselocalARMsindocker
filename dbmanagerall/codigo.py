@@ -408,15 +408,15 @@ while True:
                                         if consultajson['entrada'] and consultajson['salida']:
                                             entradaObjetohora=time.fromisoformat(consultajson['entrada'])
                                             salidaObjetohora=time.fromisoformat(consultajson['salida'])
-                                        # else:
-                                        #     entradaObjetohora=None
-                                        #     salidaObjetohora=None
+                                        else:
+                                            entradaObjetohora=None
+                                            salidaObjetohora=None
                                         if consultajson['fecha_entrada'] and consultajson['fecha_salida']:
                                             entradaObjetofecha= date.fromisoformat(consultajson['fecha_entrada'])
                                             salidaObjetofecha= date.fromisoformat(consultajson['fecha_salida'])
-                                        # else:
-                                        #     entradaObjetofecha=None
-                                        #     salidaObjetofecha=None
+                                        else:
+                                            entradaObjetofecha=None
+                                            salidaObjetofecha=None
                                         
                                         TuplaHorarioIndividual=(consultajson['id'], consultajson['usuario'],entradaObjetofecha,salidaObjetofecha,entradaObjetohora,salidaObjetohora,consultajson['cedula'],consultajson['dia'],)
                                         horariosServidor.append(TuplaHorarioIndividual)
