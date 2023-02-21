@@ -411,7 +411,14 @@ while True:
                                         else:
                                             entradaObjetohora=None
                                             salidaObjetohora=None
-                                        TuplaHorarioIndividual=(consultajson['usuario'],consultajson['fecha_entrada'],consultajson['fecha_salida'],entradaObjetohora,salidaObjetohora,consultajson['cedula'],consultajson['dia'],)
+                                        if consultajson['fecha_entrada'] and consultajson['fecha_salida']:
+                                            entradaObjetofecha= date.fromisoformat(consultajson['fecha_entrada'])
+                                            salidaObjetofecha= date.fromisoformat(consultajson['fecha_salida'])
+                                        else:
+                                            entradaObjetofecha=None
+                                            salidaObjetofecha=None
+                                        
+                                        TuplaHorarioIndividual=(consultajson['usuario'],entradaObjetofecha,salidaObjetofecha,entradaObjetohora,salidaObjetohora,consultajson['cedula'],consultajson['dia'],)
                                         horariosServidor.append(TuplaHorarioIndividual)
                                     
                                     cursorlocal.execute('SELECT usuario, fecha_entrada, fecha_salida, entrada, salida, cedula_id, dia FROM web_horariospermitidos WHERE usuario=%s',(idUsuario,))
