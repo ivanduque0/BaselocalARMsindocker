@@ -126,8 +126,8 @@ try:
                                             connlocal.commit()
                                             HuellasBorradas=HuellasBorradas+1
                                     if HuellasBorradas == HuellasPorBorrar:
-                                        cursorlocal.execute('DELETE FROM web_usuarios WHERE cedula=%s', (cedula,))
-                                        cursorlocal.execute('DELETE FROM web_horariospermitidos WHERE cedula_id=%s', (cedula,))
+                                        cursorlocal.execute('DELETE FROM web_usuarios WHERE id=%s', (usuario[0],))
+                                        cursorlocal.execute('DELETE FROM web_horariospermitidos WHERE usuario=%s', (usuario[0],))
                                         connlocal.commit()
 
                         # cuando se va a agregar usuarios
