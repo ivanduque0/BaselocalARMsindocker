@@ -185,19 +185,19 @@ try:
                         if consultajson['entrada'] and consultajson['salida']:
                             entradaObjetohora=time.fromisoformat(consultajson['entrada'])
                             salidaObjetohora=time.fromisoformat(consultajson['salida'])
-                        else:
-                            entradaObjetohora=None
-                            salidaObjetohora=None
+                        # else:
+                        #     entradaObjetohora=None
+                        #     salidaObjetohora=None
                         if consultajson['fecha_entrada'] and consultajson['fecha_salida']:
                             entradaObjetofecha= date.fromisoformat(consultajson['fecha_entrada'])
                             salidaObjetofecha= date.fromisoformat(consultajson['fecha_salida'])
-                        else:
-                            entradaObjetofecha=None
-                            salidaObjetofecha=None
-                        TuplaHorarioIndividual=(consultajson['usuario'],entradaObjetofecha,salidaObjetofecha,entradaObjetohora,salidaObjetohora,consultajson['cedula'],consultajson['dia'],)
+                        # else:
+                        #     entradaObjetofecha=None
+                        #     salidaObjetofecha=None
+                        TuplaHorarioIndividual=(consultajson['id'],consultajson['usuario'],entradaObjetofecha,salidaObjetofecha,entradaObjetohora,salidaObjetohora,consultajson['cedula'],consultajson['dia'],)
                         horariosServidor.append(TuplaHorarioIndividual)
                     
-                    cursorlocal.execute('SELECT usuario, fecha_entrada, fecha_salida, entrada, salida, cedula_id, dia FROM web_horariospermitidos')
+                    cursorlocal.execute('SELECT id, usuario, fecha_entrada, fecha_salida, entrada, salida, cedula_id, dia FROM web_horariospermitidos')
                     horariosLocal= cursorlocal.fetchall()
 
                     print(f'horarios en local: {len(horariosLocal)}')
@@ -212,15 +212,16 @@ try:
                         #     horariosLocal.index(horario)
                         # except ValueError:
                         if not horario in horariosLocal:
-                            usuario_id=horario[0]
-                            fecha_entrada=horario[1]
-                            fecha_salida=horario[2]
-                            entrada=horario[3]
-                            salida=horario[4]
-                            cedula=horario[5]
-                            dia=horario[6]
-                            cursorlocal.execute('''INSERT INTO web_horariospermitidos (usuario, fecha_entrada, fecha_salida, entrada, salida, cedula_id, dia)
-                            VALUES (%s, %s, %s, %s, %s, %s, %s);''', (usuario_id, fecha_entrada, fecha_salida, entrada, salida, cedula, dia))
+                            horario_id=horario[0]
+                            usuario_id=horario[1]
+                            fecha_entrada=horario[2]
+                            fecha_salida=horario[3]
+                            entrada=horario[4]
+                            salida=horario[5]
+                            cedula=horario[6]
+                            dia=horario[7]
+                            cursorlocal.execute('''INSERT INTO web_horariospermitidos (id, usuario, fecha_entrada, fecha_salida, entrada, salida, cedula_id, dia)
+                            VALUES (%s, %s, %s, %s, %s, %s, %s, %s);''', (horario_id, usuario_id, fecha_entrada, fecha_salida, entrada, salida, cedula, dia))
                             connlocal.commit()
                     contador=0
                     for horariosLocaliterar in horariosLocal:
@@ -231,19 +232,13 @@ try:
                         #     horariosServidor.index(horariosLocaliterar)
                         # except ValueError:
                         if not horariosLocaliterar in horariosServidor:
-                            usuario_id=horariosLocaliterar[0]
-                            fecha_entrada=horariosLocaliterar[1]
-                            fecha_salida=horariosLocaliterar[2]
-                            entrada=horariosLocaliterar[3]
-                            salida=horariosLocaliterar[4]
-                            cedula=horariosLocaliterar[5]
-                            dia=horariosLocaliterar[6]
-                            cursorlocal.execute('DELETE FROM web_horariospermitidos WHERE fecha_entrada=%s AND  fecha_salida=%s AND entrada=%s AND salida=%s AND usuario=%s AND dia=%s',(fecha_entrada, fecha_salida, entrada, salida, usuario_id, dia))
+                            horario_id=horariosLocaliterar[0]
+                            cursorlocal.execute('DELETE FROM web_horariospermitidos WHERE id=%s',(horario_id,))
                             connlocal.commit()
 
-                    cursorlocal.execute('SELECT * FROM web_horariospermitidos')
-                    horariosLocal= cursorlocal.fetchall()
-                    if len(horariosLocal) == len(horariosServidor):
+                    cursorlocal.execute('SELECT COUNT(*) FROM web_horariospermitidos')
+                    cantidadHorariosLocal= cursorlocal.fetchall()
+                    if cantidadHorariosLocal[0][0] == len(horariosServidor):
                         consultaHorarios=True
                         print(f'consultaHorarios: {consultaHorarios}')
                     horariosLocal=[]
