@@ -353,8 +353,8 @@ while True:
                                                     connlocal.commit()
                                                     HuellasBorradas=HuellasBorradas+1
                                             if HuellasBorradas == HuellasPorBorrar:
-                                                cursorlocal.execute('DELETE FROM web_usuarios WHERE cedula=%s', (cedulaUsuario,))
-                                                cursorlocal.execute('DELETE FROM web_horariospermitidos WHERE cedula_id=%s', (cedulaUsuario,))
+                                                cursorlocal.execute('DELETE FROM web_usuarios WHERE id=%s', (idUsuario,))
+                                                cursorlocal.execute('DELETE FROM web_horariospermitidos WHERE usuario=%s', (idUsuario,))
                                                 connlocal.commit()
                                         elif not usuarioLocal and usuarioServidor: 
                                             for consultajson in request_json_usuario:
