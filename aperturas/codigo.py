@@ -294,7 +294,7 @@ while True:
                             permisoAperturaWifi = datosUsuario[0][3]
                             rol=datosUsuario[0][4]
                             usuario_id=datosUsuario[0][5]
-                            cursor.execute('SELECT id, fecha_entrada, fechasalida, entrada, salida, dia FROM web_horariospermitidos where usuario=%s', (usuario_id,))
+                            cursor.execute('SELECT id, fecha_entrada, fecha_salida, entrada, salida, dia FROM web_horariospermitidos where usuario=%s', (usuario_id,))
                             horarios_permitidos = cursor.fetchall()
                             if horarios_permitidos != [] and permisoAperturaInternet == True and peticion_internet==True and rol=='Secundario':
                                 tz = pytz.timezone('America/Caracas')
