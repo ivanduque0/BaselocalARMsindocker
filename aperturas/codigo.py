@@ -384,9 +384,9 @@ while True:
                                             fecha=str(caracas_now)[:10]
                                             aperturaConcedidaInternetVisitante(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, id_solicitud, razonApertura, horario_id, aperturasRealizadas)
                                         else:
-                                            aperturadenegada(cursor, conn, acceso_solicitud)  
+                                            aperturadenegada(cursor, conn, acceso_solicitud, id_solicitud) 
                                     else:
-                                        aperturadenegada(cursor, conn, acceso_solicitud)
+                                        aperturadenegada(cursor, conn, acceso_solicitud, id_solicitud)
                             elif horarios_permitidos != [] and permisoAperturaWifi == True and peticion_internet == False and rol=='Secundario':
                                 tz = pytz.timezone('America/Caracas')
                                 caracas_now = datetime.now(tz)
@@ -475,9 +475,9 @@ while True:
                                             fecha=str(caracas_now)[:10]
                                             aperturaConcedidaWifiVisitante(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, id_solicitud, razonApertura, horario_id, aperturasRealizadas)
                                         else:
-                                            aperturadenegada(cursor, conn, acceso_solicitud)  
+                                            aperturadenegada(cursor, conn, acceso_solicitud, id_solicitud) 
                                     else:
-                                        aperturadenegada(cursor, conn, acceso_solicitud)
+                                        aperturadenegada(cursor, conn, acceso_solicitud, id_solicitud)
                             else:
                                 aperturadenegada(cursor, conn, acceso_solicitud, id_solicitud) 
                                 #print('este usuario no tiene horarios establecidos')
