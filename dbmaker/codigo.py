@@ -281,6 +281,7 @@ while True:
         cursorlocal.execute('CREATE TABLE IF NOT EXISTS web_tagsrfid (epc text, cedula varchar(150))')
         cursorlocal.execute('CREATE TABLE IF NOT EXISTS solicitud_aperturas (id integer, id_usuario varchar(150), acceso varchar(150), razon varchar(150), estado integer, peticionInternet boolean, feedback boolean)')
         cursorlocal.execute('CREATE TABLE IF NOT EXISTS accesos_abiertos (cedula varchar(150), acceso varchar(150), fecha date, hora time without time zone, estado boolean)')
+        cursorlocal.execute('CREATE TABLE IF NOT EXISTS control_horarios_visitantes (horario_id integer, aperturas_hechas integer)')
         #cursorlocal.execute('CREATE TABLE IF NOT EXISTS led (onoff integer, acceso integer)')
         connlocal.commit()
         

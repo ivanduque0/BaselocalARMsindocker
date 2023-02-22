@@ -144,6 +144,22 @@ razondictrfids = {'1':razonrfid1, '2':razonrfid2, '3':razonrfid3, '4':razonrfid4
 #     finally:
 #         pass
 
+def controlhorariovisitante(cursorf, connf, horario_id):
+    abrir=False
+    cantidad_aperturas=0
+    cursorf.execute('SELECT aperturas_hechas FROM control_horarios_visitantes WHERE horario_id=%s',(horario_id,))
+    control_visitante= cursorf.fetchall()
+    if not control_visitante:
+        cursorf.execute('''INSERT INTO control_horarios_visitantes (horario_id, aperturas_hechas) 
+        VALUES (%s, %s)''', (horario_id, 0))
+        conn.commit()
+        abrir=True
+    elif control_visitante[0][0]<2:
+        cantidad_aperturas=control_visitante[0][0]
+        abrir=True
+
+    return abrir, cantidad_aperturas
+
 def aperturaconcedidawifi(id_usuariof, cursorf, connf, acceso, cedulaf, nombref, fechaf, horaf, razon):
     try:
         if accesodict[acceso]:
@@ -177,6 +193,42 @@ def aperturaconcedidawifi(id_usuariof, cursorf, connf, acceso, cedulaf, nombref,
             VALUES (%s, %s, %s, %s, %s, %s, %s);''', (idPeticion, id_usuariof, acceso, razon, 0, 'f', 'f'))
             #cursorf.execute('''UPDATE led SET onoff=1 WHERE onoff=0;''')
             connf.commit()
+
+def aperturaconcedidawifivisitante(id_usuariof, cursorf, connf, acceso, cedulaf, nombref, fechaf, horaf, razon, horario_id, aperturasRealizadas):
+    try:
+        if accesodict[acceso]:
+            razonRegistrar=f"{razondict[acceso]}(Wifi)" if (razon in razondict[acceso].lower()) else f"{razondict[acceso]}(Wifi)-{razon}"
+            requests.get(f'{accesodict[acceso]}/on', timeout=2)
+            cursor.execute('UPDATE control_horarios_visitantes SET aperturas_hechas=%s WHERE horario_id=%s', (aperturasRealizadas+1,horario_id))
+            cursorf.execute('''INSERT INTO web_interacciones (nombre, fecha, hora, razon, contrato, cedula_id)
+            VALUES (%s, %s, %s, %s, %s, %s);''', (nombref, fechaf, horaf, razonRegistrar, CONTRATO, cedulaf))
+            #cursorf.execute('''UPDATE led SET onoff=1 WHERE onoff=0;''')
+            # connf.commit()
+            cursorf.execute('''INSERT INTO accesos_abiertos (cedula, acceso, fecha, hora, estado) 
+            VALUES (%s, %s, %s, %s, %s)''', (cedulaf, acceso, fechaf, horaf, 'f'))
+            connf.commit()        
+    except:
+        IdContador=0
+        cursorf.execute('SELECT id FROM solicitud_aperturas ORDER BY id ASC')
+        ids_peticiones_local= cursorf.fetchall()
+        nro_ids_peticiones_local=len(ids_peticiones_local)
+        if not ids_peticiones_local:
+            idPeticion = 1
+        else:
+            for id_peticion_local in ids_peticiones_local:
+                IdContador=IdContador+1
+                if not id_peticion_local[0] == IdContador:
+                    idPeticion=IdContador
+                    break
+            if nro_ids_peticiones_local == IdContador:
+                idPeticion=IdContador+1
+
+        if accesodict[acceso]:
+            cursorf.execute('''INSERT INTO solicitud_aperturas (id, id_usuario, acceso, razon, estado, peticionInternet, feedback)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s);''', (idPeticion, id_usuariof, acceso, razon, 0, 'f', 'f'))
+            #cursorf.execute('''UPDATE led SET onoff=1 WHERE onoff=0;''')
+            connf.commit()
+
 
 def aperturaconcedidahuella(nombref, fechaf, horaf, contratof, cedulaf, cursorf, connf, acceso, razon):
 
@@ -239,6 +291,27 @@ def aperturaconcedidabluetooth(nombref, fechaf, horaf, contratof, cedulaf, curso
     finally:
         pass
 
+def aperturaconcedidabluetoothvisitante(nombref, fechaf, horaf, contratof, cedulaf, cursorf, connf, acceso, razon, horario_id, aperturasRealizadas):
+
+    try:
+        if accesodict[acceso]:
+            razonRegistrar=f"{razondict[acceso]}(Bluetooth)" if (razon in razondict[acceso].lower()) else f"{razondict[acceso]}(Bluetooth)-{razon}"
+            requests.get(f'{accesodict[acceso]}/on', timeout=2)
+            cursorf.execute('UPDATE control_horarios_visitantes SET aperturas_hechas=%s WHERE horario_id=%s', (aperturasRealizadas+1,horario_id))
+            cursorf.execute('''INSERT INTO web_interacciones (nombre, fecha, hora, razon, contrato, cedula_id)
+            VALUES (%s, %s, %s, %s, %s, %s);''', (nombref, fechaf, horaf, razonRegistrar, CONTRATO, cedulaf))
+            #cursorf.execute('''UPDATE led SET onoff=1 WHERE onoff=0;''')
+            # connf.commit()
+            cursorf.execute('''INSERT INTO accesos_abiertos (cedula, acceso, fecha, hora, estado) 
+            VALUES (%s, %s, %s, %s, %s)''', (cedulaf, acceso, fechaf, horaf, 'f'))
+            connf.commit()
+    except:
+        cursorf.execute('''INSERT INTO web_interacciones (nombre, fecha, hora, razon, contrato, cedula_id)
+        VALUES (%s, %s, %s, %s, %s, %s);''', (nombref, fechaf, horaf, f'fallo_{razonRegistrar}', contratof, cedulaf))
+        #cursorf.execute('''UPDATE led SET onoff=1 WHERE onoff=0;''')
+        connf.commit()
+    finally:
+        pass
 
 def aperturadenegada(cursorf, connf, acceso):
     # cursorf.execute('''UPDATE led SET onoff=2 WHERE onoff=0;''')
@@ -332,17 +405,17 @@ class MyServer(BaseHTTPRequestHandler):
                 idUsuario = datosUsuario[0][3]
                 rol=datosUsuario[0][4]
                 usuario_id=datosUsuario[0][5]
-                cursor.execute('SELECT * FROM web_horariospermitidos where usuario=%s', (usuario_id,))
+                cursor.execute('SELECT id, fecha_entrada, fechasalida, entrada, salida, dia FROM web_horariospermitidos where usuario=%s', (usuario_id,))
                 horarios_permitidos = cursor.fetchall()
                 if (horarios_permitidos != [] and permisoAperturaWifi == True and rol=='Secundario'):
                     tz = pytz.timezone('America/Caracas')
                     caracas_now = datetime.now(tz)
                     dia = caracas_now.weekday()
                     diahoy = dias_semana[dia]
-                    for entrada, salida, _, dia in horarios_permitidos:
+                    for _, _, _, entrada, salida, dia in horarios_permitidos:
                         diasusuario.append(dia)
                     cantidaddias = diasusuario.count(dia)
-                    for entrada, salida, _, dia in horarios_permitidos:
+                    for _, _, _, entrada, salida, dia in horarios_permitidos:
                         if 'Siempre' in diasusuario:
                             hora=str(caracas_now)[11:19]
                             horahoy = datetime.strptime(hora, '%H:%M:%S').time()
@@ -414,6 +487,20 @@ class MyServer(BaseHTTPRequestHandler):
                     horahoy = datetime.strptime(hora, '%H:%M:%S').time()
                     fecha=str(caracas_now)[:10]
                     aperturaconcedidawifi(idUsuario, cursor, conn, acceso_solicitud, cedula, nombre, fecha, horahoy, razonApertura)
+                elif (horarios_permitidos != [] and permisoAperturaWifi == True and rol=='Visitante'):
+                    tz = pytz.timezone('America/Caracas')
+                    caracas_now = datetime.now(tz)
+                    horahoy = caracas_now.time()
+                    fechahoy = caracas_now.date()
+                    for horario_id, fecha_entrada, fecha_salida, entrada, salida, _ in horarios_permitidos:
+                        if (fechahoy==fecha_entrada and horahoy>=entrada) or (fechahoy > fecha_entrada and fechahoy<fecha_salida) or (fechahoy==fecha_salida and horahoy<=salida):
+                            permitir, aperturasRealizadas = controlhorariovisitante(cursor, conn, horario_id)
+                            if permitir:
+                                aperturaconcedidawifivisitante(idUsuario, cursor, conn, acceso_solicitud, cedula, nombre, fecha, horahoy, razonApertura, horario_id, aperturasRealizadas)
+                            else:
+                                aperturadenegada(cursor, conn, acceso_solicitud)  
+                        else:
+                            aperturadenegada(cursor, conn, acceso_solicitud)
                 else:
                     aperturadenegada(cursor, conn, acceso_solicitud)
                 # if horarios_permitidos == []:
@@ -448,17 +535,17 @@ class MyServer(BaseHTTPRequestHandler):
                 permisoAperturaBluetooth = datosUsuario[0][2]
                 rol=datosUsuario[0][3]
                 usuario_id=datosUsuario[0][4]
-                cursor.execute('SELECT * FROM web_horariospermitidos where usuario=%s', (usuario_id,))
+                cursor.execute('SELECT id, fecha_entrada, fecha_salida, entrada, salida, dia FROM web_horariospermitidos where usuario=%s', (usuario_id,))
                 horarios_permitidos = cursor.fetchall()
                 if horarios_permitidos != [] and permisoAperturaBluetooth == True and rol=='Secundario':
                     tz = pytz.timezone('America/Caracas')
                     caracas_now = datetime.now(tz)
                     dia = caracas_now.weekday()
                     diahoy = dias_semana[dia]
-                    for entrada, salida, _, dia in horarios_permitidos:
+                    for _, _, _, entrada, salida, dia in horarios_permitidos:
                         diasusuario.append(dia)
                     cantidaddias = diasusuario.count(dia)
-                    for entrada, salida, _, dia in horarios_permitidos:
+                    for _, _, _, entrada, salida, dia in horarios_permitidos:
                         if 'Siempre' in diasusuario:
                             hora=str(caracas_now)[11:19]
                             horahoy = datetime.strptime(hora, '%H:%M:%S').time()
@@ -531,6 +618,20 @@ class MyServer(BaseHTTPRequestHandler):
                     fecha=str(caracas_now)[:10]
                     #aperturaconcedidawifi(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud)
                     aperturaconcedidabluetooth(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, razonApertura)
+                elif (horarios_permitidos != [] and permisoAperturaBluetooth == True and rol=='Visitante'):
+                    tz = pytz.timezone('America/Caracas')
+                    caracas_now = datetime.now(tz)
+                    horahoy = caracas_now.time()
+                    fechahoy = caracas_now.date()
+                    for horario_id, fecha_entrada, fecha_salida, entrada, salida, _ in horarios_permitidos:
+                        if (fechahoy==fecha_entrada and horahoy>=entrada) or (fechahoy > fecha_entrada and fechahoy<fecha_salida) or (fechahoy==fecha_salida and horahoy<=salida):
+                            permitir, aperturasRealizadas = controlhorariovisitante(cursor, conn, horario_id)
+                            if permitir:
+                                aperturaconcedidabluetoothvisitante(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, razonApertura, horario_id, aperturasRealizadas)
+                            else:
+                                aperturadenegada(cursor, conn, acceso_solicitud)  
+                        else:
+                            aperturadenegada(cursor, conn, acceso_solicitud)
                 else:
                     aperturadenegada(cursor, conn, acceso_solicitud)
                     #print('este usuario no tiene horarios establecidos')
