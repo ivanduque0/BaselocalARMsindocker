@@ -496,6 +496,7 @@ class MyServer(BaseHTTPRequestHandler):
                         if (fechahoy==fecha_entrada and horahoy>=entrada) or (fechahoy > fecha_entrada and fechahoy<fecha_salida) or (fechahoy==fecha_salida and horahoy<=salida):
                             permitir, aperturasRealizadas = controlhorariovisitante(cursor, conn, horario_id)
                             if permitir:
+                                fecha=str(caracas_now)[:10]
                                 aperturaconcedidawifivisitante(idUsuario, cursor, conn, acceso_solicitud, cedula, nombre, fecha, horahoy, razonApertura, horario_id, aperturasRealizadas)
                             else:
                                 aperturadenegada(cursor, conn, acceso_solicitud)  
@@ -627,6 +628,7 @@ class MyServer(BaseHTTPRequestHandler):
                         if (fechahoy==fecha_entrada and horahoy>=entrada) or (fechahoy > fecha_entrada and fechahoy<fecha_salida) or (fechahoy==fecha_salida and horahoy<=salida):
                             permitir, aperturasRealizadas = controlhorariovisitante(cursor, conn, horario_id)
                             if permitir:
+                                fecha=str(caracas_now)[:10]
                                 aperturaconcedidabluetoothvisitante(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, razonApertura, horario_id, aperturasRealizadas)
                             else:
                                 aperturadenegada(cursor, conn, acceso_solicitud)  

@@ -381,6 +381,7 @@ while True:
                                     if (fechahoy==fecha_entrada and horahoy>=entrada) or (fechahoy > fecha_entrada and fechahoy<fecha_salida) or (fechahoy==fecha_salida and horahoy<=salida):
                                         permitir, aperturasRealizadas = controlhorariovisitante(cursor, conn, horario_id)
                                         if permitir:
+                                            fecha=str(caracas_now)[:10]
                                             aperturaConcedidaInternetVisitante(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, id_solicitud, razonApertura, horario_id, aperturasRealizadas)
                                         else:
                                             aperturadenegada(cursor, conn, acceso_solicitud)  
@@ -471,6 +472,7 @@ while True:
                                     if (fechahoy==fecha_entrada and horahoy>=entrada) or (fechahoy > fecha_entrada and fechahoy<fecha_salida) or (fechahoy==fecha_salida and horahoy<=salida):
                                         permitir, aperturasRealizadas = controlhorariovisitante(cursor, conn, horario_id)
                                         if permitir:
+                                            fecha=str(caracas_now)[:10]
                                             aperturaConcedidaWifiVisitante(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, id_solicitud, razonApertura, horario_id, aperturasRealizadas)
                                         else:
                                             aperturadenegada(cursor, conn, acceso_solicitud)  
