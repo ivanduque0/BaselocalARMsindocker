@@ -748,19 +748,19 @@ while True:
                                         print(f"{e} - fallo total agregando puerta abierta del acceso:{accesoo}")    
                 except Exception as e:
                     print(f"{e} - fallo total manejando los accesos sin cerrar")
-        if borrarHorariosVisitantes:
-            cursorlocal.execute('SELECT horario_id, aperturas_hechas FROM control_horarios_visitantes')
-            horarios = cursorlocal.fetchall()
-            for horario in horarios:
-                if horario[1]>=2:
-                    try:
-                        request_json = requests.delete(url=f'{URL_API}editarhorariosvisitantesapi/{horario[0]}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
-                        if request_json.status_code == 200 or request_json.status_code == 500:
-                            cursorlocal.execute('DELETE FROM web_horariospermitidos WHERE id=%s', (horario[0],))
-                            cursorlocal.execute('DELETE FROM control_horarios_visitantes WHERE horario_id=%s', (horario[0],))
-                            connlocal.commit() 
-                    except Exception as e:
-                        print(f"{e} - fallo total eliminando horario:{horario[0]}")      
+            if borrarHorariosVisitantes:
+                cursorlocal.execute('SELECT horario_id, aperturas_hechas FROM control_horarios_visitantes')
+                horarios = cursorlocal.fetchall()
+                for horario in horarios:
+                    if horario[1]>=2:
+                        try:
+                            request_json = requests.delete(url=f'{URL_API}editarhorariosvisitantesapi/{horario[0]}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
+                            if request_json.status_code == 200 or request_json.status_code == 500:
+                                cursorlocal.execute('DELETE FROM web_horariospermitidos WHERE id=%s', (horario[0],))
+                                cursorlocal.execute('DELETE FROM control_horarios_visitantes WHERE horario_id=%s', (horario[0],))
+                                connlocal.commit() 
+                        except Exception as e:
+                            print(f"{e} - fallo total eliminando horario:{horario[0]}")      
 
     except (Exception, psycopg2.Error) as error:
         print(f"{error} - fallo en hacer las consultas en base ded atos de managerall")
