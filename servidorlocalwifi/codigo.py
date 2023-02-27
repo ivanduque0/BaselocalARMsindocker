@@ -527,8 +527,13 @@ class MyServer(BaseHTTPRequestHandler):
             etapadiaapertura=0
             cantidaddias = 0
             contadoraux = 0
-            cursor.execute("SELECT cedula, nombre, bluetooth, rol, id FROM web_usuarios where beacon_uuid=%s", (uuid_usuario,))
+            cursor.execute("SELECT cedula, nombre, bluetooth, rol, id FROM web_usuarios where entrada_beacon_uuid=%s", (uuid_usuario,))
             datosUsuario = cursor.fetchall()
+            razonApertura='entrada'
+            if not datosUsuario:
+                cursor.execute("SELECT cedula, nombre, bluetooth, rol, id FROM web_usuarios where salida_beacon_uuid=%s", (uuid_usuario,))
+                datosUsuario = cursor.fetchall()
+                razonApertura='salida'
             #print(datosUsuario)
             if len(datosUsuario)!=0:
                 cedula=datosUsuario[0][0]

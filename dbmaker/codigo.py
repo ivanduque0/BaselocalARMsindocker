@@ -272,7 +272,7 @@ while True:
         )
         cursorlocal = connlocal.cursor()
 
-        cursorlocal.execute('CREATE TABLE IF NOT EXISTS web_usuarios (id integer, rol varchar, cedula varchar(150), nombre varchar(150), telegram_id varchar(150), beacon_uuid varchar(150), internet boolean, wifi boolean, bluetooth boolean, captahuella boolean, rfid boolean, facial boolean)')
+        cursorlocal.execute('CREATE TABLE IF NOT EXISTS web_usuarios (id integer, rol varchar, cedula varchar(150), nombre varchar(150), telegram_id varchar(150), entrada_beacon_uuid varchar(150), salida_beacon_uuid varchar(150), internet boolean, wifi boolean, bluetooth boolean, captahuella boolean, rfid boolean, facial boolean)')
         cursorlocal.execute('CREATE TABLE IF NOT EXISTS web_interacciones (nombre varchar(150), fecha date, hora time without time zone, razon varchar(150), contrato varchar(150), cedula_id varchar(150))')
         cursorlocal.execute('CREATE TABLE IF NOT EXISTS web_horariospermitidos (id integer, usuario integer, fecha_entrada date, fecha_salida date, entrada time without time zone, salida time without time zone, cedula_id varchar(150), dia varchar(180))')
         cursorlocal.execute('CREATE TABLE IF NOT EXISTS dias_acumulados (fecha varchar(150))')

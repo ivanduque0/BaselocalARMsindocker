@@ -296,14 +296,14 @@ while True:
                                 try:
                                     banderaUsuario=True
                                     if not idUsuario:
-                                        cursorlocal.execute('SELECT id, telegram_id, beacon_uuid, internet, wifi, bluetooth, captahuella, rfid, facial FROM web_usuarios')
+                                        cursorlocal.execute('SELECT id, telegram_id, entrada_beacon_uuid, salida_beacon_uuid, internet, wifi, bluetooth, captahuella, rfid, facial FROM web_usuarios')
                                         usuarios_local= cursorlocal.fetchall()
                                         
                                         request_json_usuario = requests.get(url=f'{URL_API}obtenerusuariosapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
 
                                         usuariosServidor=[]
                                         for consultajson in request_json_usuario:
-                                            tuplaUsuarioIndividual=(consultajson['id'],consultajson['telegram_id'], consultajson['beacon_uuid'], consultajson['telefonoInternet'], consultajson['telefonoWifi'], consultajson['telefonoBluetooth'], consultajson['captahuella'], consultajson['rfid'], consultajson['reconocimientoFacial'],)
+                                            tuplaUsuarioIndividual=(consultajson['id'],consultajson['telegram_id'], consultajson['entrada_beacon_uuid'], consultajson['salida_beacon_uuid'], consultajson['telefonoInternet'], consultajson['telefonoWifi'], consultajson['telefonoBluetooth'], consultajson['captahuella'], consultajson['rfid'], consultajson['reconocimientoFacial'],)
                                             usuariosServidor.append(tuplaUsuarioIndividual)
                                         for usuario in usuariosServidor:
                                             # contador=contador+1
@@ -312,14 +312,15 @@ while True:
                                             if not usuario in usuarios_local:
                                                 id_usuario=usuario[0]
                                                 telegram_id=usuario[1]
-                                                beacon_uuid=usuario[2]
-                                                internet=usuario[3]
-                                                wifi=usuario[4]
-                                                bluetooth=usuario[5]
-                                                captahuella=usuario[6]
-                                                rfid=usuario[7]
-                                                facial=usuario[8]
-                                                cursorlocal.execute("UPDATE web_usuarios SET telegram_id=%s, beacon_uuid=%s, internet=%s, wifi=%s, bluetooth=%s, captahuella=%s, rfid=%s, facial=%s WHERE id=%s", (telegram_id,beacon_uuid,internet,wifi,bluetooth,captahuella,rfid,facial,id_usuario))
+                                                entrada_beacon_uuid=usuario[2]
+                                                salida_beacon_uuid=usuario[3]
+                                                internet=usuario[4]
+                                                wifi=usuario[5]
+                                                bluetooth=usuario[6]
+                                                captahuella=usuario[7]
+                                                rfid=usuario[8]
+                                                facial=usuario[9]
+                                                cursorlocal.execute("UPDATE web_usuarios SET telegram_id=%s, entrada_beacon_uuid=%s, salida_beacon_uuid=%s, internet=%s, wifi=%s, bluetooth=%s, captahuella=%s, rfid=%s, facial=%s WHERE id=%s", (telegram_id,entrada_beacon_uuid,salida_beacon_uuid,internet,wifi,bluetooth,captahuella,rfid,facial,id_usuario))
                                                 connlocal.commit()
                                         usuariosServidor=[]
                                     else:
@@ -364,15 +365,16 @@ while True:
                                                 cedula=consultajson['cedula']
                                                 nombre=consultajson['nombre']
                                                 telegram_id=consultajson['telegram_id']
-                                                beacon_uuid=consultajson['beacon_uuid']
+                                                entrada_beacon_uuid=consultajson['entrada_beacon_uuid']
+                                                salida_beacon_uuid=consultajson['salida_beacon_uuid']
                                                 internet=consultajson['telefonoInternet']
                                                 wifi=consultajson['telefonoWifi']
                                                 bluetooth=consultajson['telefonoBluetooth']
                                                 captahuella=consultajson['captahuella']
                                                 rfid=consultajson['rfid']
                                                 facial=consultajson['reconocimientoFacial']
-                                            cursorlocal.execute('''INSERT INTO web_usuarios (id, rol, cedula, nombre, telegram_id, beacon_uuid, internet, wifi, bluetooth, captahuella, rfid, facial)
-                                            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)''', (id_usuario, rol, cedula, nombre, telegram_id, beacon_uuid, internet, wifi, bluetooth, captahuella, rfid, facial))
+                                            cursorlocal.execute('''INSERT INTO web_usuarios (id, rol, cedula, nombre, telegram_id, entrada_beacon_uuid, salida_beacon_uuid, internet, wifi, bluetooth, captahuella, rfid, facial)
+                                            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)''', (id_usuario, rol, cedula, nombre, telegram_id, entrada_beacon_uuid, salida_beacon_uuid, internet, wifi, bluetooth, captahuella, rfid, facial))
                                             connlocal.commit()
                                         elif usuarioLocal and usuarioServidor:
                                             for consultajson in request_json_usuario:
@@ -381,14 +383,15 @@ while True:
                                                 nombre=consultajson['nombre']
                                                 rol=consultajson['rol']
                                                 telegram_id=consultajson['telegram_id']
-                                                beacon_uuid=consultajson['beacon_uuid']
+                                                entrada_beacon_uuid=consultajson['entrada_beacon_uuid']
+                                                salida_beacon_uuid=consultajson['salida_beacon_uuid']
                                                 internet=consultajson['telefonoInternet']
                                                 wifi=consultajson['telefonoWifi']
                                                 bluetooth=consultajson['telefonoBluetooth']
                                                 captahuella=consultajson['captahuella']
                                                 rfid=consultajson['rfid']
                                                 facial=consultajson['reconocimientoFacial']
-                                            cursorlocal.execute("UPDATE web_usuarios SET rol=%s, cedula=%s, nombre=%s, telegram_id=%s, beacon_uuid=%s, internet=%s, wifi=%s, bluetooth=%s, captahuella=%s, rfid=%s, facial=%s WHERE id=%s", (rol, cedula, nombre, telegram_id,beacon_uuid,internet,wifi,bluetooth,captahuella,rfid,facial,id_usuario))
+                                            cursorlocal.execute("UPDATE web_usuarios SET rol=%s, cedula=%s, nombre=%s, telegram_id=%s, entrada_beacon_uuid=%s, salida_beacon_uuid=%s, internet=%s, wifi=%s, bluetooth=%s, captahuella=%s, rfid=%s, facial=%s WHERE id=%s", (rol, cedula, nombre, telegram_id, entrada_beacon_uuid, salida_beacon_uuid, internet,wifi,bluetooth,captahuella,rfid,facial,id_usuario))
                                             connlocal.commit()
                                 except requests.exceptions.ConnectionError:
                                     print("fallo consultando api en usuarios")
