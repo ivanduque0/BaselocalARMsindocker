@@ -324,7 +324,7 @@ while True:
                                                 connlocal.commit()
                                         usuariosServidor=[]
                                     else:
-                                        cursorlocal.execute('SELECT rol, cedula, nombre, telegram_id, beacon_uuid, internet, wifi, bluetooth, captahuella, rfid, facial FROM web_usuarios WHERE id=%s',(idUsuario,))
+                                        cursorlocal.execute('SELECT rol, cedula, nombre, telegram_id, entrada_beacon_uuid, salida_beacon_uuid, internet, wifi, bluetooth, captahuella, rfid, facial FROM web_usuarios WHERE id=%s',(idUsuario,))
                                         usuario_local= cursorlocal.fetchall()
 
                                         request_json_usuario = requests.get(url=f'{URL_API}usuarioindividualapi/{CONTRATO}/{idUsuario}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
