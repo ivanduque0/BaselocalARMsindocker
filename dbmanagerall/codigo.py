@@ -459,7 +459,7 @@ while True:
                             try:
                                 try:
                                     banderaHuella = True
-                                    cursorlocal.execute('SELECT cedula WHERE id=%s',(idUsuario,))
+                                    cursorlocal.execute('SELECT cedula FROM web_usuarios WHERE id=%s',(idUsuario,))
                                     usuario_local= cursorlocal.fetchall()
                                     cursorlocal.execute('SELECT template, id_suprema, cedula FROM web_huellas where cedula=%s', (usuario_local[0][0],))
                                     huellas_local= cursorlocal.fetchall()
@@ -554,7 +554,7 @@ while True:
                             try:
                                 try:
                                     banderaTag=True
-                                    cursorlocal.execute('SELECT cedula WHERE id=%s',(idUsuario,))
+                                    cursorlocal.execute('SELECT cedula FROM web_usuarios WHERE id=%s',(idUsuario,))
                                     usuario_local= cursorlocal.fetchall()
                                     cursorlocal.execute('SELECT epc, cedula FROM web_tagsrfid WHERE cedula=%s', (usuario_local[0][0],))
                                     tags_local= cursorlocal.fetchall()
