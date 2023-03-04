@@ -3,7 +3,6 @@ import os
 import time as tm
 import pytz
 from datetime import datetime, date, time
-from ping3 import ping
 from dotenv import load_dotenv
 from pathlib import Path
 import requests
@@ -11,6 +10,7 @@ import requests
 dotenv_path = Path('/BaselocalARMsindocker/.env.manager')
 load_dotenv(dotenv_path=dotenv_path)
 CONTRATO=os.environ.get("CONTRATO")
+CONTRATO_ID=os.environ.get("CONTRATO_ID")
 URL_API=os.environ.get("URL_API")
 connlocal = None
 cursorlocal=None
@@ -20,6 +20,7 @@ consultaUsuarios=False
 consultaHorarios=False
 consultaHuellas=False
 consultaTags=False
+consultaUnidades=False
 total=0
 
 ######################################
@@ -456,13 +457,76 @@ try:
                     print("fallo consultando api en la etapa 4")
             except Exception as e:
                 print(f"{e} - fallo total etapa4")
+        
+        if consultaTags and consultarTodo:
+            try:
+                try:
+                    cursorlocal.execute('SELECT id, nombre, id FROM web_unidades')
+                    unidades_local= cursorlocal.fetchall()
 
-        if consultaUsuarios and consultaHorarios and consultaHuellas and consultaTags and consultarTodo:
+                    request_json = requests.get(url=f'{URL_API}verunidadescontratoapi/{CONTRATO_ID}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
+
+                    unidadesServidor=[]
+                    for consultajson in request_json:
+                        tuplaUnidadIndividual=(consultajson['id'],consultajson['nombre'],consultajson['codigo'])
+                        unidadesServidor.append(tuplaUnidadIndividual)
+
+                    nro_unidades_local = len(unidades_local)
+                    nro_unidades_servidor = len(unidadesServidor)
+
+                    print(f'unidades en local: {nro_unidades_local}')
+                    print(f'unidades en servidor: {nro_unidades_servidor}')
+
+                    contador=0
+                    for unidadServidor in unidadesServidor:
+                        contador=contador+1
+                        print(contador)
+                        print(unidadServidor)
+                        # try:
+                        #     tags_local.index(tagServidor)
+                        # except ValueError:
+                        if not unidadServidor in unidades_local:
+                            id_unidad=unidadServidor[0]
+                            nombre=unidadServidor[1]
+                            codigo=unidadServidor[2]
+                            cursorlocal.execute('''INSERT INTO web_unidades (id, nombre, codigo)
+                            VALUES (%s, %s, %s);''', (id_unidad, nombre, codigo))
+                            connlocal.commit()
+
+                    contador=0
+                    for unidadLocal in unidades_local:
+                        contador=contador+1
+                        print(contador)
+                        print(unidadLocal)
+                        # try:
+                        #     tagsServidor.index(taglocaliterar)
+                        # except ValueError:
+                        if not unidadLocal in unidadesServidor:
+                            id_unidad=unidadLocal[0]
+                            cursorlocal.execute('DELETE FROM web_unidades WHERE id=%s',(id_unidad,))
+                            connlocal.commit()
+
+                    cursorlocal.execute('SELECT id, nombre FROM web_unidades')
+                    unidades_local= cursorlocal.fetchall()
+                    
+                    nro_unidades_local = len(unidades_local)
+
+                    if nro_unidades_local == nro_unidades_servidor:
+                        consultaUnidades=True
+                        print(f'consultaUnidades: {consultaUnidades}')
+
+                except requests.exceptions.ConnectionError:
+                    print("fallo consultando api en la etapa 5")
+            except Exception as e:
+                print(f"{e} - fallo total etapa5")
+
+        if consultaUnidades and consultaUsuarios and consultaHorarios and consultaHuellas and consultaTags and consultarTodo:
             consultarTodo=False
             consultaUsuarios=False
             consultaHorarios=False
             consultaHuellas=False
             consultaTags=False
+            consultaUnidades=False
             break
             
         # print(f'consultarTodo: {consultarTodo}')
