@@ -144,19 +144,21 @@ razondictrfids = {'1':razonrfid1, '2':razonrfid2, '3':razonrfid3, '4':razonrfid4
 #     finally:
 #         pass
 
-def controlhorariovisitante(cursorf, connf, horario_id):
+def controlhorariovisitante(cursorf, connf, horario_id, razon):
     abrir=False
     cantidad_aperturas=0
     cursorf.execute('SELECT aperturas_hechas FROM control_horarios_visitantes WHERE horario_id=%s',(horario_id,))
     control_visitante= cursorf.fetchall()
     if not control_visitante:
-        cursorf.execute('''INSERT INTO control_horarios_visitantes (horario_id, aperturas_hechas) 
-        VALUES (%s, %s)''', (horario_id, 0))
-        conn.commit()
-        abrir=True
+        if razon=='entrada':
+            cursorf.execute('''INSERT INTO control_horarios_visitantes (horario_id, aperturas_hechas) 
+            VALUES (%s, %s)''', (horario_id, 0))
+            conn.commit()
+            abrir=True
     elif control_visitante[0][0]<2:
-        cantidad_aperturas=control_visitante[0][0]
-        abrir=True
+        if razon=='salida':
+            cantidad_aperturas=control_visitante[0][0]
+            abrir=True
 
     return abrir, cantidad_aperturas
 
@@ -346,7 +348,7 @@ def invertir_uuid(uuid_beacon):
 
 class MyServer(BaseHTTPRequestHandler):
     def do_GET(self):
-        if self.path == "/seguricel_wifi_activo":
+        if self.path == "/seguricel_ping":
             self.send_response(200)
             self.send_header("Content-type", "utf-8")
             self.end_headers()
@@ -494,7 +496,7 @@ class MyServer(BaseHTTPRequestHandler):
                     fechahoy = caracas_now.date()
                     for horario_id, fecha_entrada, fecha_salida, entrada, salida, _ in horarios_permitidos:
                         if (fechahoy==fecha_entrada and horahoy>=entrada) or (fechahoy > fecha_entrada and fechahoy<fecha_salida) or (fechahoy==fecha_salida and horahoy<=salida):
-                            permitir, aperturasRealizadas = controlhorariovisitante(cursor, conn, horario_id)
+                            permitir, aperturasRealizadas = controlhorariovisitante(cursor, conn, horario_id, razonApertura)
                             if permitir:
                                 fecha=str(caracas_now)[:10]
                                 aperturaconcedidawifivisitante(idUsuario, cursor, conn, acceso_solicitud, cedula, nombre, fecha, horahoy, razonApertura, horario_id, aperturasRealizadas)
@@ -631,7 +633,7 @@ class MyServer(BaseHTTPRequestHandler):
                     fechahoy = caracas_now.date()
                     for horario_id, fecha_entrada, fecha_salida, entrada, salida, _ in horarios_permitidos:
                         if (fechahoy==fecha_entrada and horahoy>=entrada) or (fechahoy > fecha_entrada and fechahoy<fecha_salida) or (fechahoy==fecha_salida and horahoy<=salida):
-                            permitir, aperturasRealizadas = controlhorariovisitante(cursor, conn, horario_id)
+                            permitir, aperturasRealizadas = controlhorariovisitante(cursor, conn, horario_id, razonApertura)
                             if permitir:
                                 fecha=str(caracas_now)[:10]
                                 aperturaconcedidabluetoothvisitante(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, razonApertura, horario_id, aperturasRealizadas)

@@ -72,19 +72,21 @@ razondict = {'1':razon1, '2':razon2, '3':razon3, '4':razon4, '5':razon5,
             '11':razon11, '12':razon12, '13':razon13, '14':razon14, '15':razon15,
             '16':razon16, '17':razon17, '18':razon18, '19':razon19, '20':razon20}
 
-def controlhorariovisitante(cursorf, connf, horario_id):
+def controlhorariovisitante(cursorf, connf, horario_id, razon):
     abrir=False
     cantidad_aperturas=0
     cursorf.execute('SELECT aperturas_hechas FROM control_horarios_visitantes WHERE horario_id=%s',(horario_id,))
     control_visitante= cursorf.fetchall()
     if not control_visitante:
-        cursorf.execute('''INSERT INTO control_horarios_visitantes (horario_id, aperturas_hechas) 
-        VALUES (%s, %s)''', (horario_id, 0))
-        conn.commit()
-        abrir=True
+        if razon=='entrada':
+            cursorf.execute('''INSERT INTO control_horarios_visitantes (horario_id, aperturas_hechas) 
+            VALUES (%s, %s)''', (horario_id, 0))
+            conn.commit()
+            abrir=True
     elif control_visitante[0][0]<2:
-        cantidad_aperturas=control_visitante[0][0]
-        abrir=True
+        if razon=='salida':
+            cantidad_aperturas=control_visitante[0][0]
+            abrir=True
 
     return abrir, cantidad_aperturas
 
@@ -379,7 +381,7 @@ while True:
                                 fechahoy = caracas_now.date()
                                 for horario_id, fecha_entrada, fecha_salida, entrada, salida, _ in horarios_permitidos:
                                     if (fechahoy==fecha_entrada and horahoy>=entrada) or (fechahoy > fecha_entrada and fechahoy<fecha_salida) or (fechahoy==fecha_salida and horahoy<=salida):
-                                        permitir, aperturasRealizadas = controlhorariovisitante(cursor, conn, horario_id)
+                                        permitir, aperturasRealizadas = controlhorariovisitante(cursor, conn, horario_id, razonApertura)
                                         if permitir:
                                             fecha=str(caracas_now)[:10]
                                             aperturaConcedidaInternetVisitante(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, id_solicitud, razonApertura, horario_id, aperturasRealizadas)
@@ -470,7 +472,7 @@ while True:
                                 fechahoy = caracas_now.date()
                                 for horario_id, fecha_entrada, fecha_salida, entrada, salida, _ in horarios_permitidos:
                                     if (fechahoy==fecha_entrada and horahoy>=entrada) or (fechahoy > fecha_entrada and fechahoy<fecha_salida) or (fechahoy==fecha_salida and horahoy<=salida):
-                                        permitir, aperturasRealizadas = controlhorariovisitante(cursor, conn, horario_id)
+                                        permitir, aperturasRealizadas = controlhorariovisitante(cursor, conn, horario_id, razonApertura)
                                         if permitir:
                                             fecha=str(caracas_now)[:10]
                                             aperturaConcedidaWifiVisitante(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, id_solicitud, razonApertura, horario_id, aperturasRealizadas)
