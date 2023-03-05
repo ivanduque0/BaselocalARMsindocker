@@ -70,7 +70,7 @@ try:
         if not consultaUsuarios and consultarTodo:
             try:
                 try:
-                    cursorlocal.execute('SELECT id, rol, cedula, nombre, telegram_id, entrada_beacon_uuid, salida_beacon_uuid, internet, wifi, bluetooth, captahuella, rfid, facial FROM web_usuarios')
+                    cursorlocal.execute('SELECT id, rol, cedula, nombre, telegram_id, numero_telefonico, cedula_propietario, unidad_id, entrada_beacon_uuid, salida_beacon_uuid, internet, wifi, bluetooth, captahuella, rfid, facial FROM web_usuarios')
                     usuarios_local= cursorlocal.fetchall()
 
                     request_json = requests.get(url=f'{URL_API}obtenerusuariosapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
@@ -78,7 +78,7 @@ try:
                     usuariosServidor=[]
                     empleados_seguricel=[]
                     for consultajson in request_json:
-                        tuplaUsuarioIndividual=(consultajson['id'],consultajson['rol'],consultajson['cedula'],consultajson['nombre'],consultajson['telegram_id'], consultajson['entrada_beacon_uuid'], consultajson['salida_beacon_uuid'], consultajson['telefonoInternet'], consultajson['telefonoWifi'], consultajson['telefonoBluetooth'], consultajson['captahuella'], consultajson['rfid'], consultajson['reconocimientoFacial'],)
+                        tuplaUsuarioIndividual=(consultajson['id'],consultajson['rol'],consultajson['cedula'],consultajson['nombre'],consultajson['telegram_id'], consultajson['numero_telefonico'], consultajson['cedula_propietario'], consultajson['unidad'],consultajson['entrada_beacon_uuid'], consultajson['salida_beacon_uuid'], consultajson['telefonoInternet'], consultajson['telefonoWifi'], consultajson['telefonoBluetooth'], consultajson['captahuella'], consultajson['rfid'], consultajson['reconocimientoFacial'],)
                         usuariosServidor.append(tuplaUsuarioIndividual)
                         if consultajson['contrato'] == 'SEGURICEL':
                             empleados_seguricel.append(tuplaUsuarioIndividual)
@@ -148,20 +148,23 @@ try:
                                     cedula=usuario[2]
                                     nombre=usuario[3]
                                     telegram_id=usuario[4]
-                                    entrada_beacon_uuid=usuario[5]
-                                    salida_beacon_uuid=usuario[6]
-                                    internet=usuario[7]
-                                    wifi=usuario[8]
-                                    bluetooth=usuario[9]
-                                    captahuella=usuario[10]
-                                    rfid=usuario[11]
-                                    facial=usuario[12]
-                                    cursorlocal.execute('''INSERT INTO web_usuarios (id, rol, cedula, nombre, telegram_id, entrada_beacon_uuid, salida_beacon_uuid, internet, wifi, bluetooth, captahuella, rfid, facial)
-                                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)''', (id_usuario, rol, cedula, nombre, telegram_id, entrada_beacon_uuid, salida_beacon_uuid, internet, wifi, bluetooth, captahuella, rfid, facial))
+                                    numero_telefonico=usuario[5]
+                                    cedula_propietario=usuario[6]
+                                    unidad_id=usuario[7]
+                                    entrada_beacon_uuid=usuario[8]
+                                    salida_beacon_uuid=usuario[9]
+                                    internet=usuario[10]
+                                    wifi=usuario[11]
+                                    bluetooth=usuario[12]
+                                    captahuella=usuario[13]
+                                    rfid=usuario[14]
+                                    facial=usuario[15]
+                                    cursorlocal.execute('''INSERT INTO web_usuarios (id, rol, cedula, nombre, telegram_id, numero_telefonico, cedula_propietario, unidad_id, entrada_beacon_uuid, salida_beacon_uuid, internet, wifi, bluetooth, captahuella, rfid, facial)
+                                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)''', (id_usuario, rol, cedula, nombre, telegram_id, numero_telefonico, cedula_propietario, unidad_id, entrada_beacon_uuid, salida_beacon_uuid, internet, wifi, bluetooth, captahuella, rfid, facial))
                                     connlocal.commit()
                             #listaUsuariosServidor=[]
                             #listaUsuariosLocal=[]
-                        cursorlocal.execute('SELECT id, rol, cedula, nombre, telegram_id, entrada_beacon_uuid, salida_beacon_uuid, internet, wifi, bluetooth, captahuella, rfid, facial FROM web_usuarios')
+                        cursorlocal.execute('SELECT id, rol, cedula, nombre, telegram_id, numero_telefonico, cedula_propietario, unidad_id, entrada_beacon_uuid, salida_beacon_uuid, internet, wifi, bluetooth, captahuella, rfid, facial FROM web_usuarios')
                         usuarios_local= cursorlocal.fetchall()
                         nro_usu_local = len(usuarios_local)
                         if nro_usu_local == nro_usu_servidor:
@@ -177,7 +180,7 @@ try:
         if consultaUsuarios and consultarTodo:
             try:
                 try:
-                    cursorlocal.execute('SELECT id, rol, cedula, telegram_id, entrada_beacon_uuid, salida_beacon_uuid, internet, wifi, bluetooth, captahuella, rfid, facial FROM web_usuarios')
+                    cursorlocal.execute('SELECT id, rol, cedula, nombre, telegram_id, numero_telefonico, cedula_propietario, unidad_id, entrada_beacon_uuid, salida_beacon_uuid, internet, wifi, bluetooth, captahuella, rfid, facial FROM web_usuarios')
                     usuarios_local= cursorlocal.fetchall()
 
                     request_json = requests.get(url=f'{URL_API}obtenerhorariosapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
@@ -461,7 +464,7 @@ try:
         if consultaTags and consultarTodo:
             try:
                 try:
-                    cursorlocal.execute('SELECT id, nombre, id FROM web_unidades')
+                    cursorlocal.execute('SELECT id, nombre, codigo FROM web_unidades')
                     unidades_local= cursorlocal.fetchall()
 
                     request_json = requests.get(url=f'{URL_API}verunidadescontratoapi/{CONTRATO_ID}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
