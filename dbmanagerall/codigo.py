@@ -664,7 +664,7 @@ while True:
                                     "cedula": cedula
                                 }
                                 requests.post(url=f'{URL_API}registrarinteraccionesapi/', 
-                                json=anadirLogJson, auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
+                                json=anadirLogJson, auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=5)
                 except Exception as e:
                     print(f"{e} - fallo total en Log de usuarios")
             
@@ -709,7 +709,53 @@ while True:
                                     "personas": personas,
                                 }
                                 requests.post(url=f'{URL_API}registrarlogsvigilantesapi/', 
-                                json=anadirLogJson, auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
+                                json=anadirLogJson, auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=5)
+                except Exception as e:
+                    print(f"{e} - fallo total en Log de vigilantes")
+
+                try:
+                    cursorlocal.execute('SELECT vigilante_id, vigilante_nombre, nombre, fecha, hora, razon, cedula_id, acompanantes, cedula_propietario FROM web_logs_vigilantes where contrato=%s and fecha=%s', (CONTRATO, fechahoy))
+                    logsVisitantes_local= cursorlocal.fetchall()
+                    
+                    request_json = requests.get(url=f'{URL_API}obtenerlogsvisitantesapi/{CONTRATO}/{fechahoy}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
+
+                    listaLogsVisitantesServidor=[]
+                    for consultajson in request_json:
+                        objetofecha= date.fromisoformat(consultajson['fecha'])
+                        objetohora=time.fromisoformat(consultajson['hora'])
+                        tuplaLogIndividual=(consultajson['vigilante_id'],consultajson['vigilante_nombre'],consultajson['nombre'],objetofecha,objetohora,consultajson['razon'],consultajson['cedula'], consultajson['acompanantes'],consultajson['cedula_propietario'])
+                        listaLogsVisitantesServidor.append(tuplaLogIndividual)
+
+                    nro_int_local = len(logsVisitantes_local)
+                    nro_log_vig_servidor = len(listaLogsVisitantesServidor)
+
+                    if nro_int_local != nro_log_vig_servidor:
+
+                        for logVisitante in logsVisitantes_local:
+                            if not logVisitante in listaLogsVisitantesServidor:
+                                vigilante_id=logVisitante[0]
+                                vigilante_nombre=logVisitante[1]
+                                nombre=logVisitante[2]
+                                fecha=logVisitante[3]
+                                hora=logVisitante[4]
+                                razon=logVisitante[5]
+                                cedula=logVisitante[6]
+                                acompanantes=logVisitante[7]
+                                cedula_propietario=logVisitante[8]
+                                anadirLogJson = {
+                                    "vigilante_nombre": vigilante_nombre,
+                                    "vigilante_id": vigilante_id,
+                                    "nombre": nombre,
+                                    "fecha": fecha.isoformat(),
+                                    "hora": hora.isoformat(),
+                                    "razon": razon,
+                                    "contrato": CONTRATO,
+                                    "cedula": cedula,
+                                    "acompanantes": acompanantes,
+                                    "cedula_propietario": cedula_propietario
+                                }
+                                requests.post(url=f'{URL_API}registrarlogsvisitantesapi/', 
+                                json=anadirLogJson, auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=5)
                 except Exception as e:
                     print(f"{e} - fallo total en Log de vigilantes")
 
