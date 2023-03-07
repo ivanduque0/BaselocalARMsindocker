@@ -458,10 +458,10 @@ class MyServer(BaseHTTPRequestHandler):
                 vigilante_id=datosVigilante[0][0]
                 vigilante_nombre=datosVigilante[0][1]
                 
+                aperturaConcedidaVigilante(vigilante_id, vigilante_nombre, unidad_id, unidad_nombre, fecha, hora, CONTRATO, cursor, conn, acceso_solicitud, razonApertura, personas)
                 self.send_response(200)
                 self.send_header("Content-type", "utf-8")
                 self.end_headers()
-                aperturaConcedidaVigilante(vigilante_id, vigilante_nombre, unidad_id, unidad_nombre, fecha, hora, CONTRATO, cursor, conn, acceso_solicitud, razonApertura, personas)
             else:
                 aperturadenegada(cursor, conn, acceso_solicitud)
                 self.send_response(400)
@@ -501,10 +501,11 @@ class MyServer(BaseHTTPRequestHandler):
                                 vigilante_id=datosVigilante[0][0]
                                 vigilante_nombre=datosVigilante[0][1]
                                 fecha=str(caracas_now)[:10]
+                                
+                                aperturaConcedidaVigilanteVisitante(vigilante_id, vigilante_nombre, invitado_nombre, fecha, horahoy, CONTRATO, invitado_cedula, cursor, conn, acceso_solicitud, razonApertura, horario_id, aperturasRealizadas, acompanantes, datosInvitado[0][2], datosPropietario[0][0])
                                 self.send_response(200)
                                 self.send_header("Content-type", "utf-8")
                                 self.end_headers()
-                                aperturaConcedidaVigilanteVisitante(vigilante_id, vigilante_nombre, invitado_nombre, fecha, horahoy, CONTRATO, invitado_cedula, cursor, conn, acceso_solicitud, razonApertura, horario_id, aperturasRealizadas, acompanantes, datosInvitado[0][2], datosPropietario[0][0])
                             else:
                                 aperturadenegada(cursor, conn, acceso_solicitud)
                                 self.send_response(200)
