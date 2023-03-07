@@ -289,7 +289,7 @@ while True:
 
                         # print(f'idCambio:{idCambio}')
                         # print(f'tablaCambiada:{tablaCambiada}')
-                        # print(f'cedulaUsuario:{cedulaUsuario}')
+                        # print(f'idUsuario:{idUsuario}')
 
                         if tablaCambiada == 'Usuarios':
                             try:

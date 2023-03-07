@@ -209,12 +209,7 @@ while True:
     
     except (Exception, psycopg2.Error) as error:
         print(f"{error} - fallo en hacer las consultas de base de datos de dispositivos")
-        if connlocal:
-            cursorlocal.close()
-            connlocal.close()
-    finally:
         print("se ha cerrado la conexion a la base de datos")
         if connlocal:
             cursorlocal.close()
             connlocal.close()
-            
