@@ -160,7 +160,10 @@ def aperturaConcedidaVigilante(vigilante_id, vigilante_nombre, unidad_id, unidad
             cursorf.execute('SELECT numero_telefonico FROM web_usuarios WHERE unidad_id=%s AND rol=%s',(unidad_id,'Propietario'))
             propietarios_unidad= cursorf.fetchall()
             for propietario in propietarios_unidad:
-                requests.get(f'https://api.callmebot.com/whatsapp.php?phone={NUMERO_BOT}&text=!sendto+{propietario[0][1:]}+{mensaje}&apikey={APIKEY_BOT}', timeout=5)
+                try:
+                    requests.get(f'https://api.callmebot.com/whatsapp.php?phone={NUMERO_BOT}&text=!sendto+{propietario[0][1:]}+{mensaje}&apikey={APIKEY_BOT}', timeout=5)
+                except Exception as e:
+                    print(f"{e} - fallo intentando enviar mensaje vigilante")
     except Exception as e:
         cursorf.execute('''INSERT INTO web_logs_vigilantes (vigilante_id, vigilante_nombre, unidad_id, unidad_nombre, fecha, hora, razon, contrato)
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);''', (vigilante_id, vigilante_nombre, unidad_id, unidad_nombre, fecha, hora, f"fallo_{razonRegistrar}", contrato, personas))
@@ -182,7 +185,10 @@ def aperturaConcedidaVigilanteVisitante(vigilante_id, vigilante_nombre, nombref,
                 mensaje=f"El invitado {nombref} acaba de ingresar por medio del sistema de vigilancia"
             else:
                 mensaje=f"El invitado {nombref} acaba de salir por medio del sistema de vigilancia"
-            requests.get(f'https://api.callmebot.com/whatsapp.php?phone={NUMERO_BOT}&text=!sendto+{numero_propietario[1:]}+{mensaje}&apikey={APIKEY_BOT}', timeout=5)
+            try:
+                requests.get(f'https://api.callmebot.com/whatsapp.php?phone={NUMERO_BOT}&text=!sendto+{numero_propietario[1:]}+{mensaje}&apikey={APIKEY_BOT}', timeout=5)
+            except Exception as e:
+                print(f"{e} - fallo intentando enviar mensaje vigilante visitante")
     except Exception as e:
         cursorf.execute('''INSERT INTO web_logs_visitantes (vigilante_id, vigilante_nombre, nombre, fecha, hora, razon, contrato, cedula_id, acompanantes, cedula_propietario)
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);''', (vigilante_id, vigilante_nombre, nombref, fechaf, horaf, f"fallo_{razonRegistrar}", contratof, cedulaf, acompanantes, cedula_propietario))
@@ -452,10 +458,10 @@ class MyServer(BaseHTTPRequestHandler):
                 vigilante_id=datosVigilante[0][0]
                 vigilante_nombre=datosVigilante[0][1]
                 
-                aperturaConcedidaVigilante(vigilante_id, vigilante_nombre, unidad_id, unidad_nombre, fecha, hora, CONTRATO, cursor, conn, acceso_solicitud, razonApertura, personas)
                 self.send_response(200)
                 self.send_header("Content-type", "utf-8")
                 self.end_headers()
+                aperturaConcedidaVigilante(vigilante_id, vigilante_nombre, unidad_id, unidad_nombre, fecha, hora, CONTRATO, cursor, conn, acceso_solicitud, razonApertura, personas)
             else:
                 aperturadenegada(cursor, conn, acceso_solicitud)
                 self.send_response(400)
@@ -495,11 +501,10 @@ class MyServer(BaseHTTPRequestHandler):
                                 vigilante_id=datosVigilante[0][0]
                                 vigilante_nombre=datosVigilante[0][1]
                                 fecha=str(caracas_now)[:10]
-                                
-                                aperturaConcedidaVigilanteVisitante(vigilante_id, vigilante_nombre, invitado_nombre, fecha, horahoy, CONTRATO, invitado_cedula, cursor, conn, acceso_solicitud, razonApertura, horario_id, aperturasRealizadas, acompanantes, datosInvitado[0][2], datosPropietario[0][0])
                                 self.send_response(200)
                                 self.send_header("Content-type", "utf-8")
                                 self.end_headers()
+                                aperturaConcedidaVigilanteVisitante(vigilante_id, vigilante_nombre, invitado_nombre, fecha, horahoy, CONTRATO, invitado_cedula, cursor, conn, acceso_solicitud, razonApertura, horario_id, aperturasRealizadas, acompanantes, datosInvitado[0][2], datosPropietario[0][0])
                             else:
                                 aperturadenegada(cursor, conn, acceso_solicitud)
                                 self.send_response(200)
