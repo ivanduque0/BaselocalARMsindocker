@@ -714,7 +714,7 @@ while True:
                     print(f"{e} - fallo total en Log de vigilantes")
 
                 try:
-                    cursorlocal.execute('SELECT vigilante_id, vigilante_nombre, nombre, fecha, hora, razon, cedula_id, acompanantes, cedula_propietario FROM web_logs_vigilantes where contrato=%s and fecha=%s', (CONTRATO, fechahoy))
+                    cursorlocal.execute('SELECT vigilante_id, vigilante_nombre, nombre, fecha, hora, razon, cedula_id, acompanantes, cedula_propietario FROM web_logs_visitantes where contrato=%s and fecha=%s', (CONTRATO, fechahoy))
                     logsVisitantes_local= cursorlocal.fetchall()
                     
                     request_json = requests.get(url=f'{URL_API}obtenerlogsvisitantesapi/{CONTRATO}/{fechahoy}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
@@ -757,7 +757,7 @@ while True:
                                 requests.post(url=f'{URL_API}registrarlogsvisitantesapi/', 
                                 json=anadirLogJson, auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=5)
                 except Exception as e:
-                    print(f"{e} - fallo total en Log de vigilantes")
+                    print(f"{e} - fallo total en Log de visitantes")
 
                 BorrarPeticionesListas=True
                 t1_log=tm.perf_counter()
