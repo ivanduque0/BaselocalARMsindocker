@@ -569,32 +569,35 @@ while True:
                                     banderaTag=True
                                     cursorlocal.execute('SELECT cedula FROM web_usuarios WHERE id=%s',(idUsuario,))
                                     usuario_local= cursorlocal.fetchall()
-                                    cursorlocal.execute('SELECT epc, cedula FROM web_tagsrfid WHERE cedula=%s', (usuario_local[0][0],))
-                                    tags_local= cursorlocal.fetchall()
-                                    
-                                    request_json = requests.get(url=f'{URL_API}obtenertagsrfidindividualapi/{CONTRATO}/{usuario_local[0][0]}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
-                                    tagsServidor=[]
-                                    for consultajson in request_json:
-                                        tuplaTagIndividual=(consultajson['epc'],consultajson['cedula'],)
-                                        tagsServidor.append(tuplaTagIndividual)
+                                    if usuario_local:
+                                        cursorlocal.execute('SELECT epc, cedula FROM web_tagsrfid WHERE cedula=%s', (usuario_local[0][0],))
+                                        tags_local= cursorlocal.fetchall()
+                                        
+                                        request_json = requests.get(url=f'{URL_API}obtenertagsrfidindividualapi/{CONTRATO}/{usuario_local[0][0]}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
+                                        tagsServidor=[]
+                                        for consultajson in request_json:
+                                            tuplaTagIndividual=(consultajson['epc'],consultajson['cedula'],)
+                                            tagsServidor.append(tuplaTagIndividual)
 
-                                    nro_tags_local = len(tags_local)
-                                    nro_tags_servidor = len(tagsServidor)
+                                        nro_tags_local = len(tags_local)
+                                        nro_tags_servidor = len(tagsServidor)
 
-                                    for tagServidor in tagsServidor:
-                                        if not tagServidor in tags_local:
-                                            epc=tagServidor[0]
-                                            cedula=tagServidor[1]
-                                            cursorlocal.execute('''INSERT INTO web_tagsrfid (epc, cedula)
-                                            VALUES (%s, %s);''', (epc, cedula))
-                                            connlocal.commit()
+                                        for tagServidor in tagsServidor:
+                                            if not tagServidor in tags_local:
+                                                epc=tagServidor[0]
+                                                cedula=tagServidor[1]
+                                                cursorlocal.execute('''INSERT INTO web_tagsrfid (epc, cedula)
+                                                VALUES (%s, %s);''', (epc, cedula))
+                                                connlocal.commit()
 
-                                    for taglocaliterar in tags_local:
-                                        if not taglocaliterar in tagsServidor:
-                                            epc=taglocaliterar[0]
-                                            cedula=taglocaliterar[1]
-                                            cursorlocal.execute('DELETE FROM web_tagsrfid WHERE epc=%s AND cedula=%s',(epc, cedula))
-                                            connlocal.commit()
+                                        for taglocaliterar in tags_local:
+                                            if not taglocaliterar in tagsServidor:
+                                                epc=taglocaliterar[0]
+                                                cedula=taglocaliterar[1]
+                                                cursorlocal.execute('DELETE FROM web_tagsrfid WHERE epc=%s AND cedula=%s',(epc, cedula))
+                                                connlocal.commit()
+                                    else:
+                                        requests.delete(url=f'{URL_API}eliminarcambioapi/{idCambio}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
                                 except requests.exceptions.ConnectionError:
                                     print("fallo consultando api en tags")
                                     banderaTag=False
