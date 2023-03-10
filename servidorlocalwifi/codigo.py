@@ -156,7 +156,7 @@ def aperturaConcedidaVigilante(vigilante_id, vigilante_nombre, unidad_id, unidad
             if razon=='entrada':
                 mensaje=f'El vigilante ha dejado entrar {personas} que se dirige a su hogar' if (personas=='1' or personas=='0') else f"El vigilante ha dejado entrar {personas}  personas que se dirigen a su hogar"
             else:
-                mensaje=f'El vigilante ha dejando salir {personas} persona proveniente de su hogar' if (personas=='1' or personas=='0') else f"El vigilante ha dejandor salir {personas} personas provenientes de su hogar"
+                mensaje=f'El vigilante ha dejando salir {personas} persona proveniente de su hogar' if (personas=='1' or personas=='0') else f"El vigilante ha dejando salir {personas} personas provenientes de su hogar"
             cursorf.execute('SELECT numero_telefonico FROM web_usuarios WHERE unidad_id=%s AND rol=%s',(unidad_id,'Propietario'))
             propietarios_unidad= cursorf.fetchall()
             for propietario in propietarios_unidad:
