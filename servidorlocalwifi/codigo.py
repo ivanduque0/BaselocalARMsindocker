@@ -165,7 +165,7 @@ def aperturaConcedidaVigilante(vigilante_id, vigilante_nombre, unidad_id, unidad
                 except Exception as e:
                     print(f"{e} - fallo intentando enviar mensaje vigilante")
     except Exception as e:
-        cursorf.execute('''INSERT INTO web_logs_vigilantes (vigilante_id, vigilante_nombre, unidad_id, unidad_nombre, fecha, hora, razon, contrato)
+        cursorf.execute('''INSERT INTO web_logs_vigilantes (vigilante_id, vigilante_nombre, unidad_id, unidad_nombre, fecha, hora, razon, contrato, personas)
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);''', (vigilante_id, vigilante_nombre, unidad_id, unidad_nombre, fecha, hora, f"fallo_{razonRegistrar}", contrato, personas))
         connf.commit()
         print(f"{e} - fallo intentando abrir el acceso {acceso} con permiso de vigilante")
@@ -360,9 +360,12 @@ def aperturaconcedidabluetoothvisitante(nombref, fechaf, horaf, contratof, cedul
                 mensaje=f"El invitado {nombref} acaba de ingresar por medio de bluetooth"
             else:
                 mensaje=f"El invitado {nombref} acaba de salir por medio de bluetooth"
-            requests.get(f'https://api.callmebot.com/whatsapp.php?phone={NUMERO_BOT}&text=!sendto+{numero_propietario[1:]}+{mensaje}&apikey={APIKEY_BOT}', timeout=5)
+            try:
+                requests.get(f'https://api.callmebot.com/whatsapp.php?phone={NUMERO_BOT}&text=!sendto+{numero_propietario[1:]}+{mensaje}&apikey={APIKEY_BOT}', timeout=5)
+            except Exception as e:
+                print(f"{e} - fallo intentando enviar mensaje visitante bluetooth")
     except Exception as e:
-        cursorf.execute('''INSERT INTO web_logs_visitantes (vigilante_id, vigilante_nombre, nombre, fecha, hora, razon, contrato, cedula_id, acompanantes, cedula_propietario)
+        cursorf.execute('''INSERT INTO web_logs_visitantes (nombre, fecha, hora, razon, contrato, cedula_id, acompanantes, cedula_propietario)
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s);''', (nombref, fechaf, horaf, f"fallo_{razonRegistrar}", contratof, cedulaf, acompanantes, cedula_propietario))
         connf.commit()
         print(f"{e} - fallo intentando abrir el acceso {acceso} por bluetooth")
