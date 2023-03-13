@@ -149,7 +149,7 @@ def aperturaConcedidaVigilante(vigilante_id, vigilante_nombre, unidad_id, unidad
     try:
         if accesodict[acceso]:
             razonRegistrar=f"{razondict[acceso]}" if (razon in razondict[acceso].lower()) else f"{razondict[acceso]}-{razon}"
-            requests.get(f'{accesodict[acceso]}/on', timeout=4)
+            requests.get(f'{accesodict[acceso]}/on', timeout=5)
             cursorf.execute('''INSERT INTO web_logs_vigilantes (vigilante_id, vigilante_nombre, unidad_id, unidad_nombre, fecha, hora, razon, contrato, personas)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);''', (vigilante_id, vigilante_nombre, unidad_id, unidad_nombre, fecha, hora, razonRegistrar, contrato, personas))
             connf.commit()
@@ -174,7 +174,7 @@ def aperturaConcedidaVigilanteVisitante(vigilante_id, vigilante_nombre, nombref,
     try:
         if accesodict[acceso]:
             razonRegistrar=f"{razondict[acceso]}(vigilante)" if (razon in razondict[acceso].lower()) else f"{razondict[acceso]}(vigilante)-{razon}"
-            requests.get(f'{accesodict[acceso]}/on', timeout=4)
+            requests.get(f'{accesodict[acceso]}/on', timeout=5)
             cursorf.execute('UPDATE control_horarios_visitantes SET aperturas_hechas=%s WHERE horario_id=%s', (aperturasRealizadas+1,horario_id))
             cursorf.execute('''INSERT INTO accesos_abiertos (cedula, acceso, fecha, hora, estado)
             VALUES (%s, %s, %s, %s, %s)''', (cedulaf, acceso, fechaf, horaf, 'f'))
@@ -217,7 +217,7 @@ def aperturaconcedidawifi(id_usuariof, cursorf, connf, acceso, cedulaf, nombref,
     try:
         if accesodict[acceso]:
             razonRegistrar=f"{razondict[acceso]}(Wifi)" if (razon in razondict[acceso].lower()) else f"{razondict[acceso]}(Wifi)-{razon}"
-            requests.get(f'{accesodict[acceso]}/on', timeout=2)
+            requests.get(f'{accesodict[acceso]}/on', timeout=5)
             cursorf.execute('''INSERT INTO web_interacciones (nombre, fecha, hora, razon, contrato, cedula_id)
             VALUES (%s, %s, %s, %s, %s, %s);''', (nombref, fechaf, horaf, razonRegistrar, CONTRATO, cedulaf))
             #cursorf.execute('''UPDATE led SET onoff=1 WHERE onoff=0;''')
@@ -251,7 +251,7 @@ def aperturaconcedidawifivisitante(id_usuariof, cursorf, connf, acceso, cedulaf,
     try:
         if accesodict[acceso]:
             razonRegistrar=f"{razondict[acceso]}(Wifi)" if (razon in razondict[acceso].lower()) else f"{razondict[acceso]}(Wifi)-{razon}"
-            requests.get(f'{accesodict[acceso]}/on', timeout=2)
+            requests.get(f'{accesodict[acceso]}/on', timeout=5)
             cursor.execute('UPDATE control_horarios_visitantes SET aperturas_hechas=%s WHERE horario_id=%s', (aperturasRealizadas+1,horario_id))
             cursorf.execute('''INSERT INTO web_interacciones (nombre, fecha, hora, razon, contrato, cedula_id)
             VALUES (%s, %s, %s, %s, %s, %s);''', (nombref, fechaf, horaf, razonRegistrar, CONTRATO, cedulaf))
@@ -288,7 +288,7 @@ def aperturaconcedidahuella(nombref, fechaf, horaf, contratof, cedulaf, cursorf,
     try:
         if accesodict[acceso]:
             razonRegistrar=razondicthuellas[acceso] if (razon in razondicthuellas[acceso].lower()) else f"{razondicthuellas[acceso]}-{razon}"
-            requests.get(url=f'{accesodict[acceso]}/onrh', timeout=3)
+            requests.get(url=f'{accesodict[acceso]}/onrh', timeout=5)
             cursorf.execute('''INSERT INTO web_interacciones (nombre, fecha, hora, razon, contrato, cedula_id)
             VALUES (%s, %s, %s, %s, %s, %s);''', (nombref, fechaf, horaf, razonRegistrar, contratof, cedulaf))
             #cursorf.execute('''UPDATE led SET onoff=1 WHERE onoff=0;''')
@@ -308,7 +308,7 @@ def aperturaconcedidarfid(nombref, fechaf, horaf, contratof, cedulaf, cursorf, c
     try:
         if accesodict[acceso]:
             razonRegistrar=razondictrfids[acceso] if (razon in razondictrfids[acceso].lower()) else f"{razondictrfids[acceso]}-{razon}"
-            requests.get(url=f'{accesodict[acceso]}/onrh', timeout=3)
+            requests.get(url=f'{accesodict[acceso]}/onrh', timeout=5)
             cursorf.execute('''INSERT INTO web_interacciones (nombre, fecha, hora, razon, contrato, cedula_id)
             VALUES (%s, %s, %s, %s, %s, %s);''', (nombref, fechaf, horaf, razonRegistrar, contratof, cedulaf))
             #cursorf.execute('''UPDATE led SET onoff=1 WHERE onoff=0;''')
@@ -328,7 +328,7 @@ def aperturaconcedidabluetooth(nombref, fechaf, horaf, contratof, cedulaf, curso
     try:
         if accesodict[acceso]:
             razonRegistrar=f"{razondict[acceso]}(Bluetooth)" if (razon in razondict[acceso].lower()) else f"{razondict[acceso]}(Bluetooth)-{razon}"
-            requests.get(f'{accesodict[acceso]}/on', timeout=2)
+            requests.get(f'{accesodict[acceso]}/on', timeout=5)
             cursorf.execute('''INSERT INTO web_interacciones (nombre, fecha, hora, razon, contrato, cedula_id)
             VALUES (%s, %s, %s, %s, %s, %s);''', (nombref, fechaf, horaf, razonRegistrar, CONTRATO, cedulaf))
             #cursorf.execute('''UPDATE led SET onoff=1 WHERE onoff=0;''')
@@ -349,7 +349,7 @@ def aperturaconcedidabluetoothvisitante(nombref, fechaf, horaf, contratof, cedul
     try:
         if accesodict[acceso]:
             razonRegistrar=f"{razondict[acceso]}(bluetooth)" if (razon in razondict[acceso].lower()) else f"{razondict[acceso]}(bluetooth)-{razon}"
-            requests.get(f'{accesodict[acceso]}/on', timeout=4)
+            requests.get(f'{accesodict[acceso]}/on', timeout=5)
             cursorf.execute('UPDATE control_horarios_visitantes SET aperturas_hechas=%s WHERE horario_id=%s', (aperturasRealizadas+1,horario_id))
             cursorf.execute('''INSERT INTO accesos_abiertos (cedula, acceso, fecha, hora, estado)
             VALUES (%s, %s, %s, %s, %s)''', (cedulaf, acceso, fechaf, horaf, 'f'))
@@ -374,7 +374,7 @@ def aperturadenegada(cursorf, connf, acceso):
     # cursorf.execute('''UPDATE led SET onoff=2 WHERE onoff=0;''')
     # connf.commit()
     try:
-        requests.get(url=f'{accesodict[acceso]}/off', timeout=3)
+        requests.get(url=f'{accesodict[acceso]}/off', timeout=5)
     except:
         print("fallo en peticion http")
     finally:

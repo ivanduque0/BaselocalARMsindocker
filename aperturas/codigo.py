@@ -95,7 +95,7 @@ def aperturaConcedidaInternet(nombref, fechaf, horaf, contratof, cedulaf, cursor
     try:
         if accesodict[acceso]:
             razonRegistrar=f"{razondict[acceso]}(Internet)" if (razon in razondict[acceso].lower()) else f"{razondict[acceso]}(Internet)-{razon}"
-            requests.get(f'{accesodict[acceso]}/on', timeout=2)
+            requests.get(f'{accesodict[acceso]}/on', timeout=5)
             cursorf.execute('''INSERT INTO accesos_abiertos (cedula, acceso, fecha, hora, estado) 
             VALUES (%s, %s, %s, %s, %s)''', (cedulaf, acceso, fechaf, horaf, 'f'))
             connf.commit()
@@ -119,7 +119,7 @@ def aperturaConcedidaInternetVisitante(nombref, fechaf, horaf, contratof, cedula
     try:
         if accesodict[acceso]:
             razonRegistrar=f"{razondict[acceso]}(Internet)" if (razon in razondict[acceso].lower()) else f"{razondict[acceso]}(Internet)-{razon}"
-            requests.get(f'{accesodict[acceso]}/on', timeout=2)
+            requests.get(f'{accesodict[acceso]}/on', timeout=5)
             cursorf.execute('''INSERT INTO accesos_abiertos (cedula, acceso, fecha, hora, estado) 
             VALUES (%s, %s, %s, %s, %s)''', (cedulaf, acceso, fechaf, horaf, 'f'))
             connf.commit()
@@ -145,7 +145,7 @@ def aperturaConcedidaWifi(nombref, fechaf, horaf, contratof, cedulaf, cursorf, c
     try:
         if accesodict[acceso]:
             razonRegistrar=f"{razondict[acceso]}(Wifi)" if (razon in razondict[acceso].lower()) else f"{razondict[acceso]}(Wifi)-{razon}"
-            requests.get(f'{accesodict[acceso]}/on', timeout=2)
+            requests.get(f'{accesodict[acceso]}/on', timeout=5)
             cursorf.execute('''INSERT INTO web_interacciones (nombre, fecha, hora, razon, contrato, cedula_id)
             VALUES (%s, %s, %s, %s, %s, %s);''', (nombref, fechaf, horaf, razonRegistrar, contratof, cedulaf))
             #cursorf.execute('''UPDATE led SET onoff=1 WHERE onoff=0;''')
@@ -185,7 +185,7 @@ def aperturaConcedidaWifiVisitante(nombref, fechaf, horaf, contratof, cedulaf, c
     try:
         if accesodict[acceso]:
             razonRegistrar=f"{razondict[acceso]}(Wifi)" if (razon in razondict[acceso].lower()) else f"{razondict[acceso]}(Wifi)-{razon}"
-            requests.get(f'{accesodict[acceso]}/on', timeout=2)
+            requests.get(f'{accesodict[acceso]}/on', timeout=5)
             cursor.execute('UPDATE control_horarios_visitantes SET aperturas_hechas=%s WHERE horario_id=%s', (aperturasRealizadas+1,horario_id))
             cursorf.execute('''INSERT INTO web_interacciones (nombre, fecha, hora, razon, contrato, cedula_id)
             VALUES (%s, %s, %s, %s, %s, %s);''', (nombref, fechaf, horaf, razonRegistrar, contratof, cedulaf))
