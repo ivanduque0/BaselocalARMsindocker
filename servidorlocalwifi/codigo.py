@@ -447,7 +447,7 @@ class MyServer(BaseHTTPRequestHandler):
 
             cursor.execute("SELECT id, nombre FROM web_usuarios where telegram_id=%s", (id_usuario,))
             datosVigilante = cursor.fetchall()
-            cursor.execute("SELECT id, nombre FROM web_unidades where codigo=%s", (codigo_unidad,))
+            cursor.execute("SELECT id, nombre FROM web_unidades where codigo=%s", (int(codigo_unidad),))
             datosUnidad = cursor.fetchall()
             
             # print(datosUnidad)
