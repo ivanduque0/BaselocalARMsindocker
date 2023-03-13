@@ -96,15 +96,15 @@ def aperturaConcedidaInternet(nombref, fechaf, horaf, contratof, cedulaf, cursor
         if accesodict[acceso]:
             razonRegistrar=f"{razondict[acceso]}(Internet)" if (razon in razondict[acceso].lower()) else f"{razondict[acceso]}(Internet)-{razon}"
             requests.get(f'{accesodict[acceso]}/on', timeout=2)
-            cursorf.execute('''INSERT INTO web_interacciones (nombre, fecha, hora, razon, contrato, cedula_id)
-            VALUES (%s, %s, %s, %s, %s, %s);''', (nombref, fechaf, horaf, razonRegistrar, contratof, cedulaf))
-            #cursorf.execute('''UPDATE led SET onoff=1 WHERE onoff=0;''')
-            # connf.commit()
-            cursorf.execute('UPDATE solicitud_aperturas SET estado=%s WHERE id=%s;', (1, id_solicitud))
             cursorf.execute('''INSERT INTO accesos_abiertos (cedula, acceso, fecha, hora, estado) 
             VALUES (%s, %s, %s, %s, %s)''', (cedulaf, acceso, fechaf, horaf, 'f'))
             connf.commit()
-            requests.put(url=f'{URL_API}aperturasusuarioapi/{id_solicitud}/{contratof}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'))
+            requests.put(url=f'{URL_API}aperturasusuarioapi/{id_solicitud}/{contratof}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=5)
+            cursorf.execute('UPDATE solicitud_aperturas SET estado=%s WHERE id=%s;', (1, id_solicitud))
+            connf.commit()
+            cursorf.execute('''INSERT INTO web_interacciones (nombre, fecha, hora, razon, contrato, cedula_id)
+            VALUES (%s, %s, %s, %s, %s, %s);''', (nombref, fechaf, horaf, razonRegistrar, contratof, cedulaf))
+            connf.commit()
     except Exception as e:
         print(f"{e} - fallo intentando aperturar desde internet en la peticion con id {id_solicitud}")
         # cursorf.execute('''INSERT INTO web_interacciones (nombre, fecha, hora, razon, contrato, cedula_id)
@@ -120,16 +120,17 @@ def aperturaConcedidaInternetVisitante(nombref, fechaf, horaf, contratof, cedula
         if accesodict[acceso]:
             razonRegistrar=f"{razondict[acceso]}(Internet)" if (razon in razondict[acceso].lower()) else f"{razondict[acceso]}(Internet)-{razon}"
             requests.get(f'{accesodict[acceso]}/on', timeout=2)
-            cursor.execute('UPDATE control_horarios_visitantes SET aperturas_hechas=%s WHERE horario_id=%s', (aperturasRealizadas+1,horario_id))
-            cursorf.execute('''INSERT INTO web_interacciones (nombre, fecha, hora, razon, contrato, cedula_id)
-            VALUES (%s, %s, %s, %s, %s, %s);''', (nombref, fechaf, horaf, razonRegistrar, contratof, cedulaf))
-            #cursorf.execute('''UPDATE led SET onoff=1 WHERE onoff=0;''')
-            # connf.commit()
-            cursorf.execute('UPDATE solicitud_aperturas SET estado=%s WHERE id=%s;', (1, id_solicitud))
             cursorf.execute('''INSERT INTO accesos_abiertos (cedula, acceso, fecha, hora, estado) 
             VALUES (%s, %s, %s, %s, %s)''', (cedulaf, acceso, fechaf, horaf, 'f'))
             connf.commit()
-            requests.put(url=f'{URL_API}aperturasusuarioapi/{id_solicitud}/{contratof}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'))
+            requests.put(url=f'{URL_API}aperturasusuarioapi/{id_solicitud}/{contratof}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=5)
+            cursorf.execute('UPDATE solicitud_aperturas SET estado=%s WHERE id=%s;', (1, id_solicitud))
+            connf.commit()
+            cursor.execute('UPDATE control_horarios_visitantes SET aperturas_hechas=%s WHERE horario_id=%s', (aperturasRealizadas+1,horario_id))
+            cursorf.execute('''INSERT INTO web_interacciones (nombre, fecha, hora, razon, contrato, cedula_id)
+            VALUES (%s, %s, %s, %s, %s, %s);''', (nombref, fechaf, horaf, razonRegistrar, contratof, cedulaf))
+            connf.commit()
+
     except Exception as e:
         print(f"{e} - fallo intentando aperturar desde internet en la peticion con id {id_solicitud}")
         # cursorf.execute('''INSERT INTO web_interacciones (nombre, fecha, hora, razon, contrato, cedula_id)
