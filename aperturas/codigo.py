@@ -268,11 +268,11 @@ while True:
                         if not aperturas_local_existente:
                             if apertura['fecha'] == fecha and diferencia_horas==0 and (diferencia_minutos >= -1 or diferencia_minutos <= 2):
                                     cursor.execute('''INSERT INTO solicitud_aperturas (id, id_usuario, acceso, razon,  estado, peticionInternet, feedback, abriendo)
-                                        VALUES (%s, %s, %s, %s, %s, %s, %s)''', (solicitud_id, id_usuario, solicitud_acceso, razon, 0, 't', 'f', 'f'))
+                                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)''', (solicitud_id, id_usuario, solicitud_acceso, razon, 0, 't', 'f', 'f'))
                                     conn.commit()
                             else:   
                                 cursor.execute('''INSERT INTO solicitud_aperturas (id, id_usuario, acceso, razon, estado, peticionInternet, feedback, abriendo)
-                                    VALUES (%s, %s, %s, %s, %s, %s, %s)''', (solicitud_id, id_usuario, solicitud_acceso, razon, 1, 't', 't', 't'))
+                                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)''', (solicitud_id, id_usuario, solicitud_acceso, razon, 1, 't', 't', 't'))
                                 conn.commit()
                         elif aperturas_local_existente and feedbackPeticion:
                             cursor.execute('UPDATE solicitud_aperturas SET feedback=%s WHERE id=%s', ('t',solicitud_id))
