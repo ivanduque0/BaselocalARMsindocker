@@ -387,7 +387,7 @@ while True:
                                 horahoy = datetime.strptime(hora, '%H:%M:%S').time()
                                 fecha=str(caracas_now)[:10]
                                 etapadia=1
-                                aperturaConcedidaInternet(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, id_solicitud, razonApertura)   
+                                aperturaConcedidaInternet(nombre, fecha, horahoy, CONTRATO, cedula, cursor, conn, acceso_solicitud, id_solicitud, razonApertura, abriendo)   
                             elif horarios_permitidos != [] and permisoAperturaInternet == True and peticion_internet==True and rol=='Visitante':
                                 tz = pytz.timezone('America/Caracas')
                                 caracas_now = datetime.now(tz)
