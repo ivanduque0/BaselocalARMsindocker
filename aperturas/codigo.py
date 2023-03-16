@@ -249,6 +249,7 @@ while True:
                     tz = pytz.timezone('America/Caracas')
                     caracas_now = datetime.now(tz)
                     hora=str(caracas_now)[11:19]
+                    hora_peticion = datetime.strptime(hora, '%H:%M:%S').time()
                     hora_hora=int(hora[:2])
                     hora_minuto=int(hora[3:5])
                     fecha=str(caracas_now)[:10]
@@ -269,7 +270,7 @@ while True:
                         if not aperturas_local_existente:
                             if apertura['fecha'] == fecha and diferencia_horas==0 and (diferencia_minutos >= -1 or diferencia_minutos <= 2):
                                     cursor.execute('''INSERT INTO solicitud_aperturas (id, id_usuario, acceso, razon,  estado, peticionInternet, feedback, abriendo, fecha, hora)
-                                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)''', (solicitud_id, id_usuario, solicitud_acceso, razon, 0, 't', 'f', 'f', fecha, caracas_now.time()))
+                                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)''', (solicitud_id, id_usuario, solicitud_acceso, razon, 0, 't', 'f', 'f', fecha, hora_peticion))
                                     conn.commit()
                             else:   
                                 cursor.execute('''INSERT INTO solicitud_aperturas (id, id_usuario, acceso, razon, estado, peticionInternet, feedback, abriendo)
