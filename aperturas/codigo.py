@@ -309,7 +309,7 @@ while True:
                         datosUsuario = cursor.fetchall()
                         
                         hora_solicitud_str = hora.isoformat()
-                        hora_solicitud = datetime.strptime(hora_guardada_str, "%H:%M:%S")
+                        hora_solicitud = datetime.strptime(hora_solicitud_str, "%H:%M:%S")
                         hora_actual_str = str(caracas_now)[11:19]
                         hora_actual = datetime.strptime(hora_actual_str, "%H:%M:%S")
                         diferencia_horas = hora_actual - hora_solicitud
