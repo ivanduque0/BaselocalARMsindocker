@@ -16,6 +16,7 @@ primerahora = datetime.strptime('00:00:00', '%H:%M:%S').time()
 total=0
 CONTRATO=os.environ.get("CONTRATO")
 URL_API = os.environ.get("URL_API")
+TIEMPO_MAX_ENCOLAMIENTO = float(os.environ.get("TIEMPO_MAX_ENCOLAMIENTO"))
 conn=None
 cursor=None
 
@@ -267,8 +268,8 @@ while True:
                         aperturas_local_existente= cursor.fetchall()
                         if not aperturas_local_existente:
                             if apertura['fecha'] == fecha and diferencia_horas==0 and (diferencia_minutos >= -1 or diferencia_minutos <= 2):
-                                    cursor.execute('''INSERT INTO solicitud_aperturas (id, id_usuario, acceso, razon,  estado, peticionInternet, feedback, abriendo)
-                                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)''', (solicitud_id, id_usuario, solicitud_acceso, razon, 0, 't', 'f', 'f'))
+                                    cursor.execute('''INSERT INTO solicitud_aperturas (id, id_usuario, acceso, razon,  estado, peticionInternet, feedback, abriendo, fecha, hora)
+                                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)''', (solicitud_id, id_usuario, solicitud_acceso, razon, 0, 't', 'f', 'f', fecha, caracas_now.time()))
                                     conn.commit()
                             else:   
                                 cursor.execute('''INSERT INTO solicitud_aperturas (id, id_usuario, acceso, razon, estado, peticionInternet, feedback, abriendo)
@@ -280,7 +281,7 @@ while True:
             except Exception as error:
                 print(f"{error} - fallo en api solicitud de aperturas")
 
-            cursor.execute('SELECT id, id_usuario, acceso, estado, peticionInternet, razon, abriendo FROM solicitud_aperturas')
+            cursor.execute('SELECT id, id_usuario, acceso, estado, peticionInternet, razon, abriendo, fecha, hora FROM solicitud_aperturas')
             aperturas_local= cursor.fetchall()
 
             if len(aperturas_local):
@@ -289,6 +290,8 @@ while True:
                     #si es igual a 0 es porque aun no ha sido procesada la solicitud
                     #de apertura
                     if estado_solicitud == 0:
+                        tz = pytz.timezone('America/Caracas')
+                        caracas_now = datetime.now(tz)
                         diasusuario = []
                         etapadia=0
                         etapadiaapertura=0
@@ -300,10 +303,19 @@ while True:
                         peticion_internet=aperturalocal[4]
                         razonApertura=aperturalocal[5]
                         abriendo=aperturalocal[6]
+                        fecha=aperturalocal[7]
+                        hora=aperturalocal[8]
                         cursor.execute("SELECT cedula, nombre, internet, wifi, rol, id FROM web_usuarios where telegram_id=%s", (codigo_usuario,))
                         datosUsuario = cursor.fetchall()
+                        
+                        hora_solicitud_str = hora.isoformat()
+                        hora_solicitud = datetime.strptime(hora_guardada_str, "%H:%M:%S")
+                        hora_actual_str = str(caracas_now)[11:19]
+                        hora_actual = datetime.strptime(hora_actual_str, "%H:%M:%S")
+                        diferencia_horas = hora_actual - hora_solicitud
+                        segundos_transcurridos=diferencia_horas.total_seconds()
                         #print(datosUsuario)
-                        if len(datosUsuario)!=0:
+                        if len(datosUsuario)!=0 and fecha==caracas_now.date() and segundos_transcurridos<TIEMPO_MAX_ENCOLAMIENTO:
                             cedula=datosUsuario[0][0]
                             nombre=datosUsuario[0][1]
                             permisoAperturaInternet = datosUsuario[0][2]
@@ -313,8 +325,6 @@ while True:
                             cursor.execute('SELECT id, fecha_entrada, fecha_salida, entrada, salida, dia FROM web_horariospermitidos where usuario=%s', (usuario_id,))
                             horarios_permitidos = cursor.fetchall()
                             if horarios_permitidos != [] and permisoAperturaInternet == True and peticion_internet==True and rol=='Secundario':
-                                tz = pytz.timezone('America/Caracas')
-                                caracas_now = datetime.now(tz)
                                 dia = caracas_now.weekday()
                                 diahoy = dias_semana[dia]
                                 for _, _, _, entrada, salida, dia in horarios_permitidos:

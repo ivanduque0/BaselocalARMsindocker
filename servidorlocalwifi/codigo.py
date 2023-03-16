@@ -242,8 +242,8 @@ def aperturaconcedidawifi(id_usuariof, cursorf, connf, acceso, cedulaf, nombref,
                 idPeticion=IdContador+1
 
         if accesodict[acceso]:
-            cursorf.execute('''INSERT INTO solicitud_aperturas (id, id_usuario, acceso, razon, estado, peticionInternet, feedback, abriendo)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s);''', (idPeticion, id_usuariof, acceso, razon, 0, 'f', 'f', 'f'))
+            cursorf.execute('''INSERT INTO solicitud_aperturas (id, id_usuario, acceso, razon, estado, peticionInternet, feedback, abriendo, fecha, hora)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);''', (idPeticion, id_usuariof, acceso, razon, 0, 'f', 'f', 'f', fechaf, horaf))
             #cursorf.execute('''UPDATE led SET onoff=1 WHERE onoff=0;''')
             connf.commit()
 
