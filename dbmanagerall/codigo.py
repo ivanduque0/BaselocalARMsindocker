@@ -11,6 +11,7 @@ import requests
 dotenv_path = Path('/BaselocalARMsindocker/.env.manager')
 load_dotenv(dotenv_path=dotenv_path)
 CONTRATO=os.environ.get("CONTRATO")
+CONTRATO_ID=os.environ.get("CONTRATO_ID")
 URL_API=os.environ.get("URL_API")
 maximo_dias_acumular=int(os.environ.get("DIAS_ACUMULAR"))
 connlocal = None
@@ -412,6 +413,121 @@ while True:
                                 print(f"{e} - fallo total usuarios")
                                 banderaUsuario=False
                             if banderaUsuario:
+                                requests.delete(url=f'{URL_API}eliminarcambioapi/{idCambio}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
+                        elif tablaCambiada == 'Unidades':
+                            try:
+                                banderaUnidad=True
+                                if not idUsuario:
+                                    try:
+                                        cursorlocal.execute('SELECT id, nombre, codigo FROM web_unidades')
+                                        unidades_local= cursorlocal.fetchall()
+
+                                        request_json = requests.get(url=f'{URL_API}verunidadescontratoapi/{CONTRATO_ID}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
+
+                                        unidadesServidor=[]
+                                        for consultajson in request_json:
+                                            tuplaUnidadIndividual=(consultajson['id'],consultajson['nombre'],consultajson['codigo'])
+                                            unidadesServidor.append(tuplaUnidadIndividual)
+
+                                        # nro_unidades_local = len(unidades_local)
+                                        nro_unidades_servidor = len(unidadesServidor)
+
+                                        # print(f'unidades en local: {nro_unidades_local}')
+                                        # print(f'unidades en servidor: {nro_unidades_servidor}')
+
+                                        # contador=0
+                                        for unidadServidor in unidadesServidor:
+                                            # contador=contador+1
+                                            # print(contador)
+                                            # print(unidadServidor)
+                                            # try:
+                                            #     tags_local.index(tagServidor)
+                                            # except ValueError:
+                                            if not unidadServidor in unidades_local:
+                                                id_unidad=unidadServidor[0]
+                                                nombre=unidadServidor[1]
+                                                codigo=unidadServidor[2]
+                                                cursorlocal.execute('''INSERT INTO web_unidades (id, nombre, codigo)
+                                                VALUES (%s, %s, %s);''', (id_unidad, nombre, codigo))
+                                                connlocal.commit()
+
+                                        # contador=0
+                                        for unidadLocal in unidades_local:
+                                            # contador=contador+1
+                                            # print(contador)
+                                            # print(unidadLocal)
+                                            # try:
+                                            #     tagsServidor.index(taglocaliterar)
+                                            # except ValueError:
+                                            if not unidadLocal in unidadesServidor:
+                                                id_unidad=unidadLocal[0]
+                                                cursorlocal.execute('DELETE FROM web_unidades WHERE id=%s',(id_unidad,))
+                                                connlocal.commit()
+
+                                        cursorlocal.execute('SELECT id, nombre FROM web_unidades')
+                                        unidades_local= cursorlocal.fetchall()
+                                        
+                                        nro_unidades_local = len(unidades_local)
+
+                                        if nro_unidades_local != nro_unidades_servidor:
+                                            banderaUnidad=False
+                                            print(f'el numero de unidades en local y servidor a la final no coincidio')
+                                    except Exception as e:
+                                        print(f"{e} - fallo trayendo todas las unidades en cambios")
+                                        banderaUnidad=False
+                                else:
+                                    cursorlocal.execute('SELECT id, nombre, codigo FROM web_unidades WHERE id=%s',(idUsuario))
+                                    unidades_local= cursorlocal.fetchall()
+                                    try:
+                                        request_json = requests.get(url=f'{URL_API}editarunidadapi/{idUsuario}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
+                                        if not unidades_local:
+                                            cursorlocal.execute('''INSERT INTO web_unidades (id, nombre, codigo)
+                                                VALUES (%s, %s, %s);''', (request_json['id'], request_json['nombre'], request_json['codigo']))
+                                            connlocal.commit()
+                                        elif unidades_local:
+                                            cursorlocal.execute("UPDATE web_unidades SET id=%s, nombre=%s, codigo=%s WHERE id=%s", (request_json['id'], request_json['nombre'], request_json['codigo'], idUsuario))
+                                            connlocal.commit()
+                                    except:
+                                        if unidades_local:
+                                            cursorlocal.execute('SELECT id, cedula, FROM web_usuarios WHERE unidad_id=%s', (idUsuario,))
+                                            usuarios_local= cursorlocal.fetchall()
+                                            usuarios_unidad= len(usuarios_local)
+                                            contador_usuarios_eliminados=0
+                                            for usuario in usuarios_local:
+                                                cursorlocal.execute('SELECT id_suprema FROM web_huellas where cedula=%s', (usuario[1],))
+                                                huellas_local= cursorlocal.fetchall()
+                                                HuellasPorBorrar=len(huellas_local)
+                                                HuellasBorradas=0
+                                                nroCaptahuellasSinHuella=0
+                                                captahuella_actual=0
+                                                for huella_local in huellas_local:
+                                                    id_suprema = huella_local[0]
+                                                    id_suprema_hex = (id_suprema).to_bytes(4, byteorder='big').hex()
+                                                    id_suprema_hex = id_suprema_hex[6:]+id_suprema_hex[4:6]+id_suprema_hex[2:4]+id_suprema_hex[0:2]
+                                                    for captahuella in captahuellas:
+                                                        if captahuella:
+                                                            captahuella_actual=captahuella_actual+1
+                                                            try:
+                                                                requests.get(url=f'{captahuella}/quitar/{id_suprema_hex}', timeout=3)
+                                                                nroCaptahuellasSinHuella=nroCaptahuellasSinHuella+1
+                                                            except:
+                                                                print(f"fallo al conectar con la esp8266 con la ip:{captahuella}")
+                                                                banderaUnidad=False
+                                                    if nroCaptahuellasSinHuella == captahuella_actual:
+                                                        cursorlocal.execute('DELETE FROM web_huellas WHERE id_suprema=%s', (id_suprema,))
+                                                        connlocal.commit()
+                                                        HuellasBorradas=HuellasBorradas+1
+                                                if HuellasBorradas == HuellasPorBorrar:
+                                                    cursorlocal.execute('DELETE FROM web_usuarios WHERE id=%s', (usuario[0],))
+                                                    cursorlocal.execute('DELETE FROM web_horariospermitidos WHERE usuario=%s', (usuario[0],))
+                                                    connlocal.commit()
+                                                    contador_usuarios_eliminados=contador_usuarios_eliminados+1
+                                            if contador_usuarios_eliminados!=usuarios_unidad:
+                                                banderaUnidad=False
+                            except Exception as e:
+                                print(f"{e} - fallo total unidades")
+                                banderaUnidad=False
+                            if banderaUnidad:
                                 requests.delete(url=f'{URL_API}eliminarcambioapi/{idCambio}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
                         elif tablaCambiada == 'Horarios':
                             try:
