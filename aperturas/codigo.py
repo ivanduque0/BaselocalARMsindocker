@@ -218,7 +218,9 @@ def aperturadenegada(cursorf, connf, acceso, id_solicitud):
         requests.get(f'{accesodict[acceso]}/off', timeout=2)
         cursorf.execute('UPDATE solicitud_aperturas SET estado=%s, feedback=%s WHERE id=%s;', (1,'t', id_solicitud))
         connf.commit()
+        requests.put(url=f'{URL_API}aperturasusuarioapi/{id_solicitud}/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=5)
     except Exception as e:
+        
         print(f"{e} - fallo en peticion para denegar apertura")
     # finally:
     #     pass  
