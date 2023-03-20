@@ -476,7 +476,7 @@ while True:
                                         print(f"{e} - fallo trayendo todas las unidades en cambios")
                                         banderaUnidad=False
                                 else:
-                                    cursorlocal.execute('SELECT id, nombre, codigo FROM web_unidades WHERE id=%s',(idUsuario))
+                                    cursorlocal.execute('SELECT id, nombre, codigo FROM web_unidades WHERE id=%s',(idUsuario,))
                                     unidades_local= cursorlocal.fetchall()
                                     try:
                                         request_json = requests.get(url=f'{URL_API}editarunidadapi/{idUsuario}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
