@@ -522,7 +522,10 @@ while True:
                                                     cursorlocal.execute('DELETE FROM web_horariospermitidos WHERE usuario=%s', (usuario[0],))
                                                     connlocal.commit()
                                                     contador_usuarios_eliminados=contador_usuarios_eliminados+1
-                                            if contador_usuarios_eliminados!=usuarios_unidad:
+                                            if contador_usuarios_eliminados==usuarios_unidad:
+                                                cursorlocal.execute('DELETE FROM web_unidades WHERE id=%s', (idUsuario,))
+                                                connlocal.commit()
+                                            else:
                                                 banderaUnidad=False
                             except Exception as e:
                                 print(f"{e} - fallo total unidades")
