@@ -489,7 +489,7 @@ while True:
                                             connlocal.commit()
                                     except:
                                         if unidades_local:
-                                            cursorlocal.execute('SELECT id, cedula, FROM web_usuarios WHERE unidad_id=%s', (idUsuario,))
+                                            cursorlocal.execute('SELECT id, cedula FROM web_usuarios WHERE unidad_id=%s', (idUsuario,))
                                             usuarios_local= cursorlocal.fetchall()
                                             usuarios_unidad= len(usuarios_local)
                                             contador_usuarios_eliminados=0
