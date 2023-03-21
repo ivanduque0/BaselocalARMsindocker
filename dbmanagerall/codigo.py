@@ -743,7 +743,7 @@ while True:
                     nro_dias_acumulados=len(dias_acumulados)
 
                     if nro_dias_acumulados >= maximo_dias_acumular:
-                        cursorlocal.execute('DELETE FROM web_interacciones *')
+                        cursorlocal.execute('DELETE FROM web_logs_usuarios *')
                         cursorlocal.execute('DELETE FROM dias_acumulados *')
                         connlocal.commit()
                         
@@ -753,7 +753,7 @@ while True:
                         connlocal.commit()
 
                 try:
-                    cursorlocal.execute('SELECT * FROM web_interacciones where contrato=%s and fecha=%s', (CONTRATO,fechahoy))
+                    cursorlocal.execute('SELECT * FROM web_logs_usuarios where contrato=%s and fecha=%s', (CONTRATO,fechahoy))
                     interacciones_local= cursorlocal.fetchall()
                 
                     request_json = requests.get(url=f'{URL_API}obtenerinteraccionesapi/{CONTRATO}/{fechahoy}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
