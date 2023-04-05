@@ -7,6 +7,7 @@ from datetime import datetime
 import requests
 from dotenv import load_dotenv
 from pathlib import Path
+import json
 
 dotenv_path = Path('/BaselocalARMsindocker/.env.manager')
 load_dotenv(dotenv_path=dotenv_path)
@@ -416,10 +417,62 @@ def invertir_uuid(uuid_beacon):
 
 class MyServer(BaseHTTPRequestHandler):
     def do_GET(self):
+        peticion=self.path[1::].split("/")
+
         if self.path == "/seguricel_ping":
             self.send_response(200)
             self.send_header("Content-type", "utf-8")
             self.end_headers()
+            
+        if len(peticion) == 2 and peticion[0] == "obtenerinvitacionvigilanteapi":
+            _, horario_id = peticion
+            cursor.execute("SELECT usuario, fecha_entrada, fecha_salida, entrada, salida, acompanantes FROM web_horariospermitidos where id=%s", (int(horario_id),))
+            datosHorario = cursor.fetchall()
+            if datosHorario:
+                usuario=datosHorario[0][0]
+                fecha_entrada=datosHorario[0][1]
+                fecha_salida=datosHorario[0][2]
+                entrada=datosHorario[0][3]
+                salida=datosHorario[0][4]
+                acompanantes=datosHorario[0][5]
+                cursor.execute("SELECT cedula, nombre, cedula_propietario, unidad_id FROM web_usuarios where id=%s", (usuario,))
+                datosInvitado = cursor.fetchall()
+                cursor.execute("SELECT codigo FROM web_unidades where id=%s", (datosInvitado[0][3],))
+                unidad = cursor.fetchall()
+                if datosInvitado:
+                    cedula=datosInvitado[0][0]
+                    nombre=datosInvitado[0][1]
+                    cedula_propietario=datosInvitado[0][2]
+                    codigo_unidad=unidad[0][0]
+                    invitacion={
+                        "id": horario_id,
+                        "fecha_entrada": fecha_entrada.isoformat(),
+                        "fecha_salida": fecha_salida.isoformat(),
+                        "entrada": entrada.isoformat(),
+                        "salida": salida.isoformat(),
+                        "cedula": cedula,
+                        "cedula_propietario": cedula_propietario,
+                        "acompanantes": acompanantes,
+                        "usuario": usuario,
+                        "codigo_unidad": codigo_unidad,
+                        "nombre":nombre,
+                        "unidad":datosInvitado[0][3]
+                        }
+                    invitacion_json = json.dumps(invitacion)
+                    self.send_response(code=200)
+                    self.send_header(keyword='Content-type', value='application/json')
+                    self.end_headers()
+                    self.wfile.write(invitacion_json.encode('utf-8'))
+                else:
+                    self.send_response(400)
+                    self.send_header(keyword='Content-type', value='application/json')
+                    self.end_headers()
+                    self.wfile.write(json.dumps([]).encode('utf-8'))
+            else:
+                self.send_response(401)
+                self.send_header(keyword='Content-type', value='application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps([]).encode('utf-8'))
         # else:
         #     print("cerrado")
         #     webServer.shutdown()
@@ -434,6 +487,18 @@ class MyServer(BaseHTTPRequestHandler):
 
     def do_POST(self):
         peticion=self.path[1::].split("/")
+        
+        if len(peticion) == 1 and peticion[0] == "enviarloglocal":
+            self.data_string = self.rfile.read(int(self.headers['Content-Length']))
+            data = json.loads(self.data_string)
+            #print(data)
+            cursor.execute('''INSERT INTO web_logs_visitantes (vigilante_id, vigilante_nombre, nombre, fecha, hora, razon, contrato, cedula_id, acompanantes, cedula_propietario, unidad_id)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);''', (data['vigilante_id'], data['vigilante_nombre'], data['nombre'], data['fecha'], data['hora'], data['razon'], data['contrato'], data['cedula'], data['acompanantes'], data['cedula_propietario'], data['unidad_id']))
+            conn.commit()
+            self.send_response(200)
+            self.send_header(keyword='Content-type', value='application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps([]).encode('utf-8'))
 
         if len(peticion) == 2 and peticion[1] == "cerrandoacceso":
             self.send_response(200)

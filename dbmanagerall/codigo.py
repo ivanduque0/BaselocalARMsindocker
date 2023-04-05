@@ -836,7 +836,7 @@ while True:
                     print(f"{e} - fallo total en Log de vigilantes")
 
                 try:
-                    cursorlocal.execute('SELECT vigilante_id, vigilante_nombre, nombre, fecha, hora, razon, cedula_id, acompanantes, cedula_propietario FROM web_logs_visitantes where contrato=%s and fecha=%s', (CONTRATO, fechahoy))
+                    cursorlocal.execute('SELECT vigilante_id, vigilante_nombre, nombre, fecha, hora, razon, cedula_id, acompanantes, cedula_propietario, unidad_id FROM web_logs_visitantes where contrato=%s and fecha=%s', (CONTRATO, fechahoy))
                     logsVisitantes_local= cursorlocal.fetchall()
                     
                     request_json = requests.get(url=f'{URL_API}obtenerlogsvisitantesapi/{CONTRATO}/{fechahoy}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
@@ -845,7 +845,7 @@ while True:
                     for consultajson in request_json:
                         objetofecha= date.fromisoformat(consultajson['fecha'])
                         objetohora=time.fromisoformat(consultajson['hora'])
-                        tuplaLogIndividual=(consultajson['vigilante_id'],consultajson['vigilante_nombre'],consultajson['nombre'],objetofecha,objetohora,consultajson['razon'],consultajson['cedula'], consultajson['acompanantes'],consultajson['cedula_propietario'])
+                        tuplaLogIndividual=(consultajson['vigilante_id'],consultajson['vigilante_nombre'],consultajson['nombre'],objetofecha,objetohora,consultajson['razon'],consultajson['cedula'], consultajson['acompanantes'],consultajson['cedula_propietario'],consultajson['unidad_id'])
                         listaLogsVisitantesServidor.append(tuplaLogIndividual)
 
                     nro_int_local = len(logsVisitantes_local)
@@ -864,6 +864,7 @@ while True:
                                 cedula=logVisitante[6]
                                 acompanantes=logVisitante[7]
                                 cedula_propietario=logVisitante[8]
+                                unidad_id=logVisitante[9]
                                 anadirLogJson = {
                                     "vigilante_nombre": vigilante_nombre,
                                     "vigilante_id": vigilante_id,
@@ -874,7 +875,8 @@ while True:
                                     "contrato": CONTRATO,
                                     "cedula": cedula,
                                     "acompanantes": acompanantes,
-                                    "cedula_propietario": cedula_propietario
+                                    "cedula_propietario": cedula_propietario,
+                                    "unidad_id":unidad_id
                                 }
                                 requests.post(url=f'{URL_API}registrarlogsvisitantesapi/', 
                                 json=anadirLogJson, auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=5)
