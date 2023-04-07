@@ -216,8 +216,9 @@ def controlhorariovisitante(cursorf, connf, horario_id, razon):
             abrir=True
         elif razon=='salida':
             cursorf.execute('''INSERT INTO control_horarios_visitantes (horario_id, aperturas_hechas) 
-            VALUES (%s, %s)''', (horario_id, 2))
+            VALUES (%s, %s)''', (horario_id, 1))
             connf.commit()
+            cantidad_aperturas=1
             abrir=True
     elif not control_visitante and horario_id=='0':
         abrir=True
