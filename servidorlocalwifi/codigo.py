@@ -501,6 +501,26 @@ class MyServer(BaseHTTPRequestHandler):
                 self.end_headers()
                 self.wfile.write(json.dumps([]).encode('utf-8'))
         
+        if len(peticion) == 1 and peticion[0] == "obtenerunidadesvisitantes":
+            # _, horario_id = peticion
+            cursor.execute("SELECT b.id, b.nombre, b.codigo FROM web_usuarios AS a INNER JOIN web_unidades AS b ON a.unidad_id = b.id WHERE a.rol='Visitante' GROUP BY b.id, b.nombre, b.codigo ORDER BY b.id ASC")
+            unidades = cursor.fetchall()
+            if unidades:
+                unidadesJson=[]
+                for unidad in unidades:
+                    unidadDict={'id':unidad[0], 'nombre':unidad[1], 'codigo':unidad[2]}
+                    unidadesJson.append(unidadDict)
+                unidades_json = json.dumps(unidadesJson)
+                self.send_response(code=200)
+                self.send_header(keyword='Content-type', value='application/json')
+                self.end_headers()
+                self.wfile.write(unidades_json.encode('utf-8'))
+            else:
+                self.send_response(401)
+                self.send_header(keyword='Content-type', value='application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps([]).encode('utf-8'))
+        
         if len(peticion) == 2 and peticion[0] == "obtenervisitantes":
             _, unidad_id = peticion
             cursor.execute(f"SELECT a.id, a.nombre, a.cedula, a.cedula_propietario, b.id FROM web_usuarios AS a INNER JOIN web_unidades AS b ON a.unidad_id = b.id WHERE a.rol='Visitante' AND a.unidad_id={unidad_id}")
