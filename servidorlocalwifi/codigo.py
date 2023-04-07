@@ -541,14 +541,18 @@ class MyServer(BaseHTTPRequestHandler):
                         self.wfile.write(visitantes_json.encode('utf-8'))
                         break
                 if horarioEncontrado==False:
+                    visitantes_json = json.dumps({})
                     self.send_response(400)
                     self.send_header(keyword='Content-type', value='application/json')
                     self.end_headers()
+                    self.wfile.write(visitantes_json.encode('utf-8'))
             else:
+                visitantes_json = json.dumps({})
                 if horarioEncontrado==False:
                     self.send_response(401)
                     self.send_header(keyword='Content-type', value='application/json')
                     self.end_headers()
+                    self.wfile.write(visitantes_json.encode('utf-8'))
         # else:
         #     print("cerrado")
         #     webServer.shutdown()
