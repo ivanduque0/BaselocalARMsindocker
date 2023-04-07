@@ -214,6 +214,11 @@ def controlhorariovisitante(cursorf, connf, horario_id, razon):
             VALUES (%s, %s)''', (horario_id, 0))
             connf.commit()
             abrir=True
+        elif razon=='salida':
+            cursorf.execute('''INSERT INTO control_horarios_visitantes (horario_id, aperturas_hechas) 
+            VALUES (%s, %s)''', (horario_id, 1))
+            connf.commit()
+            abrir=True
     elif control_visitante[0][0]==0 and razon=='entrada':
         abrir=True
     elif control_visitante[0][0]<2:
@@ -468,6 +473,91 @@ class MyServer(BaseHTTPRequestHandler):
                     self.send_header(keyword='Content-type', value='application/json')
                     self.end_headers()
                     self.wfile.write(json.dumps([]).encode('utf-8'))
+            else:
+                self.send_response(401)
+                self.send_header(keyword='Content-type', value='application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps([]).encode('utf-8'))
+        
+        if len(peticion) == 1 and peticion[0] == "obtenerunidades":
+            # _, horario_id = peticion
+            cursor.execute("SELECT id, nombre, codigo FROM web_unidades ORDER BY codigo ASC")
+            unidades = cursor.fetchall()
+            if unidades:
+                unidadesJson=[]
+                for unidad in unidades:
+                    unidadDict={'id':unidad[0], 'nombre':unidad[1], 'codigo':unidad[2]}
+                    unidadesJson.append(unidadDict)
+                unidades_json = json.dumps(unidadesJson)
+                self.send_response(code=200)
+                self.send_header(keyword='Content-type', value='application/json')
+                self.end_headers()
+                self.wfile.write(unidades_json.encode('utf-8'))
+            else:
+                self.send_response(401)
+                self.send_header(keyword='Content-type', value='application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps([]).encode('utf-8'))
+        
+        if len(peticion) == 2 and peticion[0] == "obtenervisitantes":
+            _, unidad_id = peticion
+            cursor.execute(f"SELECT a.id, a.nombre, a.cedula, a.cedula_propietario, b.id FROM web_usuarios AS a INNER JOIN web_unidades AS b ON a.unidad_id = b.id WHERE a.rol='Visitante' AND a.unidad_id={unidad_id}")
+            visitantes = cursor.fetchall()
+            if visitantes:
+                visitantesJson=[]
+                for visitante in visitantes:
+                    visitanteDict={'usuario_id':visitante[0], 'nombre':visitante[1], 'cedula':visitante[2], 'cedula_propietario':visitante[3], 'unidad_id':visitante[4]}
+                    visitantesJson.append(visitanteDict)
+                visitantes_json = json.dumps(visitantesJson)
+                self.send_response(code=200)
+                self.send_header(keyword='Content-type', value='application/json')
+                self.end_headers()
+                self.wfile.write(visitantes_json.encode('utf-8'))
+            else:
+                self.send_response(401)
+                self.send_header(keyword='Content-type', value='application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps([]).encode('utf-8'))
+
+        if len(peticion) == 2 and peticion[0] == "obtenerinvitacioninvitado":
+            _, usuario_id = peticion
+            horarioEncontrado=False
+            cursor.execute("SELECT id, fecha_entrada, fecha_salida, entrada, salida, acompanantes FROM web_horariospermitidos WHERE usuario=%s ORDER BY id ASC", (int(usuario_id),))
+            invitaciones = cursor.fetchall()
+            tz = pytz.timezone('America/Caracas')
+            caracas_now = datetime.now(tz)
+            horahoy = caracas_now.time()
+            fechahoy = caracas_now.date()
+            if invitaciones:
+                for horario_id, fecha_entrada, fecha_salida, entrada, salida, acompanantes in invitaciones:
+                    if (fechahoy==fecha_entrada and horahoy>=entrada) or (fechahoy > fecha_entrada and fechahoy<fecha_salida) or (fechahoy==fecha_salida and horahoy<=salida):
+                        horarioEncontrado=True
+                        visitantes_json = json.dumps({'horario_id':horario_id, 'acompanantes':acompanantes})
+                        self.send_response(code=200)
+                        self.send_header(keyword='Content-type', value='application/json')
+                        self.end_headers()
+                        self.wfile.write(visitantes_json.encode('utf-8'))
+                        break
+                if horarioEncontrado==False:
+                    self.send_response(400)
+                    self.send_header(keyword='Content-type', value='application/json')
+                    self.end_headers()
+            else:
+                if horarioEncontrado==False:
+                    self.send_response(401)
+                    self.send_header(keyword='Content-type', value='application/json')
+                    self.end_headers()
+            
+            if visitantes:
+                visitantesJson=[]
+                for visitante in visitantes:
+                    visitanteDict={'usuario_id':visitante[0], 'nombre':visitante[1], 'cedula':visitante[2], 'cedula_propietario':visitante[3], 'unidad_id':visitante[4]}
+                    visitantesJson.append(visitanteDict)
+                visitantes_json = json.dumps(visitantesJson)
+                self.send_response(code=200)
+                self.send_header(keyword='Content-type', value='application/json')
+                self.end_headers()
+                self.wfile.write(visitantes_json.encode('utf-8'))
             else:
                 self.send_response(401)
                 self.send_header(keyword='Content-type', value='application/json')
