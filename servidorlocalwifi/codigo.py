@@ -219,6 +219,8 @@ def controlhorariovisitante(cursorf, connf, horario_id, razon):
             VALUES (%s, %s)''', (horario_id, 1))
             connf.commit()
             abrir=True
+    elif not control_visitante and horario_id=='0':
+        abrir=True
     elif control_visitante[0][0]==0 and razon=='entrada':
         abrir=True
     elif control_visitante[0][0]<2:
