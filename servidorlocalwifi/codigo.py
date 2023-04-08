@@ -185,17 +185,21 @@ def aperturaConcedidaVigilanteVisitante(vigilante_id, vigilante_nombre, nombref,
             # requests.get(f'{accesodict[acceso]}/on', timeout=5)
             cursorf.execute('SELECT aperturas_hechas FROM control_horarios_visitantes WHERE horario_id=%s',(horario_id,))
             control_visitante= cursorf.fetchall()
-            cursorf.execute('UPDATE control_horarios_visitantes SET aperturas_hechas=%s WHERE horario_id=%s', (aperturasRealizadas+1,horario_id))
-            # cursorf.execute('''INSERT INTO accesos_abiertos (cedula, acceso, fecha, hora, estado)
-            # VALUES (%s, %s, %s, %s, %s)''', (cedulaf, acceso, fechaf, horaf, 'f'))
-            # cursorf.execute('''INSERT INTO web_logs_visitantes (vigilante_id, vigilante_nombre, nombre, fecha, hora, razon, contrato, cedula_id, acompanantes, cedula_propietario)
-            # VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);''', (vigilante_id, vigilante_nombre, nombref, fechaf, horaf, razonRegistrar, contratof, cedulaf, acompanantes, cedula_propietario))
-            connf.commit()
+            if aperturasRealizadas<2:
+                cursorf.execute('UPDATE control_horarios_visitantes SET aperturas_hechas=%s WHERE horario_id=%s', (aperturasRealizadas+1,horario_id))
+                # cursorf.execute('''INSERT INTO accesos_abiertos (cedula, acceso, fecha, hora, estado)
+                # VALUES (%s, %s, %s, %s, %s)''', (cedulaf, acceso, fechaf, horaf, 'f'))
+                # cursorf.execute('''INSERT INTO web_logs_visitantes (vigilante_id, vigilante_nombre, nombre, fecha, hora, razon, contrato, cedula_id, acompanantes, cedula_propietario)
+                # VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);''', (vigilante_id, vigilante_nombre, nombref, fechaf, horaf, razonRegistrar, contratof, cedulaf, acompanantes, cedula_propietario))
+                connf.commit()
             if cedula_propietario!=None:
                 if razon=='entrada':
-                    mensaje=f"El invitado {nombref} acaba de ingresar por segunda vez por medio del sistema de vigilancia" if (control_visitante[0][0]==1 and aperturasRealizadas==0) else f"El invitado {nombref} acaba de ingresar por medio del sistema de vigilancia"
+                    mensaje=f"El invitado *{nombref}* acaba de ingresar de nuevo por medio del sistema de vigilancia" if (control_visitante[0][0]==1 and aperturasRealizadas==0) else f"El invitado {nombref} acaba de ingresar por medio del sistema de vigilancia"
                 else:
-                    mensaje=f"El invitado {nombref} acaba de salir por medio del sistema de vigilancia"
+                    if aperturasRealizadas==2:
+                        mensaje=f"El invitado *{nombref}* acaba de salir sin antes haber entrado por medio del sistema de vigilencia"
+                    else:
+                        mensaje=f"El invitado *{nombref}* acaba de salir de nuevo por medio del sistema de vigilancia" if (control_visitante[0][0]==2 and aperturasRealizadas==1) else f"El invitado *{nombref}* acaba de salir por medio del sistema de vigilancia"
                 try:
                     requests.get(f'https://api.callmebot.com/whatsapp.php?phone={NUMERO_BOT}&text=!sendto+{numero_propietario[1:]}+{mensaje}&apikey={APIKEY_BOT}', timeout=5)
                 except Exception as e:
@@ -233,10 +237,10 @@ def controlhorariovisitante(cursorf, connf, horario_id, razon):
             abrir=True
         elif razon=='salida':
             cursorf.execute('''INSERT INTO control_horarios_visitantes (horario_id, aperturas_hechas) 
-            VALUES (%s, %s)''', (horario_id, 1))
+            VALUES (%s, %s)''', (horario_id, 2))
             connf.commit()
-            cantidad_aperturas=1
-            abrir=True
+            cantidad_aperturas=2
+            # abrir=True
     elif not control_visitante and horario_id=='0':
         abrir=True
     elif control_visitante[0][0]==0 and razon=='entrada':
@@ -774,12 +778,25 @@ class MyServer(BaseHTTPRequestHandler):
                                     self.send_response(406)
                                     self.send_header("Content-type", "utf-8")
                                     self.end_headers()
-                                elif aperturasRealizadas==0 and razonApertura=='salida':
+                                elif aperturasRealizadas==2 and razonApertura=='salida':
+                                    invitado_cedula=datosInvitado[0][0]
+                                    invitado_nombre=datosInvitado[0][1]
+                                    vigilante_id=datosVigilante[0][0]
+                                    vigilante_nombre=datosVigilante[0][1]
+                                    fecha=str(caracas_now)[:10]
+                                    
+                                    aperturaConcedidaVigilanteVisitante(vigilante_id, vigilante_nombre, invitado_nombre, fecha, horahoy, CONTRATO, invitado_cedula, cursor, conn, acceso_solicitud, razonApertura, horario_id, 1, acompanantes, datosInvitado[0][2], f"" if (datosPropietario==None) else f"{datosPropietario[0][0]}", datosInvitado[0][3])
                                     self.send_response(407)
                                     self.send_header("Content-type", "utf-8")
                                     self.end_headers()
                                 elif aperturasRealizadas==2:
-                                    aperturadenegada(cursor, conn, acceso_solicitud)
+                                    invitado_cedula=datosInvitado[0][0]
+                                    invitado_nombre=datosInvitado[0][1]
+                                    vigilante_id=datosVigilante[0][0]
+                                    vigilante_nombre=datosVigilante[0][1]
+                                    fecha=str(caracas_now)[:10]
+                                    
+                                    aperturaConcedidaVigilanteVisitante(vigilante_id, vigilante_nombre, invitado_nombre, fecha, horahoy, CONTRATO, invitado_cedula, cursor, conn, acceso_solicitud, razonApertura, horario_id, aperturasRealizadas, acompanantes, datosInvitado[0][2], f"" if (datosPropietario==None) else f"{datosPropietario[0][0]}", datosInvitado[0][3])
                                     self.send_response(405)
                                     self.send_header("Content-type", "utf-8")
                                     self.end_headers()  
