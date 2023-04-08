@@ -239,7 +239,7 @@ def controlhorariovisitante(cursorf, connf, horario_id, razon):
             cursorf.execute('''INSERT INTO control_horarios_visitantes (horario_id, aperturas_hechas) 
             VALUES (%s, %s)''', (horario_id, 2))
             connf.commit()
-            cantidad_aperturas=2
+            cantidad_aperturas=1
             # abrir=True
     elif not control_visitante and horario_id=='0':
         abrir=True
@@ -789,14 +789,14 @@ class MyServer(BaseHTTPRequestHandler):
                                     self.send_response(407)
                                     self.send_header("Content-type", "utf-8")
                                     self.end_headers()
-                                elif aperturasRealizadas==2:
+                                elif aperturasRealizadas==1 and razonApertura=='salida':
                                     invitado_cedula=datosInvitado[0][0]
                                     invitado_nombre=datosInvitado[0][1]
                                     vigilante_id=datosVigilante[0][0]
                                     vigilante_nombre=datosVigilante[0][1]
                                     fecha=str(caracas_now)[:10]
                                     
-                                    aperturaConcedidaVigilanteVisitante(vigilante_id, vigilante_nombre, invitado_nombre, fecha, horahoy, CONTRATO, invitado_cedula, cursor, conn, acceso_solicitud, razonApertura, horario_id, aperturasRealizadas, acompanantes, datosInvitado[0][2], f"" if (datosPropietario==None) else f"{datosPropietario[0][0]}", datosInvitado[0][3])
+                                    aperturaConcedidaVigilanteVisitante(vigilante_id, vigilante_nombre, invitado_nombre, fecha, horahoy, CONTRATO, invitado_cedula, cursor, conn, acceso_solicitud, razonApertura, horario_id, 2, acompanantes, datosInvitado[0][2], f"" if (datosPropietario==None) else f"{datosPropietario[0][0]}", datosInvitado[0][3])
                                     self.send_response(405)
                                     self.send_header("Content-type", "utf-8")
                                     self.end_headers()  
