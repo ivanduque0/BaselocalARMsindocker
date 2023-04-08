@@ -195,9 +195,9 @@ def aperturaConcedidaVigilanteVisitante(vigilante_id, vigilante_nombre, nombref,
             if cedula_propietario!=None:
                 if razon=='entrada':
                     if fueraDeHora:
-                        mensaje=f"El invitado *{nombref}* llego antes de tiempo y acaba de ingresar de nuevo por medio del sistema de vigilancia" if (control_visitante[0][0]==1 and aperturasRealizadas==0) else f"El invitado {nombref} llego antes de tiempo y acaba de ingresar por medio del sistema de vigilancia"
+                        mensaje=f"El invitado *{nombref}* llego antes de tiempo y acaba de ingresar de nuevo por medio del sistema de vigilancia" if (control_visitante[0][0]==1 and aperturasRealizadas==0) else f"El invitado *{nombref}* llego antes de tiempo y acaba de ingresar por medio del sistema de vigilancia"
                     else:
-                        mensaje=f"El invitado *{nombref}* acaba de ingresar de nuevo por medio del sistema de vigilancia" if (control_visitante[0][0]==1 and aperturasRealizadas==0) else f"El invitado {nombref} acaba de ingresar por medio del sistema de vigilancia"
+                        mensaje=f"El invitado *{nombref}* acaba de ingresar de nuevo por medio del sistema de vigilancia" if (control_visitante[0][0]==1 and aperturasRealizadas==0) else f"El invitado *{nombref}* acaba de ingresar por medio del sistema de vigilancia"
                 else:
                     if aperturasRealizadas==2:
                         if fueraDeHora:
