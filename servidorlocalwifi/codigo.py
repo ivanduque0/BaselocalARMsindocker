@@ -195,18 +195,18 @@ def aperturaConcedidaVigilanteVisitante(vigilante_id, vigilante_nombre, nombref,
             if cedula_propietario!=None:
                 if razon=='entrada':
                     if fueraDeHora:
-                        mensaje=f"El invitado *{nombref}* llego antes de tiempo y acaba de ingresar de nuevo por medio del sistema de vigilancia" if (control_visitante[0][0]==1 and aperturasRealizadas==0) else f"El invitado *{nombref}* llego antes de tiempo y acaba de ingresar por medio del sistema de vigilancia"
+                        mensaje=f"El invitado *{nombref}* acaba de ingresar de nuevo por medio del sistema de vigilancia y lo hizo fuera del tiempo de su invitacion" if (control_visitante[0][0]==1 and aperturasRealizadas==0) else f"El invitado *{nombref}* llego antes de tiempo y acaba de ingresar por medio del sistema de vigilancia"
                     else:
                         mensaje=f"El invitado *{nombref}* acaba de ingresar de nuevo por medio del sistema de vigilancia" if (control_visitante[0][0]==1 and aperturasRealizadas==0) else f"El invitado *{nombref}* acaba de ingresar por medio del sistema de vigilancia"
                 else:
                     if aperturasRealizadas==2:
                         if fueraDeHora:
-                            mensaje=f"El invitado *{nombref}* acaba de salir sin antes haber entrado por medio del sistema de vigilancia y lo hizo despues de vencido su tiempo de invitacion"
+                            mensaje=f"El invitado *{nombref}* acaba de salir sin antes haber entrado por medio del sistema de vigilancia y lo hizo fuera del tiempo de su invitacion"
                         else:
                             mensaje=f"El invitado *{nombref}* acaba de salir sin antes haber entrado por medio del sistema de vigilancia"
                     else:
                         if fueraDeHora:
-                            mensaje=f"El invitado *{nombref}* acaba de salir de nuevo por medio del sistema de vigilancia despues de vencido su tiempo de invitacion" if (control_visitante[0][0]==2 and aperturasRealizadas==1) else f"El invitado *{nombref}* acaba de salir por medio del sistema de vigilancia despues de vencido su tiempo de invitacion"
+                            mensaje=f"El invitado *{nombref}* acaba de salir de nuevo por medio del sistema de vigilancia y lo hizo fuera del tiempo de su invitacion" if (control_visitante[0][0]==2 and aperturasRealizadas==1) else f"El invitado *{nombref}* acaba de salir por medio del sistema de vigilancia despues de vencido su tiempo de invitacion"
                         else:
                             mensaje=f"El invitado *{nombref}* acaba de salir de nuevo por medio del sistema de vigilancia" if (control_visitante[0][0]==2 and aperturasRealizadas==1) else f"El invitado *{nombref}* acaba de salir por medio del sistema de vigilancia"
                 try:
@@ -218,9 +218,9 @@ def aperturaConcedidaVigilanteVisitante(vigilante_id, vigilante_nombre, nombref,
                 propietarios= cursorf.fetchall()
                 for propietario in propietarios:
                     if razon=='entrada':
-                        mensaje=f"El vigilante ha dejado entrar a un visitante sin invitacion llamado *{nombref}* que se dirige a su hogar"
+                        mensaje=f"La vigilancia acaba de dejar ingresar a su visita sin invitacion *{nombref}*"
                     else:
-                        mensaje=f"El visitante sin invitacion llamado *{nombref}* acaba de salir por medio del sistema de vigilancia"
+                        mensaje=f"La vigilancia acaba de dejar salir a su visita sin invitacion *{nombref}*"
                     try:
                         requests.get(f'https://api.callmebot.com/whatsapp.php?phone={NUMERO_BOT}&text=!sendto+{propietario[0][1:]}+{mensaje}&apikey={APIKEY_BOT}', timeout=5)
                     except Exception as e:
