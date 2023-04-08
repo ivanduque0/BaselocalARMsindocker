@@ -478,29 +478,61 @@ class MyServer(BaseHTTPRequestHandler):
                 cursor.execute("SELECT codigo FROM web_unidades where id=%s", (datosInvitado[0][3],))
                 unidad = cursor.fetchall()
                 if datosInvitado:
-                    cedula=datosInvitado[0][0]
-                    nombre=datosInvitado[0][1]
-                    cedula_propietario=datosInvitado[0][2]
-                    codigo_unidad=unidad[0][0]
-                    invitacion={
-                        "id": horario_id,
-                        "fecha_entrada": fecha_entrada.isoformat(),
-                        "fecha_salida": fecha_salida.isoformat(),
-                        "entrada": entrada.isoformat(),
-                        "salida": salida.isoformat(),
-                        "cedula": cedula,
-                        "cedula_propietario": cedula_propietario,
-                        "acompanantes": acompanantes,
-                        "usuario": usuario,
-                        "codigo_unidad": codigo_unidad,
-                        "nombre":nombre,
-                        "unidad":datosInvitado[0][3]
-                        }
-                    invitacion_json = json.dumps(invitacion)
-                    self.send_response(code=200)
-                    self.send_header(keyword='Content-type', value='application/json')
-                    self.end_headers()
-                    self.wfile.write(invitacion_json.encode('utf-8'))
+                    cursor.execute("SELECT aperturas_hechas FROM control_horarios_visitantes where horario_id=%s", (horario_id,))
+                    aperturasConInvitacion = cursor.fetchall()
+                    if not aperturasConInvitacion:
+                        cedula=datosInvitado[0][0]
+                        nombre=datosInvitado[0][1]
+                        cedula_propietario=datosInvitado[0][2]
+                        codigo_unidad=unidad[0][0]
+                        invitacion={
+                            "id": horario_id,
+                            "fecha_entrada": fecha_entrada.isoformat(),
+                            "fecha_salida": fecha_salida.isoformat(),
+                            "entrada": entrada.isoformat(),
+                            "salida": salida.isoformat(),
+                            "cedula": cedula,
+                            "cedula_propietario": cedula_propietario,
+                            "acompanantes": acompanantes,
+                            "usuario": usuario,
+                            "codigo_unidad": codigo_unidad,
+                            "nombre":nombre,
+                            "unidad":datosInvitado[0][3]
+                            }
+                        invitacion_json = json.dumps(invitacion)
+                        self.send_response(code=200)
+                        self.send_header(keyword='Content-type', value='application/json')
+                        self.end_headers()
+                        self.wfile.write(invitacion_json.encode('utf-8'))
+                    elif aperturasConInvitacion[0][0]<=1:
+                        cedula=datosInvitado[0][0]
+                        nombre=datosInvitado[0][1]
+                        cedula_propietario=datosInvitado[0][2]
+                        codigo_unidad=unidad[0][0]
+                        invitacion={
+                            "id": horario_id,
+                            "fecha_entrada": fecha_entrada.isoformat(),
+                            "fecha_salida": fecha_salida.isoformat(),
+                            "entrada": entrada.isoformat(),
+                            "salida": salida.isoformat(),
+                            "cedula": cedula,
+                            "cedula_propietario": cedula_propietario,
+                            "acompanantes": acompanantes,
+                            "usuario": usuario,
+                            "codigo_unidad": codigo_unidad,
+                            "nombre":nombre,
+                            "unidad":datosInvitado[0][3]
+                            }
+                        invitacion_json = json.dumps(invitacion)
+                        self.send_response(code=200)
+                        self.send_header(keyword='Content-type', value='application/json')
+                        self.end_headers()
+                        self.wfile.write(invitacion_json.encode('utf-8'))
+                    elif aperturasConInvitacion[0][0]==2:
+                        self.send_response(402)
+                        self.send_header(keyword='Content-type', value='application/json')
+                        self.end_headers()
+                        self.wfile.write(json.dumps([]).encode('utf-8'))
                 else:
                     self.send_response(400)
                     self.send_header(keyword='Content-type', value='application/json')
