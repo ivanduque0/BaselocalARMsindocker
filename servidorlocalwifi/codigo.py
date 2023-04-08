@@ -200,7 +200,10 @@ def aperturaConcedidaVigilanteVisitante(vigilante_id, vigilante_nombre, nombref,
                         mensaje=f"El invitado *{nombref}* acaba de ingresar de nuevo por medio del sistema de vigilancia" if (control_visitante[0][0]==1 and aperturasRealizadas==0) else f"El invitado {nombref} acaba de ingresar por medio del sistema de vigilancia"
                 else:
                     if aperturasRealizadas==2:
-                        mensaje=f"El invitado *{nombref}* acaba de salir sin antes haber entrado por medio del sistema de vigilencia"
+                        if fueraDeHora:
+                            mensaje=f"El invitado *{nombref}* acaba de salir sin antes haber entrado por medio del sistema de vigilencia y lo hizo despues de vencido su tiempo de invitacion"
+                        else:
+                            mensaje=f"El invitado *{nombref}* acaba de salir sin antes haber entrado por medio del sistema de vigilencia"
                     else:
                         if fueraDeHora:
                             mensaje=f"El invitado *{nombref}* acaba de salir de nuevo por medio del sistema de vigilancia" if (control_visitante[0][0]==2 and aperturasRealizadas==1) else f"El invitado *{nombref}* acaba de salir por medio del sistema de vigilancia despues de vencido su tiempo de invitacion"
