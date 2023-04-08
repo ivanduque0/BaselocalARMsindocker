@@ -218,9 +218,9 @@ def aperturaConcedidaVigilanteVisitante(vigilante_id, vigilante_nombre, nombref,
                 propietarios= cursorf.fetchall()
                 for propietario in propietarios:
                     if razon=='entrada':
-                        mensaje=f"El vigilante ha dejado entrar a un visitante sin invitacion llamado {nombref} que se dirige a su hogar"
+                        mensaje=f"El vigilante ha dejado entrar a un visitante sin invitacion llamado *{nombref}* que se dirige a su hogar"
                     else:
-                        mensaje=f"El visitante sin invitacion llamado {nombref} acaba de salir por medio del sistema de vigilancia"
+                        mensaje=f"El visitante sin invitacion llamado *{nombref}* acaba de salir por medio del sistema de vigilancia"
                     try:
                         requests.get(f'https://api.callmebot.com/whatsapp.php?phone={NUMERO_BOT}&text=!sendto+{propietario[0][1:]}+{mensaje}&apikey={APIKEY_BOT}', timeout=5)
                     except Exception as e:
