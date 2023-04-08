@@ -655,7 +655,7 @@ class MyServer(BaseHTTPRequestHandler):
                             self.send_response(402)
                             self.send_header(keyword='Content-type', value='application/json')
                             self.end_headers()
-                            self.wfile.write(visitantes_json.encode('utf-8'))
+                            self.wfile.write(json.dumps({}).encode('utf-8'))
                             break
 
             else:
