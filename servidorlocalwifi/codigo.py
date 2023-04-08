@@ -814,6 +814,7 @@ class MyServer(BaseHTTPRequestHandler):
                                         self.send_header("Content-type", "utf-8")
                                         self.end_headers()  
                                 else:
+                                    permitir, aperturasRealizadas = controlhorariovisitante(cursor, conn, horario_id, razonApertura)
                                     invitado_cedula=datosInvitado[0][0]
                                     invitado_nombre=datosInvitado[0][1]
                                     vigilante_id=datosVigilante[0][0]
@@ -872,6 +873,7 @@ class MyServer(BaseHTTPRequestHandler):
                                         self.send_header("Content-type", "utf-8")
                                         self.end_headers()  
                                 else:
+                                    permitir, aperturasRealizadas = controlhorariovisitante(cursor, conn, horario_id, razonApertura)
                                     invitado_cedula=datosInvitado[0][0]
                                     invitado_nombre=datosInvitado[0][1]
                                     vigilante_id=datosVigilante[0][0]
