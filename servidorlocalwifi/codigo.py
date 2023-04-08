@@ -199,7 +199,7 @@ def aperturaConcedidaVigilanteVisitante(vigilante_id, vigilante_nombre, nombref,
                 except Exception as e:
                     print(f"{e} - fallo intentando enviar mensaje vigilante visitante")
             else:
-                cursorf.execute('SELECT numero_telefonico FROM web_usuarios WHERE unidad=%s AND rol=%s',(unidad_id,'Propietario'))
+                cursorf.execute('SELECT numero_telefonico FROM web_usuarios WHERE unidad_id=%s AND rol=%s',(unidad_id,'Propietario'))
                 propietarios= cursorf.fetchall()
                 for propietario in propietarios:
                     if razon=='entrada':

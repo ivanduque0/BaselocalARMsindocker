@@ -30,9 +30,9 @@ captahuella_actual=0
 TIEMPO_PING=int(os.environ.get('TIEMPO_PING'))
 TIEMPO_CAMBIOS=int(os.environ.get('TIEMPO_CAMBIOS'))
 TIEMPO_LOG=int(os.environ.get('TIEMPO_LOG'))
-BorrarPeticionesListas= True
-AccesosSinCerrar=True
-borrarHorariosVisitantes=True
+BorrarPeticionesListas= False
+AccesosSinCerrar=False
+borrarHorariosVisitantes=False
 
 ######################################
 #############ACCESOS###################
@@ -193,7 +193,7 @@ while True:
             #         cursorlocal.execute('SELECT dispositivo, descripcion, estado, acceso FROM web_dispositivos')
             #         dispositivos_local= cursorlocal.fetchall()
 
-            #         request_json = requests.get(url=f'{URL_API}obtenerdispositivosapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
+            #         request_json = requests.get(url=f'{URL_API}obtenerdispositivosapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10).json()
 
             #         dispositivosServidor=[]
             #         for consultajson in request_json:
@@ -201,10 +201,10 @@ while True:
             #             dispositivosServidor.append(tuplaDispositivoIndividual)
 
             #         if len(dispositivosServidor) != len(dispositivos_local):
-            #             request_json = requests.delete(url=f'{URL_API}eliminartodosdispositivosapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
+            #             request_json = requests.delete(url=f'{URL_API}eliminartodosdispositivosapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
             #             if request_json.status_code == 200:
 
-            #                 request_json = requests.get(url=f'{URL_API}obtenerdispositivosapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
+            #                 request_json = requests.get(url=f'{URL_API}obtenerdispositivosapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10).json()
 
             #                 dispositivosServidor=[]
             #                 for consultajson in request_json:
@@ -233,7 +233,7 @@ while True:
             #                             "hora": hora
             #                         }
             #                         requests.post(url=f'{URL_API}registrardispositivosapi/', 
-            #                         json=agregarDispositivoJson, auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
+            #                         json=agregarDispositivoJson, auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
             #         else:
             #             for dispositivolocal in dispositivos_local:
             #                 # try:
@@ -256,7 +256,7 @@ while True:
             #                         "hora": hora
             #                     }
             #                     requests.put(url=f'{URL_API}actualizardispositivosapi/{CONTRATO}/{dispositivo[7:]}/{estado}/',
-            #                     json=jsonActualizarDispositivo, auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
+            #                     json=jsonActualizarDispositivo, auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
             #     except requests.exceptions.ConnectionError:
             #         print("fallo consultando api de dispositivos")   
             # except Exception as e:
@@ -281,7 +281,7 @@ while True:
 
             if total_cambios > TIEMPO_CAMBIOS:
                 try:
-                    request_json = requests.get(url=f'{URL_API}vercambiosapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
+                    request_json = requests.get(url=f'{URL_API}vercambiosapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10).json()
 
                     for consultajson in request_json:
                         idCambio=consultajson['id']
@@ -300,7 +300,7 @@ while True:
                                         cursorlocal.execute('SELECT id, rol, cedula, nombre, telegram_id, numero_telefonico, cedula_propietario, unidad_id, entrada_beacon_uuid, salida_beacon_uuid, internet, wifi, bluetooth, captahuella, rfid, facial FROM web_usuarios')
                                         usuarios_local= cursorlocal.fetchall()
                                         
-                                        request_json_usuario = requests.get(url=f'{URL_API}obtenerusuariosapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
+                                        request_json_usuario = requests.get(url=f'{URL_API}obtenerusuariosapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10).json()
 
                                         usuariosServidor=[]
                                         for consultajson in request_json_usuario:
@@ -334,7 +334,7 @@ while True:
                                         cursorlocal.execute('SELECT id, rol, cedula, nombre, telegram_id, numero_telefonico, cedula_propietario, unidad_id, entrada_beacon_uuid, salida_beacon_uuid, internet, wifi, bluetooth, captahuella, rfid, facial FROM web_usuarios WHERE id=%s',(idUsuario,))
                                         usuario_local= cursorlocal.fetchall()
 
-                                        request_json_usuario = requests.get(url=f'{URL_API}usuarioindividualapi/{CONTRATO}/{idUsuario}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
+                                        request_json_usuario = requests.get(url=f'{URL_API}usuarioindividualapi/{CONTRATO}/{idUsuario}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10).json()
                                         usuarioLocal=len(usuario_local)
                                         usuarioServidor=len(request_json_usuario)
                                         if usuarioLocal and not usuarioServidor:
@@ -352,7 +352,7 @@ while True:
                                                     if captahuella:
                                                         captahuella_actual=captahuella_actual+1
                                                         try:
-                                                            requests.get(url=f'{captahuella}/quitar/{id_suprema_hex}', timeout=3)
+                                                            requests.get(url=f'{captahuella}/quitar/{id_suprema_hex}', timeout=10)
                                                             nroCaptahuellasSinHuella=nroCaptahuellasSinHuella+1
                                                         except:
                                                             print(f"fallo al conectar con la esp8266 con la ip:{captahuella}")
@@ -413,7 +413,7 @@ while True:
                                 print(f"{e} - fallo total usuarios")
                                 banderaUsuario=False
                             if banderaUsuario:
-                                requests.delete(url=f'{URL_API}eliminarcambioapi/{idCambio}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
+                                requests.delete(url=f'{URL_API}eliminarcambioapi/{idCambio}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
                         elif tablaCambiada == 'Unidades':
                             try:
                                 banderaUnidad=True
@@ -422,7 +422,7 @@ while True:
                                         cursorlocal.execute('SELECT id, nombre, codigo FROM web_unidades')
                                         unidades_local= cursorlocal.fetchall()
 
-                                        request_json = requests.get(url=f'{URL_API}verunidadescontratoapi/{CONTRATO_ID}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
+                                        request_json = requests.get(url=f'{URL_API}verunidadescontratoapi/{CONTRATO_ID}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10).json()
 
                                         unidadesServidor=[]
                                         for consultajson in request_json:
@@ -479,7 +479,7 @@ while True:
                                     cursorlocal.execute('SELECT id, nombre, codigo FROM web_unidades WHERE id=%s',(idUsuario,))
                                     unidades_local= cursorlocal.fetchall()
                                     try:
-                                        request_json = requests.get(url=f'{URL_API}editarunidadapi/{idUsuario}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
+                                        request_json = requests.get(url=f'{URL_API}editarunidadapi/{idUsuario}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10).json()
                                         if not unidades_local:
                                             cursorlocal.execute('''INSERT INTO web_unidades (id, nombre, codigo)
                                                 VALUES (%s, %s, %s);''', (request_json['id'], request_json['nombre'], request_json['codigo']))
@@ -508,7 +508,7 @@ while True:
                                                         if captahuella:
                                                             captahuella_actual=captahuella_actual+1
                                                             try:
-                                                                requests.get(url=f'{captahuella}/quitar/{id_suprema_hex}', timeout=3)
+                                                                requests.get(url=f'{captahuella}/quitar/{id_suprema_hex}', timeout=10)
                                                                 nroCaptahuellasSinHuella=nroCaptahuellasSinHuella+1
                                                             except:
                                                                 print(f"fallo al conectar con la esp8266 con la ip:{captahuella}")
@@ -531,12 +531,12 @@ while True:
                                 print(f"{e} - fallo total unidades")
                                 banderaUnidad=False
                             if banderaUnidad:
-                                requests.delete(url=f'{URL_API}eliminarcambioapi/{idCambio}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
+                                requests.delete(url=f'{URL_API}eliminarcambioapi/{idCambio}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
                         elif tablaCambiada == 'Horarios':
                             try:
                                 try:
                                     banderaHorario=True
-                                    request_json_horarios = requests.get(url=f'{URL_API}obtenerhorariosindividualapi/{CONTRATO}/{idUsuario}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
+                                    request_json_horarios = requests.get(url=f'{URL_API}obtenerhorariosindividualapi/{CONTRATO}/{idUsuario}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10).json()
                                             
                                     horariosServidor=[]
                                     for consultajson in request_json_horarios:
@@ -586,7 +586,7 @@ while True:
                                 print(f"{e} - fallo total horarios")
                                 banderaHorario=False
                             if banderaHorario:
-                                requests.delete(url=f'{URL_API}eliminarcambioapi/{idCambio}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
+                                requests.delete(url=f'{URL_API}eliminarcambioapi/{idCambio}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
                         elif tablaCambiada == 'Huellas':
                             try:
                                 try:
@@ -596,7 +596,7 @@ while True:
                                     cursorlocal.execute('SELECT template, id_suprema, cedula FROM web_huellas where cedula=%s', (usuario_local[0][0],))
                                     huellas_local= cursorlocal.fetchall()
 
-                                    request_json = requests.get(url=f'{URL_API}obtenerhuellasapi/{usuario_local[0][0]}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
+                                    request_json = requests.get(url=f'{URL_API}obtenerhuellasapi/{usuario_local[0][0]}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10).json()
 
                                     huellasServidor=[]
                                     for consultajson in request_json:
@@ -615,7 +615,7 @@ while True:
                                                 if captahuella:
                                                     captahuella_actual=captahuella_actual+1
                                                     try:
-                                                        requests.get(url=f'{captahuella}/quitar/{id_suprema_hex}', timeout=3)
+                                                        requests.get(url=f'{captahuella}/quitar/{id_suprema_hex}', timeout=10)
                                                         nroCaptahuellasSinHuella=nroCaptahuellasSinHuella+1
                                                     except:
                                                         print(f"fallo al conectar con la esp8266 con la ip:{captahuella}")  
@@ -640,26 +640,26 @@ while True:
                                                 if not ids_suprema_local:
                                                     id_suprema = 1
                                                     if not cedula in listaempleadosseguricel:
-                                                        requests.put(url=f'{URL_API}agregaridsupremaportemplateapi/{template}/{id_suprema}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
+                                                        requests.put(url=f'{URL_API}agregaridsupremaportemplateapi/{template}/{id_suprema}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
                                                 else:
                                                     for id_suprema_local in ids_suprema_local:
                                                         IdSupremaContador=IdSupremaContador+1
                                                         if not id_suprema_local[0] == IdSupremaContador:
                                                             id_suprema=IdSupremaContador
                                                             if not cedula in listaempleadosseguricel:
-                                                                requests.put(url=f'{URL_API}agregaridsupremaportemplateapi/{template}/{id_suprema}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
+                                                                requests.put(url=f'{URL_API}agregaridsupremaportemplateapi/{template}/{id_suprema}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
                                                             break
                                                     if nro_ids_suprema_local == IdSupremaContador:
                                                         id_suprema=IdSupremaContador+1
                                                         if not cedula in listaempleadosseguricel:
-                                                            requests.put(url=f'{URL_API}agregaridsupremaportemplateapi/{template}/{id_suprema}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
+                                                            requests.put(url=f'{URL_API}agregaridsupremaportemplateapi/{template}/{id_suprema}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
                                             id_suprema_hex = (id_suprema).to_bytes(4, byteorder='big').hex()
                                             id_suprema_hex = id_suprema_hex[6:]+id_suprema_hex[4:6]+id_suprema_hex[2:4]+id_suprema_hex[0:2]
                                             for captahuella in captahuellas:
                                                 if captahuella:
                                                     captahuella_actual=captahuella_actual+1
                                                     try:
-                                                        requests.get(url=f'{captahuella}/anadir/{id_suprema_hex}/{template}0A', timeout=3)
+                                                        requests.get(url=f'{captahuella}/anadir/{id_suprema_hex}/{template}0A', timeout=10)
                                                         nroCaptahuellasConHuella=nroCaptahuellasConHuella+1
                                                     except:
                                                         print(f"fallo al conectar con la esp8266 con la ip:{captahuella}")
@@ -671,7 +671,7 @@ while True:
                                                 banderaHuella = False  
                                                 for captahuella in captahuellas:
                                                     try:
-                                                        requests.get(url=f'{captahuella}/quitar/{id_suprema_hex}', timeout=3)
+                                                        requests.get(url=f'{captahuella}/quitar/{id_suprema_hex}', timeout=10)
                                                     except:
                                                         print(f"fallo al conectar con la esp8266 con la ip:{captahuella}")
                                 except requests.exceptions.ConnectionError:
@@ -681,7 +681,7 @@ while True:
                                 print(f"{e} - fallo total huellas")
                                 banderaHuella=False
                             if banderaHuella:
-                                requests.delete(url=f'{URL_API}eliminarcambioapi/{idCambio}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
+                                requests.delete(url=f'{URL_API}eliminarcambioapi/{idCambio}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
                         elif tablaCambiada == 'Tags':
                             try:
                                 try:
@@ -692,7 +692,7 @@ while True:
                                         cursorlocal.execute('SELECT epc, cedula FROM web_tagsrfid WHERE cedula=%s', (usuario_local[0][0],))
                                         tags_local= cursorlocal.fetchall()
                                         
-                                        request_json = requests.get(url=f'{URL_API}obtenertagsrfidindividualapi/{CONTRATO}/{usuario_local[0][0]}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
+                                        request_json = requests.get(url=f'{URL_API}obtenertagsrfidindividualapi/{CONTRATO}/{usuario_local[0][0]}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10).json()
                                         tagsServidor=[]
                                         for consultajson in request_json:
                                             tuplaTagIndividual=(consultajson['epc'],consultajson['cedula'],)
@@ -716,7 +716,7 @@ while True:
                                                 cursorlocal.execute('DELETE FROM web_tagsrfid WHERE epc=%s AND cedula=%s',(epc, cedula))
                                                 connlocal.commit()
                                     else:
-                                        requests.delete(url=f'{URL_API}eliminarcambioapi/{idCambio}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
+                                        requests.delete(url=f'{URL_API}eliminarcambioapi/{idCambio}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
                                 except requests.exceptions.ConnectionError:
                                     print("fallo consultando api en tags")
                                     banderaTag=False
@@ -724,12 +724,14 @@ while True:
                                 print(f"{e} - fallo total tags")
                                 banderaTag=False
                             if banderaTag:
-                                requests.delete(url=f'{URL_API}eliminarcambioapi/{idCambio}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
+                                requests.delete(url=f'{URL_API}eliminarcambioapi/{idCambio}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
                         else:
-                            requests.delete(url=f'{URL_API}eliminarcambioapi/{idCambio}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
+                            requests.delete(url=f'{URL_API}eliminarcambioapi/{idCambio}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
                     t1_cambios=tm.perf_counter()
                 except Exception as e:
                     print(f"{e} - fallo en api para obtener cambios")
+
+            
             
             if total_log > TIEMPO_LOG:
                 tz = pytz.timezone('America/Caracas')
@@ -756,7 +758,7 @@ while True:
                     cursorlocal.execute('SELECT * FROM web_logs_usuarios where contrato=%s and fecha=%s', (CONTRATO,fechahoy))
                     interacciones_local= cursorlocal.fetchall()
                 
-                    request_json = requests.get(url=f'{URL_API}obtenerinteraccionesapi/{CONTRATO}/{fechahoy}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
+                    request_json = requests.get(url=f'{URL_API}obtenerinteraccionesapi/{CONTRATO}/{fechahoy}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10).json()
 
                     listaLogsServidor=[]
                     for consultajson in request_json:
@@ -786,7 +788,7 @@ while True:
                                     "cedula": cedula
                                 }
                                 requests.post(url=f'{URL_API}registrarinteraccionesapi/', 
-                                json=anadirLogJson, auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=5)
+                                json=anadirLogJson, auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
                 except Exception as e:
                     print(f"{e} - fallo total en Log de usuarios")
             
@@ -795,7 +797,7 @@ while True:
                     cursorlocal.execute('SELECT vigilante_id, vigilante_nombre, unidad_id, unidad_nombre, fecha, hora, razon, personas FROM web_logs_vigilantes where contrato=%s and fecha=%s', (CONTRATO, fechahoy))
                     logsVigilantes_local= cursorlocal.fetchall()
                     
-                    request_json = requests.get(url=f'{URL_API}obtenerlogsvigilantesapi/{CONTRATO}/{fechahoy}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
+                    request_json = requests.get(url=f'{URL_API}obtenerlogsvigilantesapi/{CONTRATO}/{fechahoy}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10).json()
 
                     listaLogsVigilantesServidor=[]
                     for consultajson in request_json:
@@ -831,7 +833,7 @@ while True:
                                     "personas": personas,
                                 }
                                 requests.post(url=f'{URL_API}registrarlogsvigilantesapi/', 
-                                json=anadirLogJson, auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=5)
+                                json=anadirLogJson, auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
                 except Exception as e:
                     print(f"{e} - fallo total en Log de vigilantes")
 
@@ -839,7 +841,7 @@ while True:
                     cursorlocal.execute('SELECT vigilante_id, vigilante_nombre, nombre, fecha, hora, razon, cedula_id, acompanantes, cedula_propietario, unidad_id FROM web_logs_visitantes where contrato=%s and fecha=%s', (CONTRATO, fechahoy))
                     logsVisitantes_local= cursorlocal.fetchall()
                     
-                    request_json = requests.get(url=f'{URL_API}obtenerlogsvisitantesapi/{CONTRATO}/{fechahoy}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
+                    request_json = requests.get(url=f'{URL_API}obtenerlogsvisitantesapi/{CONTRATO}/{fechahoy}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10).json()
 
                     listaLogsVisitantesServidor=[]
                     for consultajson in request_json:
@@ -879,11 +881,13 @@ while True:
                                     "unidad_id":unidad_id
                                 }
                                 requests.post(url=f'{URL_API}registrarlogsvisitantesapi/', 
-                                json=anadirLogJson, auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=5)
+                                json=anadirLogJson, auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
                 except Exception as e:
                     print(f"{e} - fallo total en Log de visitantes")
 
                 BorrarPeticionesListas=True
+                AccesosSinCerrar=True
+                borrarHorariosVisitantes=True
                 t1_log=tm.perf_counter()
 
             if BorrarPeticionesListas:
@@ -898,7 +902,7 @@ while True:
                                 feedbackPeticion=aperturalocal[3]
                                 if peticionDesdeInternet and feedbackPeticion:
                                     try:
-                                        request_json = requests.delete(url=f'{URL_API}eliminarsolicitudesaperturaapi/{idapertura}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
+                                        request_json = requests.delete(url=f'{URL_API}eliminarsolicitudesaperturaapi/{idapertura}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
                                         if request_json.status_code == 200 or request_json.status_code == 500:
                                             cursorlocal.execute('DELETE FROM solicitud_aperturas WHERE id=%s', (idapertura,))
                                             connlocal.commit()
@@ -917,7 +921,7 @@ while True:
                     cursorlocal.execute('SELECT cedula, acceso, fecha, hora, estado FROM accesos_abiertos')
                     accesosAbiertos = cursorlocal.fetchall()
 
-                    comprobarAccesos = requests.get(url=f'{URL_API}eliminarpuertaabiertaapi/{CONTRATO}/blank/blank/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
+                    comprobarAccesos = requests.get(url=f'{URL_API}eliminarpuertaabiertaapi/{CONTRATO}/blank/blank/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10).json()
                     accesoAbiertosServidor=[]
                     for consultajson in comprobarAccesos:
                         tuplaAccesoAbiertoIndividual=(consultajson['cedula'],consultajson['acceso'])
@@ -933,7 +937,7 @@ while True:
                                 try:
                                     # fecha=acceso_abierto[2]
                                     # hora=acceso_abierto[3]
-                                    requests.delete(url=f'{URL_API}eliminarpuertaabiertaapi/{CONTRATO}/{cedula}/{accesoo}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
+                                    requests.delete(url=f'{URL_API}eliminarpuertaabiertaapi/{CONTRATO}/{cedula}/{accesoo}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
                                     cursorlocal.execute('DELETE FROM accesos_abiertos WHERE cedula=%s AND acceso=%s', (cedula, accesoo))
                                     connlocal.commit()
                                 except Exception as e:
@@ -955,7 +959,7 @@ while True:
                                 
                                 if fecha_apertura != fecha or diferencia_horas!=0 or diferencia_minutos != 0:
                                     try:
-                                        # comprobarAccesos = requests.get(url=f'{URL_API}eliminarpuertaabiertaapi/{CONTRATO}/{cedula}/{accesoo}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
+                                        # comprobarAccesos = requests.get(url=f'{URL_API}eliminarpuertaabiertaapi/{CONTRATO}/{cedula}/{accesoo}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10).json()
                                         if not AccesoAbiertoLocal in accesoAbiertosServidor:
                                             # cedula=acceso_abierto[0]
                                             # accesoo=acceso_abierto[1]
@@ -968,7 +972,7 @@ while True:
                                                     "hora": apertura_hora_completa
                                                     }
                                                 requests.post(url=f'{URL_API}agregarpuertaabiertaapi/', 
-                                                json=anadirJson, auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
+                                                json=anadirJson, auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
                                                 #print("La puerta ha permanecido demasiado tiempo abierta!")
                                                 listaAccesosAbiertos.append(cedula)
                                                 listaAccesosAbiertos.append(accesoo)
@@ -976,19 +980,86 @@ while True:
                                         print(f"{e} - fallo total agregando puerta abierta del acceso:{accesoo}")    
                 except Exception as e:
                     print(f"{e} - fallo total manejando los accesos sin cerrar")
+                AccesosSinCerrar=False
+            
             if borrarHorariosVisitantes:
-                cursorlocal.execute('SELECT horario_id, aperturas_hechas FROM control_horarios_visitantes')
+
+                cursorlocal.execute('SELECT a.id, a.usuario, a.fecha_salida, a.salida, b.cedula_propietario, c.aperturas_hechas FROM web_horariospermitidos AS a INNER JOIN web_usuarios AS b ON a.usuario = b.id LEFT JOIN control_horarios_visitantes AS c ON c.horario_id=a.id WHERE dia is NULL')
                 horarios = cursorlocal.fetchall()
                 for horario in horarios:
-                    if horario[1]>=2:
-                        try:
-                            request_json = requests.delete(url=f'{URL_API}editarhorariosvisitantesapi/{horario[0]}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
-                            if request_json.status_code == 200 or request_json.status_code == 500:
-                                cursorlocal.execute('DELETE FROM web_horariospermitidos WHERE id=%s', (horario[0],))
-                                cursorlocal.execute('DELETE FROM control_horarios_visitantes WHERE horario_id=%s', (horario[0],))
-                                connlocal.commit() 
-                        except Exception as e:
-                            print(f"{e} - fallo total eliminando horario:{horario[0]}")      
+                    if horario[5]!=None:
+                        if horario[5]>=2 and horario[4]!=None:
+                            try:
+                                request_json = requests.delete(url=f'{URL_API}editarhorariosvisitantesapi/{horario[0]}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
+                                if request_json.status_code == 200 or request_json.status_code == 500:
+                                    cursorlocal.execute('DELETE FROM web_horariospermitidos WHERE id=%s', (horario[0],))
+                                    cursorlocal.execute('DELETE FROM control_horarios_visitantes WHERE horario_id=%s', (horario[0],))
+                                    connlocal.commit() 
+                            except Exception as e:
+                                print(f"{e} - fallo total eliminando horario:{horario[0]}") 
+                        elif horario[5]>=2 and horario[4]==None:
+                            try:
+                                request_json = requests.delete(url=f'{URL_API}editarhorariosvisitantesapi/{horario[0]}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
+                                if request_json.status_code == 200 or request_json.status_code == 500:
+                                    cursorlocal.execute('DELETE FROM web_horariospermitidos WHERE id=%s', (horario[0],))
+                                    cursorlocal.execute('DELETE FROM control_horarios_visitantes WHERE horario_id=%s', (horario[0],))
+                                    cursorlocal.execute('DELETE FROM web_usuarios WHERE id=%s', (horario[1],))
+                                    connlocal.commit() 
+                            except Exception as e:
+                                print(f"{e} - fallo total eliminando horario:{horario[0]}")
+                        elif horario[5]<2 and horario[4]!=None:
+                            tz = pytz.timezone('America/Caracas')
+                            caracas_now = datetime.now(tz)
+                            horahoy = caracas_now.time()
+                            fechahoy = caracas_now.date()
+                            if ((fechahoy==horario[2] and horahoy>=horario[2] and horario[4]!=None) or (fechahoy>horario[2] and horario[4]!=None)):
+                                try:
+                                    request_json = requests.delete(url=f'{URL_API}editarhorariosvisitantesapi/{horario[0]}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
+                                    if request_json.status_code == 200 or request_json.status_code == 500:
+                                        cursorlocal.execute('DELETE FROM web_horariospermitidos WHERE id=%s', (horario[0],))
+                                        cursorlocal.execute('DELETE FROM control_horarios_visitantes WHERE horario_id=%s', (horario[0],))
+                                        connlocal.commit() 
+                                except Exception as e:
+                                    print(f"{e} - fallo total eliminando horario:{horario[0]}") 
+                        elif horario[5]<2 and horario[4]==None:
+                            tz = pytz.timezone('America/Caracas')
+                            caracas_now = datetime.now(tz)
+                            horahoy = caracas_now.time()
+                            fechahoy = caracas_now.date()
+                            if ((fechahoy==horario[2] and horahoy>=horario[2] and horario[4]==None) or (fechahoy>horario[2] and horario[4]==None)):
+                                try:
+                                    request_json = requests.delete(url=f'{URL_API}editarhorariosvisitantesapi/{horario[0]}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
+                                    if request_json.status_code == 200 or request_json.status_code == 500:
+                                        cursorlocal.execute('DELETE FROM web_horariospermitidos WHERE id=%s', (horario[0],))
+                                        cursorlocal.execute('DELETE FROM control_horarios_visitantes WHERE horario_id=%s', (horario[0],))
+                                        cursorlocal.execute('DELETE FROM web_usuarios WHERE id=%s', (horario[1],))
+                                        connlocal.commit() 
+                                except Exception as e:
+                                    print(f"{e} - fallo total eliminando horario:{horario[0]}")
+                    else:
+                        tz = pytz.timezone('America/Caracas')
+                        caracas_now = datetime.now(tz)
+                        horahoy = caracas_now.time()
+                        fechahoy = caracas_now.date()
+                        if ((fechahoy==horario[2] and horahoy>=horario[2] and horario[4]!=None) or (fechahoy>horario[2] and horario[4]!=None)):
+                            try:
+                                request_json = requests.delete(url=f'{URL_API}editarhorariosvisitantesapi/{horario[0]}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
+                                if request_json.status_code == 200 or request_json.status_code == 500:
+                                    cursorlocal.execute('DELETE FROM web_horariospermitidos WHERE id=%s', (horario[0],))
+                                    connlocal.commit() 
+                            except Exception as e:
+                                print(f"{e} - fallo total eliminando horario:{horario[0]}") 
+                        elif ((fechahoy==horario[2] and horahoy>=horario[2] and horario[4]==None) or (fechahoy>horario[2] and horario[4]==None)):
+                            try:
+                                request_json = requests.delete(url=f'{URL_API}editarhorariosvisitantesapi/{horario[0]}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
+                                if request_json.status_code == 200 or request_json.status_code == 500:
+                                    cursorlocal.execute('DELETE FROM web_horariospermitidos WHERE id=%s', (horario[0],))
+                                    cursorlocal.execute('DELETE FROM web_usuarios WHERE id=%s', (horario[1],))
+                                    connlocal.commit() 
+                            except Exception as e:
+                                print(f"{e} - fallo total eliminando horario:{horario[0]}")
+                borrarHorariosVisitantes=False
+
     except (Exception, psycopg2.Error) as error:
         print(f"{error} - fallo en hacer las consultas en base ded atos de managerall")
         if connlocal:
