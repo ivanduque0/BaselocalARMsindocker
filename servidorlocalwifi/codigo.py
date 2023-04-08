@@ -593,11 +593,13 @@ class MyServer(BaseHTTPRequestHandler):
                             self.wfile.write(visitantes_json.encode('utf-8'))
                             break
                 if horarioEncontrado==False:
-                    visitantes_json = json.dumps({})
-                    self.send_response(400)
-                    self.send_header(keyword='Content-type', value='application/json')
-                    self.end_headers()
-                    self.wfile.write(visitantes_json.encode('utf-8'))
+                    for horario_id, fecha_entrada, fecha_salida, entrada, salida, acompanantes in invitaciones:
+                        visitantes_json = json.dumps({'horario_id':horario_id, 'acompanantes':acompanantes})
+                        self.send_response(code=200)
+                        self.send_header(keyword='Content-type', value='application/json')
+                        self.end_headers()
+                        self.wfile.write(visitantes_json.encode('utf-8'))
+                        break
             else:
                 visitantes_json = json.dumps({})
                 if horarioEncontrado==False:
