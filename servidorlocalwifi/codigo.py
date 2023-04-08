@@ -178,7 +178,7 @@ def aperturaConcedidaVigilanteVisitante2(acceso):
     except Exception as e:
         print(f"{e} - fallo intentando abrir el acceso {acceso} con permiso de vigilante2")
 
-def aperturaConcedidaVigilanteVisitante(vigilante_id, vigilante_nombre, nombref, fechaf, horaf, contratof, cedulaf, cursorf, connf, acceso, razon, horario_id, aperturasRealizadas, acompanantes, cedula_propietario, numero_propietario):
+def aperturaConcedidaVigilanteVisitante(vigilante_id, vigilante_nombre, nombref, fechaf, horaf, contratof, cedulaf, cursorf, connf, acceso, razon, horario_id, aperturasRealizadas, acompanantes, cedula_propietario, numero_propietario, unidad_id):
     try:
         if accesodict[acceso]:
             razonRegistrar=f"{razondict[acceso]}(vigilante)" if (razon in razondict[acceso].lower()) else f"{razondict[acceso]}(vigilante)-{razon}"
@@ -189,17 +189,32 @@ def aperturaConcedidaVigilanteVisitante(vigilante_id, vigilante_nombre, nombref,
             # cursorf.execute('''INSERT INTO web_logs_visitantes (vigilante_id, vigilante_nombre, nombre, fecha, hora, razon, contrato, cedula_id, acompanantes, cedula_propietario)
             # VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);''', (vigilante_id, vigilante_nombre, nombref, fechaf, horaf, razonRegistrar, contratof, cedulaf, acompanantes, cedula_propietario))
             connf.commit()
-            if razon=='entrada':
-                mensaje=f"El invitado {nombref} acaba de ingresar por medio del sistema de vigilancia"
+            if cedula_propietario!=None:
+                if razon=='entrada':
+                    mensaje=f"El invitado {nombref} acaba de ingresar por medio del sistema de vigilancia"
+                else:
+                    mensaje=f"El invitado {nombref} acaba de salir por medio del sistema de vigilancia"
+                try:
+                    requests.get(f'https://api.callmebot.com/whatsapp.php?phone={NUMERO_BOT}&text=!sendto+{numero_propietario[1:]}+{mensaje}&apikey={APIKEY_BOT}', timeout=5)
+                except Exception as e:
+                    print(f"{e} - fallo intentando enviar mensaje vigilante visitante")
             else:
-                mensaje=f"El invitado {nombref} acaba de salir por medio del sistema de vigilancia"
-            try:
-                requests.get(f'https://api.callmebot.com/whatsapp.php?phone={NUMERO_BOT}&text=!sendto+{numero_propietario[1:]}+{mensaje}&apikey={APIKEY_BOT}', timeout=5)
-            except Exception as e:
-                print(f"{e} - fallo intentando enviar mensaje vigilante visitante")
+                cursorf.execute('SELECT numero_telefonico FROM web_usuarios WHERE unidad=%s AND rol=%s',(unidad_id,'Propietario'))
+                propietarios= cursorf.fetchall()
+                for propietario in propietarios:
+                    if razon=='entrada':
+                        mensaje=f"El vigilante ha dejado entrar a un visitante sin invitacion llamado {nombref} que se dirige a su hogar"
+                    else:
+                        mensaje=f"El visitante sin invitacion llamado {nombref} acaba de salir por medio del sistema de vigilancia"
+                    try:
+                        requests.get(f'https://api.callmebot.com/whatsapp.php?phone={NUMERO_BOT}&text=!sendto+{propietario[0][1:]}+{mensaje}&apikey={APIKEY_BOT}', timeout=5)
+                    except Exception as e:
+                        print(f"{e} - fallo intentando enviar mensaje vigilante visitante")
+
+
     except Exception as e:
-        cursorf.execute('''INSERT INTO web_logs_visitantes (vigilante_id, vigilante_nombre, nombre, fecha, hora, razon, contrato, cedula_id, acompanantes, cedula_propietario)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);''', (vigilante_id, vigilante_nombre, nombref, fechaf, horaf, f"fallo_{razonRegistrar}", contratof, cedulaf, acompanantes, cedula_propietario))
+        cursorf.execute('''INSERT INTO web_logs_visitantes (vigilante_id, vigilante_nombre, nombre, fecha, hora, razon, contrato, cedula_id, acompanantes, cedula_propietario, unidad_id)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);''', (vigilante_id, vigilante_nombre, nombref, fechaf, horaf, f"fallo_{razonRegistrar}", contratof, cedulaf, acompanantes, cedula_propietario, unidad_id))
         connf.commit()
         print(f"{e} - fallo intentando abrir el acceso {acceso} con permiso de vigilante")
 
@@ -588,6 +603,58 @@ class MyServer(BaseHTTPRequestHandler):
 
     def do_POST(self):
         peticion=self.path[1::].split("/")
+
+        if len(peticion) == 1 and peticion[0] == "crearinvitacionprovisional":
+            self.data_string = self.rfile.read(int(self.headers['Content-Length']))
+            data = json.loads(self.data_string)
+            #print(data)
+            id_usuario=0
+            id_horario=0
+            IdUsuarioContador=0
+            IdHorarioContador=0
+            cursor.execute('SELECT id FROM web_usuarios ORDER BY id ASC')
+            ids_usuarios_local= cursor.fetchall()
+            nro_ids_usuarios_local=len(ids_usuarios_local)
+            if not ids_usuarios_local:
+                id_usuario = 1
+            else:
+                for id_usuario_local in ids_usuarios_local:
+                    IdUsuarioContador=IdUsuarioContador+1
+                    if not id_usuario_local[0] == IdUsuarioContador:
+                        id_usuario=IdUsuarioContador
+                        break
+                if nro_ids_usuarios_local == IdUsuarioContador:
+                    id_usuario=IdUsuarioContador+1
+
+            cursor.execute('SELECT id FROM web_horariospermitidos ORDER BY id ASC')
+            ids_horarios_local= cursor.fetchall()
+            nro_ids_horarios_local=len(ids_horarios_local)
+            if not ids_horarios_local:
+                id_horario = 1
+            else:
+                for id_horario_local in ids_horarios_local:
+                    IdHorarioContador=IdHorarioContador+1
+                    if not id_horario_local[0] == IdHorarioContador:
+                        id_horario=IdHorarioContador
+                        break
+                if nro_ids_horarios_local == IdHorarioContador:
+                    id_horario=IdHorarioContador+1
+
+            tz = pytz.timezone('America/Caracas')
+            caracas_now = datetime.now(tz)
+            hora=str(caracas_now)[11:19]
+            horahoy = datetime.strptime(hora, '%H:%M:%S').time()
+            cursor.execute('''INSERT INTO web_usuarios (id, rol, nombre, cedula, unidad_id, internet, wifi, bluetooth, captahuella, rfid, facial)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);''', 
+            (id_usuario, "Visitante", data['nombre'], data['cedula'], data['unidad_id'], 'f', 'f', 'f', 'f', 'f', 'f',))
+            conn.commit()
+            cursor.execute('''INSERT INTO web_horariospermitidos (id, usuario, fecha_entrada, fecha_salida, entrada, salida, cedula_id, acompanantes)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s);''', (id_horario, id_usuario, data['fecha_entrada'], data['fecha_salida'], horahoy, horahoy, data['cedula'], data['acompanantes']))
+            conn.commit()
+            self.send_response(200)
+            self.send_header(keyword='Content-type', value='application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps({'horario_id':id_horario, 'usuario_id':id_usuario}).encode('utf-8'))
         
         if len(peticion) == 1 and peticion[0] == "enviarloglocal":
             self.data_string = self.rfile.read(int(self.headers['Content-Length']))
@@ -668,12 +735,14 @@ class MyServer(BaseHTTPRequestHandler):
                 datosVigilante = cursor.fetchall()
                 cursor.execute("SELECT usuario, fecha_entrada, fecha_salida, entrada, salida FROM web_horariospermitidos where id=%s", (int(horario_id),))
                 datosHorario = cursor.fetchall()
+                datosPropietario=None
                 if len(datosHorario)!=0:
-                    cursor.execute("SELECT cedula, nombre, cedula_propietario FROM web_usuarios where id=%s", (int(datosHorario[0][0]),))
+                    cursor.execute("SELECT cedula, nombre, cedula_propietario, unidad_id FROM web_usuarios where id=%s", (int(datosHorario[0][0]),))
                     datosInvitado = cursor.fetchall()
-                    cursor.execute("SELECT numero_telefonico FROM web_usuarios where cedula=%s", (datosInvitado[0][2],))
-                    datosPropietario = cursor.fetchall()
-                    if len(datosInvitado)!=0 and len(datosPropietario)!=0:
+                    if datosInvitado[0][2]!=None:
+                        cursor.execute("SELECT numero_telefonico FROM web_usuarios where cedula=%s", (datosInvitado[0][2],))
+                        datosPropietario = cursor.fetchall()
+                    if len(datosInvitado)!=0:
                         tz = pytz.timezone('America/Caracas')
                         caracas_now = datetime.now(tz)
                         horahoy = caracas_now.time()
@@ -688,7 +757,7 @@ class MyServer(BaseHTTPRequestHandler):
                                     vigilante_nombre=datosVigilante[0][1]
                                     fecha=str(caracas_now)[:10]
                                     
-                                    aperturaConcedidaVigilanteVisitante(vigilante_id, vigilante_nombre, invitado_nombre, fecha, horahoy, CONTRATO, invitado_cedula, cursor, conn, acceso_solicitud, razonApertura, horario_id, aperturasRealizadas, acompanantes, datosInvitado[0][2], datosPropietario[0][0])
+                                    aperturaConcedidaVigilanteVisitante(vigilante_id, vigilante_nombre, invitado_nombre, fecha, horahoy, CONTRATO, invitado_cedula, cursor, conn, acceso_solicitud, razonApertura, horario_id, aperturasRealizadas, acompanantes, datosInvitado[0][2], f"" if (datosPropietario==None) else f"{datosPropietario[0][0]}", datosInvitado[0][3])
                                     self.send_response(202)
                                     self.send_header("Content-type", "utf-8")
                                     self.end_headers()
