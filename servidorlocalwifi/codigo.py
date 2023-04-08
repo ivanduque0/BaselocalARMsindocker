@@ -595,7 +595,7 @@ class MyServer(BaseHTTPRequestHandler):
                 if horarioEncontrado==False:
                     for horario_id, fecha_entrada, fecha_salida, entrada, salida, acompanantes in invitaciones:
                         visitantes_json = json.dumps({'horario_id':horario_id, 'acompanantes':acompanantes})
-                        self.send_response(code=200)
+                        self.send_response(code=400)
                         self.send_header(keyword='Content-type', value='application/json')
                         self.end_headers()
                         self.wfile.write(visitantes_json.encode('utf-8'))
