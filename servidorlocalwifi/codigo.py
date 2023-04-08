@@ -574,14 +574,24 @@ class MyServer(BaseHTTPRequestHandler):
             fechahoy = caracas_now.date()
             if invitaciones:
                 for horario_id, fecha_entrada, fecha_salida, entrada, salida, acompanantes in invitaciones:
-                    if (fechahoy==fecha_entrada and horahoy>=entrada) or (fechahoy > fecha_entrada and fechahoy<fecha_salida) or (fechahoy==fecha_salida and horahoy<=salida):
-                        horarioEncontrado=True
-                        visitantes_json = json.dumps({'horario_id':horario_id, 'acompanantes':acompanantes})
-                        self.send_response(code=200)
-                        self.send_header(keyword='Content-type', value='application/json')
-                        self.end_headers()
-                        self.wfile.write(visitantes_json.encode('utf-8'))
-                        break
+                    if (fecha_entrada!=fecha_salida):
+                        if (fechahoy==fecha_entrada and horahoy>=entrada) or (fechahoy > fecha_entrada and fechahoy<fecha_salida) or (fechahoy==fecha_salida and horahoy<=salida):
+                            horarioEncontrado=True
+                            visitantes_json = json.dumps({'horario_id':horario_id, 'acompanantes':acompanantes})
+                            self.send_response(code=200)
+                            self.send_header(keyword='Content-type', value='application/json')
+                            self.end_headers()
+                            self.wfile.write(visitantes_json.encode('utf-8'))
+                            break
+                    else:
+                        if (horahoy>=entrada and horahoy<=salida):
+                            horarioEncontrado=True
+                            visitantes_json = json.dumps({'horario_id':horario_id, 'acompanantes':acompanantes})
+                            self.send_response(code=200)
+                            self.send_header(keyword='Content-type', value='application/json')
+                            self.end_headers()
+                            self.wfile.write(visitantes_json.encode('utf-8'))
+                            break
                 if horarioEncontrado==False:
                     visitantes_json = json.dumps({})
                     self.send_response(400)
