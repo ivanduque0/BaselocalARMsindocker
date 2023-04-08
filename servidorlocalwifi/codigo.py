@@ -183,6 +183,8 @@ def aperturaConcedidaVigilanteVisitante(vigilante_id, vigilante_nombre, nombref,
         if accesodict[acceso]:
             razonRegistrar=f"{razondict[acceso]}(vigilante)" if (razon in razondict[acceso].lower()) else f"{razondict[acceso]}(vigilante)-{razon}"
             # requests.get(f'{accesodict[acceso]}/on', timeout=5)
+            cursorf.execute('SELECT aperturas_hechas FROM control_horarios_visitantes WHERE horario_id=%s',(horario_id,))
+            control_visitante= cursorf.fetchall()
             cursorf.execute('UPDATE control_horarios_visitantes SET aperturas_hechas=%s WHERE horario_id=%s', (aperturasRealizadas+1,horario_id))
             # cursorf.execute('''INSERT INTO accesos_abiertos (cedula, acceso, fecha, hora, estado)
             # VALUES (%s, %s, %s, %s, %s)''', (cedulaf, acceso, fechaf, horaf, 'f'))
@@ -191,7 +193,7 @@ def aperturaConcedidaVigilanteVisitante(vigilante_id, vigilante_nombre, nombref,
             connf.commit()
             if cedula_propietario!=None:
                 if razon=='entrada':
-                    mensaje=f"El invitado {nombref} acaba de ingresar por medio del sistema de vigilancia"
+                    mensaje=f"El invitado {nombref} acaba de ingresar por segunda vez por medio del sistema de vigilancia" if (control_visitante[0][0]==1 and aperturasRealizadas==0) else f"El invitado {nombref} acaba de ingresar por medio del sistema de vigilancia"
                 else:
                     mensaje=f"El invitado {nombref} acaba de salir por medio del sistema de vigilancia"
                 try:
@@ -762,6 +764,13 @@ class MyServer(BaseHTTPRequestHandler):
                                     self.send_header("Content-type", "utf-8")
                                     self.end_headers()
                                 elif aperturasRealizadas==1 and razonApertura=='entrada':
+                                    invitado_cedula=datosInvitado[0][0]
+                                    invitado_nombre=datosInvitado[0][1]
+                                    vigilante_id=datosVigilante[0][0]
+                                    vigilante_nombre=datosVigilante[0][1]
+                                    fecha=str(caracas_now)[:10]
+                                    
+                                    aperturaConcedidaVigilanteVisitante(vigilante_id, vigilante_nombre, invitado_nombre, fecha, horahoy, CONTRATO, invitado_cedula, cursor, conn, acceso_solicitud, razonApertura, horario_id, 0, acompanantes, datosInvitado[0][2], f"" if (datosPropietario==None) else f"{datosPropietario[0][0]}", datosInvitado[0][3])
                                     self.send_response(406)
                                     self.send_header("Content-type", "utf-8")
                                     self.end_headers()
