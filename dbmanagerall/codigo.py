@@ -877,7 +877,7 @@ while True:
                                     "contrato": CONTRATO,
                                     "cedula": cedula,
                                     "acompanantes": acompanantes,
-                                    "cedula_propietario": cedula_propietario,
+                                    "cedula_propietario": "" if (cedula_propietario==None or cedula_propietario=='null') else "",
                                     "unidad_id":unidad_id
                                 }
                                 requests.post(url=f'{URL_API}registrarlogsvisitantesapi/', 
