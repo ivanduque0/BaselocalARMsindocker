@@ -814,7 +814,13 @@ class MyServer(BaseHTTPRequestHandler):
                                         self.send_header("Content-type", "utf-8")
                                         self.end_headers()  
                                 else:
-                                    aperturadenegada(cursor, conn, acceso_solicitud)
+                                    invitado_cedula=datosInvitado[0][0]
+                                    invitado_nombre=datosInvitado[0][1]
+                                    vigilante_id=datosVigilante[0][0]
+                                    vigilante_nombre=datosVigilante[0][1]
+                                    fecha=str(caracas_now)[:10]
+                                    
+                                    aperturaConcedidaVigilanteVisitante(vigilante_id, vigilante_nombre, invitado_nombre, fecha, horahoy, CONTRATO, invitado_cedula, cursor, conn, acceso_solicitud, razonApertura, horario_id, aperturasRealizadas, acompanantes, datosInvitado[0][2], f"" if (datosPropietario==None) else f"{datosPropietario[0][0]}", datosInvitado[0][3])
                                     self.send_response(401)
                                     self.send_header("Content-type", "utf-8")
                                     self.end_headers()
@@ -866,7 +872,13 @@ class MyServer(BaseHTTPRequestHandler):
                                         self.send_header("Content-type", "utf-8")
                                         self.end_headers()  
                                 else:
-                                    aperturadenegada(cursor, conn, acceso_solicitud)
+                                    invitado_cedula=datosInvitado[0][0]
+                                    invitado_nombre=datosInvitado[0][1]
+                                    vigilante_id=datosVigilante[0][0]
+                                    vigilante_nombre=datosVigilante[0][1]
+                                    fecha=str(caracas_now)[:10]
+                                    
+                                    aperturaConcedidaVigilanteVisitante(vigilante_id, vigilante_nombre, invitado_nombre, fecha, horahoy, CONTRATO, invitado_cedula, cursor, conn, acceso_solicitud, razonApertura, horario_id, aperturasRealizadas, acompanantes, datosInvitado[0][2], f"" if (datosPropietario==None) else f"{datosPropietario[0][0]}", datosInvitado[0][3])
                                     self.send_response(401)
                                     self.send_header("Content-type", "utf-8")
                                     self.end_headers()
