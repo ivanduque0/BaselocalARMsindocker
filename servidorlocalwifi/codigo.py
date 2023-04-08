@@ -635,12 +635,29 @@ class MyServer(BaseHTTPRequestHandler):
                             break
                 if horarioEncontrado==False:
                     for horario_id, fecha_entrada, fecha_salida, entrada, salida, acompanantes in invitaciones:
-                        visitantes_json = json.dumps({'horario_id':horario_id, 'acompanantes':acompanantes})
-                        self.send_response(code=400)
-                        self.send_header(keyword='Content-type', value='application/json')
-                        self.end_headers()
-                        self.wfile.write(visitantes_json.encode('utf-8'))
-                        break
+                        cursor.execute("SELECT aperturas_hechas FROM control_horarios_visitantes where horario_id=%s", (horario_id,))
+                        aperturasConInvitacion = cursor.fetchall()
+                        if not aperturasConInvitacion:
+                            visitantes_json = json.dumps({'horario_id':horario_id, 'acompanantes':acompanantes})
+                            self.send_response(code=400)
+                            self.send_header(keyword='Content-type', value='application/json')
+                            self.end_headers()
+                            self.wfile.write(visitantes_json.encode('utf-8'))
+                            break
+                        elif aperturasConInvitacion[0][0]<=1: 
+                            visitantes_json = json.dumps({'horario_id':horario_id, 'acompanantes':acompanantes})
+                            self.send_response(code=400)
+                            self.send_header(keyword='Content-type', value='application/json')
+                            self.end_headers()
+                            self.wfile.write(visitantes_json.encode('utf-8'))
+                            break
+                        elif aperturasConInvitacion[0][0]==2:
+                            self.send_response(402)
+                            self.send_header(keyword='Content-type', value='application/json')
+                            self.end_headers()
+                            self.wfile.write(visitantes_json.encode('utf-8'))
+                            break
+
             else:
                 visitantes_json = json.dumps({})
                 if horarioEncontrado==False:
