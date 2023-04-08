@@ -615,8 +615,19 @@ class MyServer(BaseHTTPRequestHandler):
             fechahoy = caracas_now.date()
             if invitaciones:
                 for horario_id, fecha_entrada, fecha_salida, entrada, salida, acompanantes in invitaciones:
+                    cursor.execute("SELECT aperturas_hechas FROM control_horarios_visitantes where horario_id=%s", (horario_id,))
+                    aperturasConInvitacion = cursor.fetchall()
                     if (fecha_entrada!=fecha_salida):
-                        if (fechahoy==fecha_entrada and horahoy>=entrada) or (fechahoy > fecha_entrada and fechahoy<fecha_salida) or (fechahoy==fecha_salida and horahoy<=salida):
+                        if not aperturasConInvitacion:
+                            if (fechahoy==fecha_entrada and horahoy>=entrada) or (fechahoy > fecha_entrada and fechahoy<fecha_salida) or (fechahoy==fecha_salida and horahoy<=salida):
+                                horarioEncontrado=True
+                                visitantes_json = json.dumps({'horario_id':horario_id, 'acompanantes':acompanantes})
+                                self.send_response(code=200)
+                                self.send_header(keyword='Content-type', value='application/json')
+                                self.end_headers()
+                                self.wfile.write(visitantes_json.encode('utf-8'))
+                                break
+                        elif aperturasConInvitacion[0][0]<=1: 
                             horarioEncontrado=True
                             visitantes_json = json.dumps({'horario_id':horario_id, 'acompanantes':acompanantes})
                             self.send_response(code=200)
@@ -625,14 +636,24 @@ class MyServer(BaseHTTPRequestHandler):
                             self.wfile.write(visitantes_json.encode('utf-8'))
                             break
                     else:
-                        if (horahoy>=entrada and horahoy<=salida):
-                            horarioEncontrado=True
-                            visitantes_json = json.dumps({'horario_id':horario_id, 'acompanantes':acompanantes})
-                            self.send_response(code=200)
-                            self.send_header(keyword='Content-type', value='application/json')
-                            self.end_headers()
-                            self.wfile.write(visitantes_json.encode('utf-8'))
-                            break
+                        if not aperturasConInvitacion:
+                            if (horahoy>=entrada and horahoy<=salida):
+                                horarioEncontrado=True
+                                visitantes_json = json.dumps({'horario_id':horario_id, 'acompanantes':acompanantes})
+                                self.send_response(code=200)
+                                self.send_header(keyword='Content-type', value='application/json')
+                                self.end_headers()
+                                self.wfile.write(visitantes_json.encode('utf-8'))
+                                break
+                        elif aperturasConInvitacion[0][0]<=1: 
+                            if (horahoy>=entrada and horahoy<=salida):
+                                horarioEncontrado=True
+                                visitantes_json = json.dumps({'horario_id':horario_id, 'acompanantes':acompanantes})
+                                self.send_response(code=200)
+                                self.send_header(keyword='Content-type', value='application/json')
+                                self.end_headers()
+                                self.wfile.write(visitantes_json.encode('utf-8'))
+                                break
                 if horarioEncontrado==False:
                     for horario_id, fecha_entrada, fecha_salida, entrada, salida, acompanantes in invitaciones:
                         cursor.execute("SELECT aperturas_hechas FROM control_horarios_visitantes where horario_id=%s", (horario_id,))
