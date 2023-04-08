@@ -103,7 +103,7 @@ def aperturaConcedidaInternet(nombref, fechaf, horaf, contratof, cedulaf, cursor
             cursorf.execute('''INSERT INTO accesos_abiertos (cedula, acceso, fecha, hora, estado) 
             VALUES (%s, %s, %s, %s, %s)''', (cedulaf, acceso, fechaf, horaf, 'f'))
             connf.commit()
-            requests.put(url=f'{URL_API}aperturasusuarioapi/{id_solicitud}/{contratof}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=5)
+            requests.put(url=f'{URL_API}aperturasusuarioapi/{id_solicitud}/{contratof}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
             cursorf.execute('UPDATE solicitud_aperturas SET estado=%s WHERE id=%s;', (1, id_solicitud))
             connf.commit()
             cursorf.execute('''INSERT INTO web_logs_usuarios (nombre, fecha, hora, razon, contrato, cedula_id)
@@ -130,7 +130,7 @@ def aperturaConcedidaInternetVisitante(nombref, fechaf, horaf, contratof, cedula
             cursorf.execute('''INSERT INTO accesos_abiertos (cedula, acceso, fecha, hora, estado) 
             VALUES (%s, %s, %s, %s, %s)''', (cedulaf, acceso, fechaf, horaf, 'f'))
             connf.commit()
-            requests.put(url=f'{URL_API}aperturasusuarioapi/{id_solicitud}/{contratof}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=5)
+            requests.put(url=f'{URL_API}aperturasusuarioapi/{id_solicitud}/{contratof}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
             cursorf.execute('UPDATE solicitud_aperturas SET estado=%s WHERE id=%s;', (1, id_solicitud))
             connf.commit()
             cursor.execute('UPDATE control_horarios_visitantes SET aperturas_hechas=%s WHERE horario_id=%s', (aperturasRealizadas+1,horario_id))
@@ -218,7 +218,7 @@ def aperturadenegada(cursorf, connf, acceso, id_solicitud):
         requests.get(f'{accesodict[acceso]}/off', timeout=2)
         cursorf.execute('UPDATE solicitud_aperturas SET estado=%s, feedback=%s WHERE id=%s;', (1,'t', id_solicitud))
         connf.commit()
-        requests.put(url=f'{URL_API}aperturasusuarioapi/{id_solicitud}/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=5)
+        requests.put(url=f'{URL_API}aperturasusuarioapi/{id_solicitud}/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
     except Exception as e:
         
         print(f"{e} - fallo en peticion para denegar apertura")
@@ -246,7 +246,7 @@ while True:
 
         while True:
             try:
-                aperturas_solicitadas = requests.get(url=f'{URL_API}aperturascontratoapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
+                aperturas_solicitadas = requests.get(url=f'{URL_API}aperturascontratoapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10).json()
                 if len(aperturas_solicitadas):
                     tz = pytz.timezone('America/Caracas')
                     caracas_now = datetime.now(tz)
