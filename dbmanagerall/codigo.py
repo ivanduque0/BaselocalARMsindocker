@@ -756,9 +756,9 @@ while True:
 
                 try:
                     cursorlocal.execute('SELECT * FROM web_logs_usuarios where contrato=%s and fecha=%s', (CONTRATO,fechahoy))
-                    interacciones_local= cursorlocal.fetchall()
+                    logsUsuarios_local= cursorlocal.fetchall()
                 
-                    request_json = requests.get(url=f'{URL_API}obtenerinteraccionesapi/{CONTRATO}/{fechahoy}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10).json()
+                    request_json = requests.get(url=f'{URL_API}obtenerlogsusuariosapi/{CONTRATO}/{fechahoy}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10).json()
 
                     listaLogsServidor=[]
                     for consultajson in request_json:
@@ -767,12 +767,12 @@ while True:
                         tuplaLogIndividual=(consultajson['nombre'],objetofecha,objetohora,consultajson['razon'],consultajson['contrato'],consultajson['cedula'])
                         listaLogsServidor.append(tuplaLogIndividual)
 
-                    nro_int_local = len(interacciones_local)
+                    nro_int_local = len(logsUsuarios_local)
                     nro_int_servidor = len(listaLogsServidor)
 
                     if nro_int_local != nro_int_servidor:
 
-                        for interaccion in interacciones_local:
+                        for interaccion in logsUsuarios_local:
                             if not interaccion in listaLogsServidor:
                                 nombre=interaccion[0]
                                 fecha=interaccion[1]
@@ -787,7 +787,7 @@ while True:
                                     "contrato": CONTRATO,
                                     "cedula": cedula
                                 }
-                                requests.post(url=f'{URL_API}registrarinteraccionesapi/', 
+                                requests.post(url=f'{URL_API}registrarlogsusuariosapi/', 
                                 json=anadirLogJson, auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
                 except Exception as e:
                     print(f"{e} - fallo total en Log de usuarios")
