@@ -1153,6 +1153,7 @@ class MyServer(BaseHTTPRequestHandler):
                     tz = pytz.timezone('America/Caracas')
                     caracas_now = datetime.now(tz)
                     hora=str(caracas_now)[11:19]
+                    horaClase = datetime.strptime(hora, '%H:%M:%S').time()
                     horahoy = caracas_now.time()
                     fechahoy = caracas_now.date()
                     for horario_id, fecha_entrada, fecha_salida, entrada, salida, _ in horarios_permitidos:
@@ -1160,7 +1161,7 @@ class MyServer(BaseHTTPRequestHandler):
                             permitir, aperturasRealizadas = controlhorariovisitante(cursor, conn, horario_id, razonApertura)
                             if permitir:
                                 fecha=str(caracas_now)[:10]
-                                aperturaconcedidawifivisitante(idUsuario, cursor, conn, acceso_solicitud, cedula, nombre, fecha, hora, razonApertura, horario_id, aperturasRealizadas)
+                                aperturaconcedidawifivisitante(idUsuario, cursor, conn, acceso_solicitud, cedula, nombre, fecha, horaClase, razonApertura, horario_id, aperturasRealizadas)
                             else:
                                 aperturadenegada(cursor, conn, acceso_solicitud)  
                         else:
@@ -1295,6 +1296,7 @@ class MyServer(BaseHTTPRequestHandler):
                     tz = pytz.timezone('America/Caracas')
                     caracas_now = datetime.now(tz)
                     hora=str(caracas_now)[11:19]
+                    horaClase = datetime.strptime(hora, '%H:%M:%S').time()
                     horahoy = caracas_now.time()
                     fechahoy = caracas_now.date()
                     for horario_id, fecha_entrada, fecha_salida, entrada, salida, _, acompanantes in horarios_permitidos:
@@ -1303,7 +1305,7 @@ class MyServer(BaseHTTPRequestHandler):
                                 permitir, aperturasRealizadas = controlhorariovisitante(cursor, conn, horario_id, razonApertura)
                                 if permitir and len(datosPropietario):
                                     fecha=str(caracas_now)[:10]
-                                    aperturaconcedidabluetoothvisitante(nombre, fecha, hora, CONTRATO, cedula, cursor, conn, acceso_solicitud, razonApertura, horario_id, aperturasRealizadas, acompanantes, cedula_propietario, datosPropietario[0][0],unidad_id)
+                                    aperturaconcedidabluetoothvisitante(nombre, fecha, horaClase, CONTRATO, cedula, cursor, conn, acceso_solicitud, razonApertura, horario_id, aperturasRealizadas, acompanantes, cedula_propietario, datosPropietario[0][0],unidad_id)
                                     break
                                 else:
                                     aperturadenegada(cursor, conn, acceso_solicitud)  
@@ -1314,7 +1316,7 @@ class MyServer(BaseHTTPRequestHandler):
                                 permitir, aperturasRealizadas = controlhorariovisitante(cursor, conn, horario_id, razonApertura)
                                 if permitir and len(datosPropietario):
                                     fecha=str(caracas_now)[:10]
-                                    aperturaconcedidabluetoothvisitante(nombre, fecha, hora, CONTRATO, cedula, cursor, conn, acceso_solicitud, razonApertura, horario_id, aperturasRealizadas, acompanantes, cedula_propietario, datosPropietario[0][0],unidad_id)
+                                    aperturaconcedidabluetoothvisitante(nombre, fecha, horaClase, CONTRATO, cedula, cursor, conn, acceso_solicitud, razonApertura, horario_id, aperturasRealizadas, acompanantes, cedula_propietario, datosPropietario[0][0],unidad_id)
                                     break
                                 else:
                                     aperturadenegada(cursor, conn, acceso_solicitud)  
