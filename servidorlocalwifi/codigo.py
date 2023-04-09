@@ -409,9 +409,9 @@ def aperturaconcedidabluetoothvisitante(nombref, fechaf, horaf, contratof, cedul
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s);''', (nombref, fechaf, horaf, razonRegistrar, contratof, cedulaf, acompanantes, cedula_propietario, unidad_id))
             connf.commit()
             if razon=='entrada':
-                mensaje=f"El invitado {nombref} acaba de ingresar por medio de bluetooth"
+                mensaje=f"El invitado *{nombref}* acaba de ingresar por medio de bluetooth"
             else:
-                mensaje=f"El invitado {nombref} acaba de salir por medio de bluetooth"
+                mensaje=f"El invitado *{nombref}* acaba de salir por medio de bluetooth"
             try:
                 requests.get(f'https://api.callmebot.com/whatsapp.php?phone={NUMERO_BOT}&text=!sendto+{numero_propietario[1:]}+{mensaje}&apikey={APIKEY_BOT}', timeout=5)
             except Exception as e:
@@ -1294,6 +1294,7 @@ class MyServer(BaseHTTPRequestHandler):
                     datosPropietario = cursor.fetchall()
                     tz = pytz.timezone('America/Caracas')
                     caracas_now = datetime.now(tz)
+                    hora=str(caracas_now)[11:19]
                     horahoy = caracas_now.time()
                     fechahoy = caracas_now.date()
                     for horario_id, fecha_entrada, fecha_salida, entrada, salida, _, acompanantes in horarios_permitidos:
