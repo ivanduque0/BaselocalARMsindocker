@@ -1012,7 +1012,7 @@ while True:
                             caracas_now = datetime.now(tz)
                             horahoy = caracas_now.time()
                             fechahoy = caracas_now.date()
-                            if ((fechahoy==horario[2] and horahoy>=horario[2] and horario[4]!=None) or (fechahoy>horario[2] and horario[4]!=None)):
+                            if ((fechahoy==horario[2] and horahoy>=horario[3] and horario[4]!=None) or (fechahoy>horario[2] and horario[4]!=None)):
                                 try:
                                     request_json = requests.delete(url=f'{URL_API}editarhorariosvisitantesapi/{horario[0]}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
                                     if request_json.status_code == 204 or request_json.status_code == 500:
@@ -1026,7 +1026,7 @@ while True:
                             caracas_now = datetime.now(tz)
                             horahoy = caracas_now.time()
                             fechahoy = caracas_now.date()
-                            if ((fechahoy==horario[2] and horahoy>=horario[2] and horario[4]==None) or (fechahoy>horario[2] and horario[4]==None)):
+                            if ((fechahoy==horario[2] and horahoy>=horario[3] and horario[4]==None) or (fechahoy>horario[2] and horario[4]==None)):
                                 try:
                                     request_json = requests.delete(url=f'{URL_API}editarhorariosvisitantesapi/{horario[0]}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
                                     if request_json.status_code == 204 or request_json.status_code == 500:
@@ -1041,7 +1041,7 @@ while True:
                         caracas_now = datetime.now(tz)
                         horahoy = caracas_now.time()
                         fechahoy = caracas_now.date()
-                        if ((fechahoy==horario[2] and horahoy>=horario[2] and horario[4]!=None) or (fechahoy>horario[2] and horario[4]!=None)):
+                        if ((fechahoy==horario[2] and horahoy>=horario[3] and horario[4]!=None) or (fechahoy>horario[2] and horario[4]!=None)):
                             try:
                                 request_json = requests.delete(url=f'{URL_API}editarhorariosvisitantesapi/{horario[0]}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
                                 if request_json.status_code == 204 or request_json.status_code == 500:
@@ -1049,7 +1049,7 @@ while True:
                                     connlocal.commit() 
                             except Exception as e:
                                 print(f"{e} - fallo total eliminando horario:{horario[0]}") 
-                        elif ((fechahoy==horario[2] and horahoy>=horario[2] and horario[4]==None) or (fechahoy>horario[2] and horario[4]==None)):
+                        elif ((fechahoy==horario[2] and horahoy>=horario[3] and horario[4]==None) or (fechahoy>horario[2] and horario[4]==None)):
                             try:
                                 request_json = requests.delete(url=f'{URL_API}editarhorariosvisitantesapi/{horario[0]}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
                                 if request_json.status_code == 204 or request_json.status_code == 500:
