@@ -999,12 +999,10 @@ while True:
                                 print(f"{e} - fallo total eliminando horario:{horario[0]}") 
                         elif horario[5]>=2 and horario[4]==None:
                             try:
-                                request_json = requests.delete(url=f'{URL_API}editarhorariosvisitantesapi/{horario[0]}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
-                                if request_json.status_code == 204 or request_json.status_code == 500:
-                                    cursorlocal.execute('DELETE FROM control_horarios_visitantes WHERE horario_id=%s', (horario[0],))
-                                    cursorlocal.execute('DELETE FROM web_horariospermitidos WHERE id=%s', (horario[0],))
-                                    cursorlocal.execute('DELETE FROM web_usuarios WHERE id=%s', (horario[1],))
-                                    connlocal.commit() 
+                                cursorlocal.execute('DELETE FROM control_horarios_visitantes WHERE horario_id=%s', (horario[0],))
+                                cursorlocal.execute('DELETE FROM web_horariospermitidos WHERE id=%s', (horario[0],))
+                                cursorlocal.execute('DELETE FROM web_usuarios WHERE id=%s', (horario[1],))
+                                connlocal.commit() 
                             except Exception as e:
                                 print(f"{e} - fallo total eliminando horario:{horario[0]}")
                         elif horario[5]<2 and horario[4]!=None:
@@ -1028,12 +1026,10 @@ while True:
                             fechahoy = caracas_now.date()
                             if ((fechahoy==horario[2] and horahoy>=horario[3] and horario[4]==None) or (fechahoy>horario[2] and horario[4]==None)):
                                 try:
-                                    request_json = requests.delete(url=f'{URL_API}editarhorariosvisitantesapi/{horario[0]}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
-                                    if request_json.status_code == 204 or request_json.status_code == 500:
-                                        cursorlocal.execute('DELETE FROM control_horarios_visitantes WHERE horario_id=%s', (horario[0],))
-                                        cursorlocal.execute('DELETE FROM web_horariospermitidos WHERE id=%s', (horario[0],))
-                                        cursorlocal.execute('DELETE FROM web_usuarios WHERE id=%s', (horario[1],))
-                                        connlocal.commit() 
+                                    cursorlocal.execute('DELETE FROM control_horarios_visitantes WHERE horario_id=%s', (horario[0],))
+                                    cursorlocal.execute('DELETE FROM web_horariospermitidos WHERE id=%s', (horario[0],))
+                                    cursorlocal.execute('DELETE FROM web_usuarios WHERE id=%s', (horario[1],))
+                                    connlocal.commit() 
                                 except Exception as e:
                                     print(f"{e} - fallo total eliminando horario:{horario[0]}")
                     else:
@@ -1051,11 +1047,9 @@ while True:
                                 print(f"{e} - fallo total eliminando horario:{horario[0]}") 
                         elif ((fechahoy==horario[2] and horahoy>=horario[3] and horario[4]==None) or (fechahoy>horario[2] and horario[4]==None)):
                             try:
-                                request_json = requests.delete(url=f'{URL_API}editarhorariosvisitantesapi/{horario[0]}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
-                                if request_json.status_code == 204 or request_json.status_code == 500:
-                                    cursorlocal.execute('DELETE FROM web_horariospermitidos WHERE id=%s', (horario[0],))
-                                    cursorlocal.execute('DELETE FROM web_usuarios WHERE id=%s', (horario[1],))
-                                    connlocal.commit() 
+                                cursorlocal.execute('DELETE FROM web_horariospermitidos WHERE id=%s', (horario[0],))
+                                cursorlocal.execute('DELETE FROM web_usuarios WHERE id=%s', (horario[1],))
+                                connlocal.commit() 
                             except Exception as e:
                                 print(f"{e} - fallo total eliminando horario:{horario[0]}")
                 borrarHorariosVisitantes=False
