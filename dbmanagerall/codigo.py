@@ -842,7 +842,7 @@ while True:
                     logsVisitantes_local= cursorlocal.fetchall()
                     
                     request_json = requests.get(url=f'{URL_API}obtenerlogsvisitantesapi/{CONTRATO}/{fechahoy}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10).json()
-                    print(request_json)
+                    # print(request_json)
                     listaLogsVisitantesServidor=[]
                     for consultajson in request_json:
                         objetofecha= date.fromisoformat(consultajson['fecha'])
@@ -852,17 +852,17 @@ while True:
 
                     nro_int_local = len(logsVisitantes_local)
                     nro_log_vig_servidor = len(listaLogsVisitantesServidor)
-                    print(nro_int_local)
-                    print(nro_log_vig_servidor)
-                    print("Lista local")
-                    print(logsVisitantes_local)
-                    print("lista servidor")
-                    print(listaLogsVisitantesServidor)
+                    # print(nro_int_local)
+                    # print(nro_log_vig_servidor)
+                    # print("Lista local")
+                    # print(logsVisitantes_local)
+                    # print("lista servidor")
+                    # print(listaLogsVisitantesServidor)
                     if nro_int_local != nro_log_vig_servidor:
 
                         for logVisitante in logsVisitantes_local:
                             if not logVisitante in listaLogsVisitantesServidor:
-                                print(logVisitante)
+                                # print(logVisitante)
                                 vigilante_id=logVisitante[0]
                                 vigilante_nombre=logVisitante[1]
                                 nombre=logVisitante[2]
@@ -886,9 +886,9 @@ while True:
                                     "cedula_propietario": "" if (cedula_propietario==None) else cedula_propietario,
                                     "unidad_id":unidad_id
                                 }
-                                peticion=requests.post(url=f'{URL_API}registrarlogsvisitantesapi/', 
+                                requests.post(url=f'{URL_API}registrarlogsvisitantesapi/', 
                                 json=anadirLogJson, auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
-                                print(peticion.status_code)
+                                # print(peticion.status_code)
                 except Exception as e:
                     print(f"{e} - fallo total en Log de visitantes")
 
