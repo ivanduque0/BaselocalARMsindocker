@@ -406,7 +406,7 @@ def aperturaconcedidabluetoothvisitante(nombref, fechaf, horaf, contratof, cedul
             cursorf.execute('''INSERT INTO accesos_abiertos (cedula, acceso, fecha, hora, estado)
             VALUES (%s, %s, %s, %s, %s)''', (cedulaf, acceso, fechaf, horaf, 'f'))
             cursorf.execute('''INSERT INTO web_logs_visitantes (nombre, fecha, hora, razon, contrato, cedula_id, acompanantes, cedula_propietario, unidad_id)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s);''', (nombref, fechaf, horaf, razonRegistrar, contratof, cedulaf, acompanantes, cedula_propietario, unidad_id))
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);''', (nombref, fechaf, horaf, razonRegistrar, contratof, cedulaf, acompanantes, cedula_propietario, unidad_id))
             connf.commit()
             if razon=='entrada':
                 mensaje=f"El invitado *{nombref}* acaba de ingresar por medio de bluetooth"
@@ -418,7 +418,7 @@ def aperturaconcedidabluetoothvisitante(nombref, fechaf, horaf, contratof, cedul
                 print(f"{e} - fallo intentando enviar mensaje visitante bluetooth")
     except Exception as e:
         cursorf.execute('''INSERT INTO web_logs_visitantes (nombre, fecha, hora, razon, contrato, cedula_id, acompanantes, cedula_propietario, unidad_id)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s);''', (nombref, fechaf, horaf, f"fallo_{razonRegistrar}", contratof, cedulaf, acompanantes, cedula_propietario, unidad_id))
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);''', (nombref, fechaf, horaf, f"fallo_{razonRegistrar}", contratof, cedulaf, acompanantes, cedula_propietario, unidad_id))
         connf.commit()
         print(f"{e} - fallo intentando abrir el acceso {acceso} por bluetooth")
 
