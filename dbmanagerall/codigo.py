@@ -847,7 +847,7 @@ while True:
                     for consultajson in request_json:
                         objetofecha= date.fromisoformat(consultajson['fecha'])
                         objetohora=time.fromisoformat(consultajson['hora'])
-                        tuplaLogIndividual=(consultajson['vigilante_id'],consultajson['vigilante_nombre'],consultajson['nombre'],objetofecha,objetohora,consultajson['razon'],consultajson['cedula'], consultajson['acompanantes'],consultajson['cedula_propietario'],consultajson['unidad_id'])
+                        tuplaLogIndividual=(None if (consultajson['vigilante_id']=="") else consultajson['vigilante_id'],None if(consultajson['vigilante_nombre']=="") else consultajson['vigilante_nombre'],consultajson['nombre'],objetofecha,objetohora,consultajson['razon'],consultajson['cedula'], consultajson['acompanantes'],None if (consultajson['cedula_propietario']=="") else consultajson['cedula_propietario'],None if (consultajson['unidad_id']=="")else consultajson['unidad_id'])
                         listaLogsVisitantesServidor.append(tuplaLogIndividual)
 
                     nro_int_local = len(logsVisitantes_local)
