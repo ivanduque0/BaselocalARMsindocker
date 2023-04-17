@@ -92,6 +92,56 @@ rfid18=os.environ.get('URL_RFID18')
 rfid19=os.environ.get('URL_RFID19')
 rfid20=os.environ.get('URL_RFID20')
 
+######################################
+##############BLUETOOTH################
+#######################################
+
+bluetooth1=os.environ.get('URL_BLUETOOTH1')
+bluetooth2=os.environ.get('URL_BLUETOOTH2')
+bluetooth3=os.environ.get('URL_BLUETOOTH3')
+bluetooth4=os.environ.get('URL_BLUETOOTH4')
+bluetooth5=os.environ.get('URL_BLUETOOTH5')
+bluetooth6=os.environ.get('URL_BLUETOOTH6')
+bluetooth7=os.environ.get('URL_BLUETOOTH7')
+bluetooth8=os.environ.get('URL_BLUETOOTH8')
+bluetooth9=os.environ.get('URL_BLUETOOTH9')
+bluetooth10=os.environ.get('URL_BLUETOOTH10')
+bluetooth11=os.environ.get('URL_BLUETOOTH11')
+bluetooth12=os.environ.get('URL_BLUETOOTH12')
+bluetooth13=os.environ.get('URL_BLUETOOTH13')
+bluetooth14=os.environ.get('URL_BLUETOOTH14')
+bluetooth15=os.environ.get('URL_BLUETOOTH15')
+bluetooth16=os.environ.get('URL_BLUETOOTH16')
+bluetooth17=os.environ.get('URL_BLUETOOTH17')
+bluetooth18=os.environ.get('URL_BLUETOOTH18')
+bluetooth19=os.environ.get('URL_BLUETOOTH19')
+bluetooth20=os.environ.get('URL_BLUETOOTH20')
+
+######################################
+#################RELE##################
+#######################################
+
+rele1=os.environ.get('URL_RELE1')
+rele2=os.environ.get('URL_RELE2')
+rele3=os.environ.get('URL_RELE3')
+rele4=os.environ.get('URL_RELE4')
+rele5=os.environ.get('URL_RELE5')
+rele6=os.environ.get('URL_RELE6')
+rele7=os.environ.get('URL_RELE7')
+rele8=os.environ.get('URL_RELE8')
+rele9=os.environ.get('URL_RELE9')
+rele10=os.environ.get('URL_RELE10')
+rele11=os.environ.get('URL_RELE11')
+rele12=os.environ.get('URL_RELE12')
+rele13=os.environ.get('URL_RELE13')
+rele14=os.environ.get('URL_RELE14')
+rele15=os.environ.get('URL_RELE15')
+rele16=os.environ.get('URL_RELE16')
+rele17=os.environ.get('URL_RELE17')
+rele18=os.environ.get('URL_RELE18')
+rele19=os.environ.get('URL_RELE19')
+rele20=os.environ.get('URL_RELE20')
+
 dispositivos=[
             acceso1, acceso2, acceso3, acceso4,
             acceso5, acceso6, acceso7, acceso8,
@@ -107,6 +157,14 @@ dispositivos=[
             rfid6, rfid7, rfid8, rfid9, rfid10,
             rfid11, rfid12, rfid13, rfid14, rfid15,
             rfid16, rfid17, rfid18, rfid19, rfid20,
+            bluetooth1, bluetooth2, bluetooth3, bluetooth4, bluetooth5,
+            bluetooth6, bluetooth7, bluetooth8, bluetooth9, bluetooth10,
+            bluetooth11, bluetooth12, bluetooth13, bluetooth14, bluetooth15,
+            bluetooth16, bluetooth17, bluetooth18, bluetooth19, bluetooth20,
+            rele1, rele2, rele3, rele4, rele5,
+            rele6, rele7, rele8, rele9, rele10,
+            rele11, rele12, rele13, rele14, rele15,
+            rele16, rele17, rele18, rele19, rele20,
             ]
 
 

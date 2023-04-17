@@ -150,6 +150,98 @@ descripcion_rfid18=os.environ.get('RAZON_RFID18')
 descripcion_rfid19=os.environ.get('RAZON_RFID19')
 descripcion_rfid20=os.environ.get('RAZON_RFID20')
 
+######################################
+##############BLUETOOTH################
+#######################################
+
+bluetooth1=os.environ.get('URL_BLUETOOTH1')
+bluetooth2=os.environ.get('URL_BLUETOOTH2')
+bluetooth3=os.environ.get('URL_BLUETOOTH3')
+bluetooth4=os.environ.get('URL_BLUETOOTH4')
+bluetooth5=os.environ.get('URL_BLUETOOTH5')
+bluetooth6=os.environ.get('URL_BLUETOOTH6')
+bluetooth7=os.environ.get('URL_BLUETOOTH7')
+bluetooth8=os.environ.get('URL_BLUETOOTH8')
+bluetooth9=os.environ.get('URL_BLUETOOTH9')
+bluetooth10=os.environ.get('URL_BLUETOOTH10')
+bluetooth11=os.environ.get('URL_BLUETOOTH11')
+bluetooth12=os.environ.get('URL_BLUETOOTH12')
+bluetooth13=os.environ.get('URL_BLUETOOTH13')
+bluetooth14=os.environ.get('URL_BLUETOOTH14')
+bluetooth15=os.environ.get('URL_BLUETOOTH15')
+bluetooth16=os.environ.get('URL_BLUETOOTH16')
+bluetooth17=os.environ.get('URL_BLUETOOTH17')
+bluetooth18=os.environ.get('URL_BLUETOOTH18')
+bluetooth19=os.environ.get('URL_BLUETOOTH19')
+bluetooth20=os.environ.get('URL_BLUETOOTH20')
+
+descripcion_bluetooth1=os.environ.get('RAZON_BLUETOOTH1')
+descripcion_bluetooth2=os.environ.get('RAZON_BLUETOOTH2')
+descripcion_bluetooth3=os.environ.get('RAZON_BLUETOOTH3')
+descripcion_bluetooth4=os.environ.get('RAZON_BLUETOOTH4')
+descripcion_bluetooth5=os.environ.get('RAZON_BLUETOOTH5')
+descripcion_bluetooth6=os.environ.get('RAZON_BLUETOOTH6')
+descripcion_bluetooth7=os.environ.get('RAZON_BLUETOOTH7')
+descripcion_bluetooth8=os.environ.get('RAZON_BLUETOOTH8')
+descripcion_bluetooth9=os.environ.get('RAZON_BLUETOOTH9')
+descripcion_bluetooth10=os.environ.get('RAZON_BLUETOOTH10')
+descripcion_bluetooth11=os.environ.get('RAZON_BLUETOOTH11')
+descripcion_bluetooth12=os.environ.get('RAZON_BLUETOOTH12')
+descripcion_bluetooth13=os.environ.get('RAZON_BLUETOOTH13')
+descripcion_bluetooth14=os.environ.get('RAZON_BLUETOOTH14')
+descripcion_bluetooth15=os.environ.get('RAZON_BLUETOOTH15')
+descripcion_bluetooth16=os.environ.get('RAZON_BLUETOOTH16')
+descripcion_bluetooth17=os.environ.get('RAZON_BLUETOOTH17')
+descripcion_bluetooth18=os.environ.get('RAZON_BLUETOOTH18')
+descripcion_bluetooth19=os.environ.get('RAZON_BLUETOOTH19')
+descripcion_bluetooth20=os.environ.get('RAZON_BLUETOOTH20')
+
+######################################
+#################RELE##################
+#######################################
+
+rele1=os.environ.get('URL_RELE1')
+rele2=os.environ.get('URL_RELE2')
+rele3=os.environ.get('URL_RELE3')
+rele4=os.environ.get('URL_RELE4')
+rele5=os.environ.get('URL_RELE5')
+rele6=os.environ.get('URL_RELE6')
+rele7=os.environ.get('URL_RELE7')
+rele8=os.environ.get('URL_RELE8')
+rele9=os.environ.get('URL_RELE9')
+rele10=os.environ.get('URL_RELE10')
+rele11=os.environ.get('URL_RELE11')
+rele12=os.environ.get('URL_RELE12')
+rele13=os.environ.get('URL_RELE13')
+rele14=os.environ.get('URL_RELE14')
+rele15=os.environ.get('URL_RELE15')
+rele16=os.environ.get('URL_RELE16')
+rele17=os.environ.get('URL_RELE17')
+rele18=os.environ.get('URL_RELE18')
+rele19=os.environ.get('URL_RELE19')
+rele20=os.environ.get('URL_RELE20')
+
+descripcion_rele1=os.environ.get('RAZON_RELE1')
+descripcion_rele2=os.environ.get('RAZON_RELE2')
+descripcion_rele3=os.environ.get('RAZON_RELE3')
+descripcion_rele4=os.environ.get('RAZON_RELE4')
+descripcion_rele5=os.environ.get('RAZON_RELE5')
+descripcion_rele6=os.environ.get('RAZON_RELE6')
+descripcion_rele7=os.environ.get('RAZON_RELE7')
+descripcion_rele8=os.environ.get('RAZON_RELE8')
+descripcion_rele9=os.environ.get('RAZON_RELE9')
+descripcion_rele10=os.environ.get('RAZON_RELE10')
+descripcion_rele11=os.environ.get('RAZON_RELE11')
+descripcion_rele12=os.environ.get('RAZON_RELE12')
+descripcion_rele13=os.environ.get('RAZON_RELE13')
+descripcion_rele14=os.environ.get('RAZON_RELE14')
+descripcion_rele15=os.environ.get('RAZON_RELE15')
+descripcion_rele16=os.environ.get('RAZON_RELE16')
+descripcion_rele17=os.environ.get('RAZON_RELE17')
+descripcion_rele18=os.environ.get('RAZON_RELE18')
+descripcion_rele19=os.environ.get('RAZON_RELE19')
+descripcion_rele20=os.environ.get('RAZON_RELE20')
+
 dispositivos=[captahuella1, captahuella2, captahuella3, captahuella4, captahuella5,
               captahuella6, captahuella7, captahuella8, captahuella9, captahuella10,
               captahuella11, captahuella12, captahuella3, captahuella14, captahuella15,
@@ -158,6 +250,14 @@ dispositivos=[captahuella1, captahuella2, captahuella3, captahuella4, captahuell
               rfid6, rfid7, rfid8, rfid9, rfid10,
               rfid11, rfid12, rfid13, rfid14, rfid15,
               rfid16, rfid17, rfid18, rfid19, rfid20,
+              bluetooth1, bluetooth2, bluetooth3, bluetooth4, bluetooth5,
+              bluetooth6, bluetooth7, bluetooth8, bluetooth9, bluetooth10,
+              bluetooth11, bluetooth12, bluetooth13, bluetooth14, bluetooth15,
+              bluetooth16, bluetooth17, bluetooth18, bluetooth19, bluetooth20,
+              rele1, rele2, rele3, rele4, rele5,
+              rele6, rele7, rele8, rele9, rele10,
+              rele11, rele12, rele13, rele14, rele15,
+              rele16, rele17, rele18, rele19, rele20,
               SERVIDOR_LOCAL
              ]
 
@@ -201,6 +301,46 @@ dispositivos_dict= {captahuella1:descripcion_captahuella1,
                     rfid18:descripcion_rfid18,
                     rfid19:descripcion_rfid19,
                     rfid20:descripcion_rfid20,
+                    bluetooth1:descripcion_bluetooth1, 
+                    bluetooth2:descripcion_bluetooth2,
+                    bluetooth3:descripcion_bluetooth3,
+                    bluetooth4:descripcion_bluetooth4,
+                    bluetooth5:descripcion_bluetooth5,
+                    bluetooth6:descripcion_bluetooth6, 
+                    bluetooth7:descripcion_bluetooth7,
+                    bluetooth8:descripcion_bluetooth8,
+                    bluetooth9:descripcion_bluetooth9,
+                    bluetooth10:descripcion_bluetooth10,
+                    bluetooth11:descripcion_bluetooth11, 
+                    bluetooth12:descripcion_bluetooth12,
+                    bluetooth13:descripcion_bluetooth13,
+                    bluetooth14:descripcion_bluetooth14,
+                    bluetooth15:descripcion_bluetooth15,
+                    bluetooth16:descripcion_bluetooth16, 
+                    bluetooth17:descripcion_bluetooth17,
+                    bluetooth18:descripcion_bluetooth18,
+                    bluetooth19:descripcion_bluetooth19,
+                    bluetooth20:descripcion_bluetooth20,
+                    rele1:descripcion_rele1, 
+                    rele2:descripcion_rele2,
+                    rele3:descripcion_rele3,
+                    rele4:descripcion_rele4,
+                    rele5:descripcion_rele5,
+                    rele6:descripcion_rele6, 
+                    rele7:descripcion_rele7,
+                    rele8:descripcion_rele8,
+                    rele9:descripcion_rele9,
+                    rele10:descripcion_rele10,
+                    rele11:descripcion_rele11, 
+                    rele12:descripcion_rele12,
+                    rele13:descripcion_rele13,
+                    rele14:descripcion_rele14,
+                    rele15:descripcion_rele15,
+                    rele16:descripcion_rele16, 
+                    rele17:descripcion_rele17,
+                    rele18:descripcion_rele18,
+                    rele19:descripcion_rele19,
+                    rele20:descripcion_rele20,
                     SERVIDOR_LOCAL:'SERVIDOR LOCAL'
                     }
 
@@ -300,7 +440,7 @@ while True:
                         estado = '1'
                     else:
                         estado = '0'
-                    cursorlocal.execute('INSERT INTO web_dispositivos values(%s, %s, %s, %s)',(dispositivo, descripcion, estado, ""))
+                    cursorlocal.execute('INSERT INTO web_dispositivos (dispositivo, descripcion, estado, acceso) values(%s, %s, %s, %s)',(dispositivo, descripcion, estado, ""))
                     connlocal.commit()
             
             for dispositivoAcceso in accesos_dispositivos:
@@ -309,7 +449,7 @@ while True:
                     acceso = accesos_dict[dispositivoAcceso]
                     estado = '0'
                     minor_id=random.randint(1, 65535)
-                    cursorlocal.execute('INSERT INTO web_dispositivos values(%s, %s, %s, %s, %s)',(dispositivoAcceso, descripcion, estado, acceso, minor_id))
+                    cursorlocal.execute('INSERT INTO web_dispositivos (dispositivo, descripcion, estado, acceso, minor_id) values(%s, %s, %s, %s, %s)',(dispositivoAcceso, descripcion, estado, acceso, minor_id))
                     connlocal.commit()
 
 
