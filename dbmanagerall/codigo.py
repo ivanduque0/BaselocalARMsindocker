@@ -815,140 +815,151 @@ while True:
                         connlocal.commit()
 
                 try:
-                    cursorlocal.execute('SELECT * FROM web_logs_usuarios where contrato=%s and fecha=%s', (CONTRATO,fechahoy))
+                    cursorlocal.execute('SELECT * FROM web_logs_usuarios where contrato=%s and fecha=%s and subido is NULL', (CONTRATO,fechahoy))
                     logsUsuarios_local= cursorlocal.fetchall()
                 
-                    request_json = requests.get(url=f'{URL_API}obtenerlogsusuariosapi/{CONTRATO}/{fechahoy}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10).json()
+                    # request_json = requests.get(url=f'{URL_API}obtenerlogsusuariosapi/{CONTRATO}/{fechahoy}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10).json()
 
-                    listaLogsServidor=[]
-                    for consultajson in request_json:
-                        objetofecha= date.fromisoformat(consultajson['fecha'])
-                        objetohora=time.fromisoformat(consultajson['hora'])
-                        tuplaLogIndividual=(consultajson['nombre'],objetofecha,objetohora,consultajson['razon'],consultajson['contrato'],consultajson['cedula'])
-                        listaLogsServidor.append(tuplaLogIndividual)
+                    # listaLogsServidor=[]
+                    # for consultajson in request_json:
+                    #     objetofecha= date.fromisoformat(consultajson['fecha'])
+                    #     objetohora=time.fromisoformat(consultajson['hora'])
+                    #     tuplaLogIndividual=(consultajson['nombre'],objetofecha,objetohora,consultajson['razon'],consultajson['contrato'],consultajson['cedula'])
+                    #     listaLogsServidor.append(tuplaLogIndividual)
 
                     nro_int_local = len(logsUsuarios_local)
-                    nro_int_servidor = len(listaLogsServidor)
+                    # nro_int_servidor = len(listaLogsServidor)
 
-                    if nro_int_local != nro_int_servidor:
+                    if nro_int_servidor>0:
 
-                        for interaccion in logsUsuarios_local:
-                            if not interaccion in listaLogsServidor:
-                                nombre=interaccion[0]
-                                fecha=interaccion[1]
-                                hora=interaccion[2]
-                                razon=interaccion[3]
-                                cedula=interaccion[5]
-                                anadirLogJson = {
-                                    "nombre": nombre,
-                                    "fecha": fecha.isoformat(),
-                                    "hora": hora.isoformat(),
-                                    "razon": razon,
-                                    "contrato": CONTRATO,
-                                    "cedula": cedula
-                                }
-                                requests.post(url=f'{URL_API}registrarlogsusuariosapi/', 
-                                json=anadirLogJson, auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
+                        for logUsuario in logsUsuarios_local:
+                            # if not logUsuario in listaLogsServidor:
+                            nombre=logUsuario[0]
+                            fecha=logUsuario[1]
+                            hora=logUsuario[2]
+                            razon=logUsuario[3]
+                            cedula=logUsuario[5]
+                            anadirLogJson = {
+                                "nombre": nombre,
+                                "fecha": fecha.isoformat(),
+                                "hora": hora.isoformat(),
+                                "razon": razon,
+                                "contrato": CONTRATO,
+                                "cedula": cedula
+                            }
+                            requests.post(url=f'{URL_API}registrarlogsusuariosapi/', 
+                            json=anadirLogJson, auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
+                            
+                            cursorlocal.execute('''UPDATE web_logs_usuarios SET subido='t' WHERE 
+                            nombre=%s AND fecha=%s AND hora=%s AND razon=%s AND contrato=%s AND cedula_id=%s''', 
+                            (nombre, fecha.isoformat(), hora.isoformat(), razon, CONTRATO, cedula))
+                            connlocal.commit()
+
                 except Exception as e:
                     print(f"{e} - fallo total en Log de usuarios")
             
 
-                try:
-                    cursorlocal.execute('SELECT vigilante_id, vigilante_nombre, unidad_id, unidad_nombre, fecha, hora, razon, personas FROM web_logs_vigilantes where contrato=%s and fecha=%s', (CONTRATO, fechahoy))
-                    logsVigilantes_local= cursorlocal.fetchall()
+                # try:
+                #     cursorlocal.execute('SELECT vigilante_id, vigilante_nombre, unidad_id, unidad_nombre, fecha, hora, razon, personas FROM web_logs_vigilantes where contrato=%s and fecha=%s', (CONTRATO, fechahoy))
+                #     logsVigilantes_local= cursorlocal.fetchall()
                     
-                    request_json = requests.get(url=f'{URL_API}obtenerlogsvigilantesapi/{CONTRATO}/{fechahoy}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10).json()
+                #     request_json = requests.get(url=f'{URL_API}obtenerlogsvigilantesapi/{CONTRATO}/{fechahoy}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10).json()
 
-                    listaLogsVigilantesServidor=[]
-                    for consultajson in request_json:
-                        objetofecha= date.fromisoformat(consultajson['fecha'])
-                        objetohora=time.fromisoformat(consultajson['hora'])
-                        tuplaLogIndividual=(consultajson['vigilante_id'],consultajson['vigilante_nombre'],consultajson['unidad_id'],consultajson['unidad_nombre'],objetofecha,objetohora,consultajson['razon'], consultajson['personas'])
-                        listaLogsVigilantesServidor.append(tuplaLogIndividual)
+                #     listaLogsVigilantesServidor=[]
+                #     for consultajson in request_json:
+                #         objetofecha= date.fromisoformat(consultajson['fecha'])
+                #         objetohora=time.fromisoformat(consultajson['hora'])
+                #         tuplaLogIndividual=(consultajson['vigilante_id'],consultajson['vigilante_nombre'],consultajson['unidad_id'],consultajson['unidad_nombre'],objetofecha,objetohora,consultajson['razon'], consultajson['personas'])
+                #         listaLogsVigilantesServidor.append(tuplaLogIndividual)
 
-                    nro_int_local = len(logsVigilantes_local)
-                    nro_log_vig_servidor = len(listaLogsVigilantesServidor)
+                #     nro_int_local = len(logsVigilantes_local)
+                #     nro_log_vig_servidor = len(listaLogsVigilantesServidor)
 
-                    if nro_int_local != nro_log_vig_servidor:
+                #     if nro_int_local != nro_log_vig_servidor:
 
-                        for logVigilante in logsVigilantes_local:
-                            if not logVigilante in listaLogsVigilantesServidor:
-                                vigilante_id=logVigilante[0]
-                                vigilante_nombre=logVigilante[1]
-                                unidad_id=logVigilante[2]
-                                unidad_nombre=logVigilante[3]
-                                fecha=logVigilante[4]
-                                hora=logVigilante[5]
-                                razon=logVigilante[6]
-                                personas=logVigilante[7]
-                                anadirLogJson = {
-                                    "vigilante_nombre": vigilante_nombre,
-                                    "vigilante_id": vigilante_id,
-                                    "unidad_id": unidad_id,
-                                    "unidad_nombre": unidad_nombre,
-                                    "fecha": fecha.isoformat(),
-                                    "hora": hora.isoformat(),
-                                    "razon": razon,
-                                    "contrato": CONTRATO,
-                                    "personas": personas,
-                                }
-                                requests.post(url=f'{URL_API}registrarlogsvigilantesapi/', 
-                                json=anadirLogJson, auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
-                except Exception as e:
-                    print(f"{e} - fallo total en Log de vigilantes")
+                #         for logVigilante in logsVigilantes_local:
+                #             if not logVigilante in listaLogsVigilantesServidor:
+                #                 vigilante_id=logVigilante[0]
+                #                 vigilante_nombre=logVigilante[1]
+                #                 unidad_id=logVigilante[2]
+                #                 unidad_nombre=logVigilante[3]
+                #                 fecha=logVigilante[4]
+                #                 hora=logVigilante[5]
+                #                 razon=logVigilante[6]
+                #                 personas=logVigilante[7]
+                #                 anadirLogJson = {
+                #                     "vigilante_nombre": vigilante_nombre,
+                #                     "vigilante_id": vigilante_id,
+                #                     "unidad_id": unidad_id,
+                #                     "unidad_nombre": unidad_nombre,
+                #                     "fecha": fecha.isoformat(),
+                #                     "hora": hora.isoformat(),
+                #                     "razon": razon,
+                #                     "contrato": CONTRATO,
+                #                     "personas": personas,
+                #                 }
+                #                 requests.post(url=f'{URL_API}registrarlogsvigilantesapi/', 
+                #                 json=anadirLogJson, auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
+                # except Exception as e:
+                #     print(f"{e} - fallo total en Log de vigilantes")
 
                 try:
-                    cursorlocal.execute('SELECT vigilante_id, vigilante_nombre, nombre, fecha, hora, razon, cedula_id, acompanantes, cedula_propietario, unidad_id FROM web_logs_visitantes where contrato=%s and fecha=%s', (CONTRATO, fechahoy))
+                    cursorlocal.execute('SELECT vigilante_id, vigilante_nombre, nombre, fecha, hora, razon, cedula_id, acompanantes, cedula_propietario, unidad_id FROM web_logs_visitantes where contrato=%s and fecha=%s and subido is null', (CONTRATO, fechahoy))
                     logsVisitantes_local= cursorlocal.fetchall()
                     
-                    request_json = requests.get(url=f'{URL_API}obtenerlogsvisitantesapi/{CONTRATO}/{fechahoy}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10).json()
+                    # request_json = requests.get(url=f'{URL_API}obtenerlogsvisitantesapi/{CONTRATO}/{fechahoy}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10).json()
                     # print(request_json)
-                    listaLogsVisitantesServidor=[]
-                    for consultajson in request_json:
-                        objetofecha= date.fromisoformat(consultajson['fecha'])
-                        objetohora=time.fromisoformat(consultajson['hora'])
-                        tuplaLogIndividual=(consultajson['vigilante_id'],consultajson['vigilante_nombre'],consultajson['nombre'],objetofecha,objetohora,consultajson['razon'],consultajson['cedula'], consultajson['acompanantes'],consultajson['cedula_propietario'],consultajson['unidad_id'])
-                        listaLogsVisitantesServidor.append(tuplaLogIndividual)
+                    # listaLogsVisitantesServidor=[]
+                    # for consultajson in request_json:
+                    #     objetofecha= date.fromisoformat(consultajson['fecha'])
+                    #     objetohora=time.fromisoformat(consultajson['hora'])
+                    #     tuplaLogIndividual=(consultajson['vigilante_id'],consultajson['vigilante_nombre'],consultajson['nombre'],objetofecha,objetohora,consultajson['razon'],consultajson['cedula'], consultajson['acompanantes'],consultajson['cedula_propietario'],consultajson['unidad_id'])
+                    #     listaLogsVisitantesServidor.append(tuplaLogIndividual)
 
                     nro_int_local = len(logsVisitantes_local)
-                    nro_log_vig_servidor = len(listaLogsVisitantesServidor)
+                    # nro_log_vig_servidor = len(listaLogsVisitantesServidor)
                     # print(nro_int_local)
                     # print(nro_log_vig_servidor)
                     # print("Lista local")
                     # print(logsVisitantes_local)
                     # print("lista servidor")
                     # print(listaLogsVisitantesServidor)
-                    if nro_int_local != nro_log_vig_servidor:
+                    if nro_int_local>0:
 
                         for logVisitante in logsVisitantes_local:
-                            if not logVisitante in listaLogsVisitantesServidor:
-                                # print(logVisitante)
-                                vigilante_id=logVisitante[0]
-                                vigilante_nombre=logVisitante[1]
-                                nombre=logVisitante[2]
-                                fecha=logVisitante[3]
-                                hora=logVisitante[4]
-                                razon=logVisitante[5]
-                                cedula=logVisitante[6]
-                                acompanantes=logVisitante[7]
-                                cedula_propietario=logVisitante[8]
-                                unidad_id=logVisitante[9]
-                                anadirLogJson = {
-                                    "vigilante_nombre": vigilante_nombre,
-                                    "vigilante_id": vigilante_id,
-                                    "nombre": nombre,
-                                    "fecha": fecha.isoformat(),
-                                    "hora": hora.isoformat(),
-                                    "razon": razon,
-                                    "contrato": CONTRATO,
-                                    "cedula": cedula,
-                                    "acompanantes": acompanantes,
-                                    "cedula_propietario": "" if (cedula_propietario==None) else cedula_propietario,
-                                    "unidad_id":unidad_id
-                                }
-                                requests.post(url=f'{URL_API}registrarlogsvisitantesapi/', 
-                                json=anadirLogJson, auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
-                                # print(peticion.status_code)
+                            # if not logVisitante in listaLogsVisitantesServidor:
+                            # print(logVisitante)
+                            vigilante_id=logVisitante[0]
+                            vigilante_nombre=logVisitante[1]
+                            nombre=logVisitante[2]
+                            fecha=logVisitante[3]
+                            hora=logVisitante[4]
+                            razon=logVisitante[5]
+                            cedula=logVisitante[6]
+                            acompanantes=logVisitante[7]
+                            cedula_propietario=logVisitante[8]
+                            unidad_id=logVisitante[9]
+                            anadirLogJson = {
+                                "vigilante_nombre": vigilante_nombre,
+                                "vigilante_id": vigilante_id,
+                                "nombre": nombre,
+                                "fecha": fecha.isoformat(),
+                                "hora": hora.isoformat(),
+                                "razon": razon,
+                                "contrato": CONTRATO,
+                                "cedula": cedula,
+                                "acompanantes": acompanantes,
+                                "cedula_propietario": "" if (cedula_propietario==None) else cedula_propietario,
+                                "unidad_id":unidad_id
+                            }
+                            requests.post(url=f'{URL_API}registrarlogsvisitantesapi/', 
+                            json=anadirLogJson, auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
+                            # print(peticion.status_code)
+                            cursorlocal.execute('''UPDATE web_logs_visitantes SET subido='t' WHERE 
+                            vigilante_id=%s, vigilante_nombre=%s, nombre=%s, fecha=%s, hora=%s, razon=%s, cedula_id=%s, acompanantes=%s, unidad_id=%s''', 
+                            (vigilante_id, vigilante_nombre, nombre, fecha.isoformat(), hora.isoformat(), razon, cedula, acompanantes, unidad_id))
+                            connlocal.commit()
+
                 except Exception as e:
                     print(f"{e} - fallo total en Log de visitantes")
 
