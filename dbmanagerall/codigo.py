@@ -830,7 +830,7 @@ while True:
                     nro_int_local = len(logsUsuarios_local)
                     # nro_int_servidor = len(listaLogsServidor)
 
-                    if nro_int_servidor>0:
+                    if nro_int_local>0:
 
                         for logUsuario in logsUsuarios_local:
                             # if not logUsuario in listaLogsServidor:
