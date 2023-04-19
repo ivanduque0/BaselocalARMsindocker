@@ -815,7 +815,8 @@ while True:
                         connlocal.commit()
 
                 try:
-                    cursorlocal.execute('SELECT * FROM web_logs_usuarios where contrato=%s and fecha=%s and subido is NULL', (CONTRATO,fechahoy))
+                    cursorlocal.execute('SELECT nombre, fecha, hora, razon, cedula_id FROM web_logs_usuarios where contrato=%s and subido is NULL', (CONTRATO, ))
+                    # cursorlocal.execute('SELECT * FROM web_logs_usuarios where contrato=%s and fecha=%s and subido is NULL', (CONTRATO,fechahoy))
                     logsUsuarios_local= cursorlocal.fetchall()
                 
                     # request_json = requests.get(url=f'{URL_API}obtenerlogsusuariosapi/{CONTRATO}/{fechahoy}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10).json()
@@ -838,7 +839,7 @@ while True:
                             fecha=logUsuario[1]
                             hora=logUsuario[2]
                             razon=logUsuario[3]
-                            cedula=logUsuario[5]
+                            cedula=logUsuario[4]
                             anadirLogJson = {
                                 "nombre": nombre,
                                 "fecha": fecha.isoformat(),
@@ -904,7 +905,8 @@ while True:
                 #     print(f"{e} - fallo total en Log de vigilantes")
 
                 try:
-                    cursorlocal.execute('SELECT vigilante_id, vigilante_nombre, nombre, fecha, hora, razon, cedula_id, acompanantes, cedula_propietario, unidad_id FROM web_logs_visitantes where contrato=%s and fecha=%s and subido is null', (CONTRATO, fechahoy))
+                    cursorlocal.execute('SELECT vigilante_id, vigilante_nombre, nombre, fecha, hora, razon, cedula_id, acompanantes, cedula_propietario, unidad_id FROM web_logs_visitantes where contrato=%s and subido is null', (CONTRATO,))
+                    # cursorlocal.execute('SELECT vigilante_id, vigilante_nombre, nombre, fecha, hora, razon, cedula_id, acompanantes, cedula_propietario, unidad_id FROM web_logs_visitantes where contrato=%s and fecha=%s and subido is null', (CONTRATO, fechahoy))
                     logsVisitantes_local= cursorlocal.fetchall()
                     
                     # request_json = requests.get(url=f'{URL_API}obtenerlogsvisitantesapi/{CONTRATO}/{fechahoy}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10).json()
