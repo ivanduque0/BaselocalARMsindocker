@@ -1,5 +1,6 @@
 import psycopg2
 import os
+import time
 
 connlocal = None
 cursorlocal=None
