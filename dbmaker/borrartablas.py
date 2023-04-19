@@ -1,6 +1,8 @@
 import psycopg2
 import os
 import time
+from dotenv import load_dotenv
+from pathlib import Path
 
 connlocal = None
 cursorlocal=None
