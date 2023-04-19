@@ -195,7 +195,7 @@ while True:
                     cursorlocal.execute('SELECT dispositivo, descripcion, estado, acceso, minor_id FROM web_dispositivos')
                     dispositivos_local= cursorlocal.fetchall()
 
-                    request_json = requests.get(url=f'{URL_API}obtenerdispositivosapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
+                    request_json = requests.get(url=f'{URL_API}obtenerdispositivosapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10).json()
 
                     dispositivosServidor=[]
                     for consultajson in request_json:
@@ -203,10 +203,10 @@ while True:
                         dispositivosServidor.append(tuplaDispositivoIndividual)
 
                     if len(dispositivosServidor) != len(dispositivos_local):
-                        request_json = requests.delete(url=f'{URL_API}eliminartodosdispositivosapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
+                        request_json = requests.delete(url=f'{URL_API}eliminartodosdispositivosapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
                         if request_json.status_code == 200:
 
-                            request_json = requests.get(url=f'{URL_API}obtenerdispositivosapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3).json()
+                            request_json = requests.get(url=f'{URL_API}obtenerdispositivosapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10).json()
 
                             dispositivosServidor=[]
                             for consultajson in request_json:
@@ -238,7 +238,7 @@ while True:
                                         "minor_id": minor_id
                                     }
                                     requests.post(url=f'{URL_API}registrardispositivosapi/', 
-                                    json=agregarDispositivoJson, auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
+                                    json=agregarDispositivoJson, auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
                     else:
                         for dispositivolocal in dispositivos_local:
                             # try:
@@ -261,7 +261,7 @@ while True:
                                     "hora": hora
                                 }
                                 requests.put(url=f'{URL_API}actualizardispositivosapi/{CONTRATO}/{dispositivo[7:]}/{estado}/',
-                                json=jsonActualizarDispositivo, auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=3)
+                                json=jsonActualizarDispositivo, auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
                 except requests.exceptions.ConnectionError:
                     print("fallo consultando api de dispositivos")   
             except Exception as e:

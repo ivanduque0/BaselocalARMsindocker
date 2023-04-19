@@ -215,7 +215,7 @@ def aperturadenegada(cursorf, connf, acceso, id_solicitud):
     # cursorf.execute('''UPDATE led SET onoff=2 WHERE onoff=0;''')
     # connf.commit()
     try:
-        requests.get(f'{accesodict[acceso]}/off', timeout=2)
+        requests.get(f'{accesodict[acceso]}/off', timeout=5)
         cursorf.execute('UPDATE solicitud_aperturas SET estado=%s, feedback=%s WHERE id=%s;', (1,'t', id_solicitud))
         connf.commit()
         requests.put(url=f'{URL_API}aperturasusuarioapi/{id_solicitud}/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
