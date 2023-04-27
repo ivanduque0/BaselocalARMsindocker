@@ -958,7 +958,7 @@ while True:
                             json=anadirLogJson, auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
                             # print(peticion.status_code)
                             cursorlocal.execute('''UPDATE web_logs_visitantes SET subido='t' WHERE 
-                            vigilante_id=%s, vigilante_nombre=%s, nombre=%s, fecha=%s, hora=%s, razon=%s, cedula_id=%s, acompanantes=%s, unidad_id=%s''', 
+                            vigilante_id=%s AND vigilante_nombre=%s AND nombre=%s AND fecha=%s AND hora=%s AND razon=%s AND cedula_id=%s AND acompanantes=%s AND unidad_id=%s''', 
                             (vigilante_id, vigilante_nombre, nombre, fecha.isoformat(), hora.isoformat(), razon, cedula, acompanantes, unidad_id))
                             connlocal.commit()
 
