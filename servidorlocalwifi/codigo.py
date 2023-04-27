@@ -604,6 +604,25 @@ class MyServer(BaseHTTPRequestHandler):
                 self.end_headers()
                 self.wfile.write(json.dumps([]).encode('utf-8'))
 
+        if len(peticion) == 1 and peticion[0] == "obtenervisitantesconinvitacionesvigentes":
+            cursor.execute(f"SELECT a.id, a.nombre, a.cedula, a.cedula_propietario, a.unidad_id FROM web_usuarios AS a INNER JOIN web_horariospermitidos AS b ON a.id = b.usuario WHERE a.rol='Visitante' GROUP BY a.id, a.nombre, a.cedula, a.cedula_propietario, a.unidad_id ORDER BY a.id ASC")
+            visitantes = cursor.fetchall()
+            if visitantes:
+                visitantesJson=[]
+                for visitante in visitantes:
+                    visitanteDict={'usuario_id':visitante[0], 'nombre':visitante[1], 'cedula':visitante[2], 'cedula_propietario':visitante[3], 'unidad_id':visitante[4]}
+                    visitantesJson.append(visitanteDict)
+                visitantes_json = json.dumps(visitantesJson)
+                self.send_response(code=200)
+                self.send_header(keyword='Content-type', value='application/json')
+                self.end_headers()
+                self.wfile.write(visitantes_json.encode('utf-8'))
+            else:
+                self.send_response(401)
+                self.send_header(keyword='Content-type', value='application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps([]).encode('utf-8'))
+
         if len(peticion) == 2 and peticion[0] == "obtenerinvitacioninvitado":
             _, usuario_id = peticion
             horarioEncontrado=False
