@@ -605,12 +605,12 @@ class MyServer(BaseHTTPRequestHandler):
                 self.wfile.write(json.dumps([]).encode('utf-8'))
 
         if len(peticion) == 1 and peticion[0] == "obtenervisitantesconinvitacionesvigentes":
-            cursor.execute(f"SELECT a.id, a.nombre, a.cedula, a.cedula_propietario, a.unidad_id FROM web_usuarios AS a INNER JOIN web_horariospermitidos AS b ON a.id = b.usuario WHERE a.rol='Visitante' GROUP BY a.id, a.nombre, a.cedula, a.cedula_propietario, a.unidad_id ORDER BY a.id ASC")
+            cursor.execute(f"SELECT a.id, a.nombre, a.cedula, a.cedula_propietario, a.unidad_id, c.nombre FROM web_usuarios AS a INNER JOIN web_horariospermitidos AS b ON a.id = b.usuario INNER JOIN web_unidades AS c ON a.unidad_id = c.id WHERE a.rol='Visitante' GROUP BY a.id, a.nombre, a.cedula, a.cedula_propietario, a.unidad_id, c.nombre ORDER BY a.id ASC")
             visitantes = cursor.fetchall()
             if visitantes:
                 visitantesJson=[]
                 for visitante in visitantes:
-                    visitanteDict={'usuario_id':visitante[0], 'nombre':visitante[1], 'cedula':visitante[2], 'cedula_propietario':visitante[3], 'unidad_id':visitante[4]}
+                    visitanteDict={'usuario_id':visitante[0], 'nombre':visitante[1], 'cedula':visitante[2], 'cedula_propietario':visitante[3], 'unidad_id':visitante[4], 'unidad':visitante[5]}
                     visitantesJson.append(visitanteDict)
                 visitantes_json = json.dumps(visitantesJson)
                 self.send_response(code=200)
