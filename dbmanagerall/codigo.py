@@ -1000,14 +1000,13 @@ while True:
                 try:
                     cursorlocal.execute('SELECT cedula, acceso, fecha, hora, estado FROM accesos_abiertos')
                     accesosAbiertos = cursorlocal.fetchall()
-
-                    comprobarAccesos = requests.get(url=f'{URL_API}eliminarpuertaabiertaapi/{CONTRATO}/blank/blank/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10).json()
-                    accesoAbiertosServidor=[]
-                    for consultajson in comprobarAccesos:
-                        tuplaAccesoAbiertoIndividual=(consultajson['cedula'],consultajson['acceso'])
-                        accesoAbiertosServidor.append(tuplaAccesoAbiertoIndividual)
-                    
                     if accesosAbiertos:
+                        comprobarAccesos = requests.get(url=f'{URL_API}eliminarpuertaabiertaapi/{CONTRATO}/blank/blank/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10).json()
+                        accesoAbiertosServidor=[]
+                        for consultajson in comprobarAccesos:
+                            tuplaAccesoAbiertoIndividual=(consultajson['cedula'],consultajson['acceso'])
+                            accesoAbiertosServidor.append(tuplaAccesoAbiertoIndividual)
+                    
                         for acceso_abierto in accesosAbiertos:
                             cedula=acceso_abierto[0]
                             accesoo=acceso_abierto[1]
