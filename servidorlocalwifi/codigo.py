@@ -847,7 +847,7 @@ class MyServer(BaseHTTPRequestHandler):
                 self.send_header("Content-type", "utf-8")
                 self.end_headers()
             else:
-                cursor.execute("SELECT id, nombre FROM web_usuarios where telegram_id=%s", (id_usuario,))
+                cursor.execute("SELECT id, nombre FROM web_usuarios where id=%s", (int(id_usuario),))
                 datosVigilante = cursor.fetchall()
                 cursor.execute("SELECT usuario, fecha_entrada, fecha_salida, entrada, salida FROM web_horariospermitidos where id=%s", (int(horario_id),))
                 datosHorario = cursor.fetchall()
