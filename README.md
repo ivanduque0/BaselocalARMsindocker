@@ -86,8 +86,8 @@ heroku version
 ---------------------------------------------
 
 crear base de datos y usuario en postgresql
-CREATE DATABASE tesis;
-CREATE ROLE tesis WITH LOGIN CREATEDB CREATEROLE CREATEUSER INHERIT ENCRYPTED PASSWORD 'tesis';
+CREATE DATABASE seguricel;
+CREATE ROLE seguricel WITH LOGIN CREATEDB CREATEROLE CREATEUSER INHERIT ENCRYPTED PASSWORD 'seguricel';
 
 Luego se debe crear un usuario con el mismo nombre del rol y la base de datos preferiblemente  
 sudo adduser <nombre del usuario>
@@ -141,3 +141,20 @@ escribir
 /usr/local/bin/python3.7 /BaselocalARMsindocker/archivoboot.py
 
 se debe clonar el repositiorio con los codigo en la carpeta raiz
+
+
+# COMANDOS JUNTOS PARA AGILIZAR EL PROCESO
+
+apt-get update; apt-get upgrade -y
+
+apt-get install git postgresql postgresql-contrib build-essential zlib1g-dev libpq-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev; wget https://www.python.org/ftp/python/3.7.3/Python-3.7.3.tgz; tar xzf Python-3.7.3.tgz; cd Python-3.7.3; ./configure --enable-optimizations; make altinstall
+
+pip3.7 install ping3 python-dotenv pytz requests psycopg2
+
+adduser seguricel
+
+su postgres
+
+psql
+
+CREATE DATABASE seguricel; CREATE ROLE seguricel WITH LOGIN CREATEDB CREATEROLE INHERIT ENCRYPTED PASSWORD 'seguricel';
