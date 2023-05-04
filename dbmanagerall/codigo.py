@@ -374,7 +374,7 @@ while True:
                                                 id_usuario=usuario[0]
                                                 rol=usuario[1]
                                                 cedula=usuario[2]
-                                                nombre=usuario[3].encode('utf-8')
+                                                nombre=usuario[3]
                                                 telegram_id=usuario[4]
                                                 numero_telefonico=usuario[5]
                                                 cedula_propietario=usuario[6]
@@ -430,7 +430,7 @@ while True:
                                                 id_usuario=consultajson['id']
                                                 rol=consultajson['rol']
                                                 cedula=consultajson['cedula']
-                                                nombre=consultajson['nombre'].encode('utf-8')
+                                                nombre=consultajson['nombre']
                                                 telegram_id=consultajson['telegram_id']
                                                 numero_telefonico=consultajson['numero_telefonico']
                                                 cedula_propietario=consultajson['cedula_propietario']
@@ -451,7 +451,7 @@ while True:
                                                 id_usuario=consultajson['id']
                                                 rol=consultajson['rol']
                                                 cedula=consultajson['cedula']
-                                                nombre=consultajson['nombre'].encode('utf-8')
+                                                nombre=consultajson['nombre']
                                                 telegram_id=consultajson['telegram_id']
                                                 numero_telefonico=consultajson['numero_telefonico']
                                                 cedula_propietario=consultajson['cedula_propietario']
@@ -835,7 +835,7 @@ while True:
 
                         for logUsuario in logsUsuarios_local:
                             # if not logUsuario in listaLogsServidor:
-                            nombre=logUsuario[0].encode('utf-8')
+                            nombre=logUsuario[0]
                             fecha=logUsuario[1]
                             hora=logUsuario[2]
                             razon=logUsuario[3]
@@ -932,8 +932,8 @@ while True:
                             # if not logVisitante in listaLogsVisitantesServidor:
                             # print(logVisitante)
                             vigilante_id=logVisitante[0]
-                            vigilante_nombre=logVisitante[1].encode('utf-8')
-                            nombre=logVisitante[2].encode('utf-8')
+                            vigilante_nombre=logVisitante[1]
+                            nombre=logVisitante[2]
                             fecha=logVisitante[3]
                             hora=logVisitante[4]
                             razon=logVisitante[5]
