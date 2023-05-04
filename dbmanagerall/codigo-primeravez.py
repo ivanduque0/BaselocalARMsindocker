@@ -146,7 +146,7 @@ try:
                                     id_usuario=usuario[0]
                                     rol=usuario[1]
                                     cedula=usuario[2]
-                                    nombre=usuario[3]
+                                    nombre=usuario[3].encode('utf-8')
                                     telegram_id=usuario[4]
                                     numero_telefonico=usuario[5]
                                     cedula_propietario=usuario[6]
