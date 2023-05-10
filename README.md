@@ -147,7 +147,7 @@ se debe clonar el repositiorio con los codigo en la carpeta raiz
 
 apt-get update; apt-get upgrade -y
 
-apt-get install git postgresql postgresql-contrib build-essential zlib1g-dev libpq-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev; wget https://www.python.org/ftp/python/3.7.3/Python-3.7.3.tgz; tar xzf Python-3.7.3.tgz; cd Python-3.7.3; ./configure --enable-optimizations; make altinstall
+apt-get install git postgresql postgresql-contrib build-essential zlib1g-dev libpq-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev -y; wget https://www.python.org/ftp/python/3.7.3/Python-3.7.3.tgz; tar xzf Python-3.7.3.tgz; cd Python-3.7.3; ./configure --enable-optimizations; make altinstall
 
 pip3.7 install ping3 python-dotenv pytz requests psycopg2
 
