@@ -855,7 +855,6 @@ while True:
                             nombre=%s AND fecha=%s AND hora=%s AND razon=%s AND contrato=%s AND cedula_id=%s''', 
                             (nombre, fecha.isoformat(), hora.isoformat(), razon, CONTRATO, cedula))
                             connlocal.commit()
-
                 except Exception as e:
                     print(f"{e} - fallo total en Log de usuarios")
             
@@ -961,9 +960,44 @@ while True:
                             vigilante_id=%s AND vigilante_nombre=%s AND nombre=%s AND fecha=%s AND hora=%s AND razon=%s AND cedula_id=%s AND acompanantes=%s AND unidad_id=%s''', 
                             (vigilante_id, vigilante_nombre, nombre, fecha.isoformat(), hora.isoformat(), razon, cedula, acompanantes, unidad_id))
                             connlocal.commit()
-
                 except Exception as e:
                     print(f"{e} - fallo total en Log de visitantes")
+
+                try:
+                    cursorlocal.execute('SELECT vigilante_id, vigilante_nombre, fecha, hora, tipo_incidencia, explicacion FROM web_logs_incidencias where contrato=%s and subido is null', (CONTRATO,))
+                    # cursorlocal.execute('SELECT vigilante_id, vigilante_nombre, nombre, fecha, hora, razon, cedula_id, acompanantes, cedula_propietario, unidad_id FROM web_logs_visitantes where contrato=%s and fecha=%s and subido is null', (CONTRATO, fechahoy))
+                    logsIncidencias_local= cursorlocal.fetchall()
+                    nro_logs_incidencias_local = len(logsIncidencias_local)
+
+                    if nro_logs_incidentes_local>0:
+
+                        for logIncidencia in logsIncidencias_local:
+                            # if not logVisitante in listaLogsVisitantesServidor:
+                            # print(logVisitante)
+                            vigilante_id=logVisitante[0]
+                            vigilante_nombre=logVisitante[1]
+                            fecha=logVisitante[2]
+                            hora=logVisitante[3]
+                            tipo_incidencia=logVisitante[4]
+                            explicacion=logVisitante[5]
+                            anadirLogJson = {
+                                "vigilante_nombre": vigilante_nombre,
+                                "vigilante_id": vigilante_id,
+                                "fecha": fecha.isoformat(),
+                                "hora": hora.isoformat(),
+                                "contrato": CONTRATO,
+                                "tipo_incidencia": tipo_incidencia,
+                                "explicacion": explicacion,
+                            }
+                            requests.post(url=f'{URL_API}registrarlogsincidenciasapi/', 
+                            json=anadirLogJson, auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
+                            # print(peticion.status_code)
+                            cursorlocal.execute('''UPDATE web_logs_incidencias SET subido='t' WHERE 
+                            vigilante_id=%s AND vigilante_nombre=%s AND fecha=%s AND hora=%s AND explicacion=%s''', 
+                            (vigilante_id, vigilante_nombre, fecha.isoformat(), hora.isoformat(), explicacion))
+                            connlocal.commit()
+                except Exception as e:
+                    print(f"{e} - fallo total en Log de incidencias")
 
                 BorrarPeticionesListas=True
                 AccesosSinCerrar=True

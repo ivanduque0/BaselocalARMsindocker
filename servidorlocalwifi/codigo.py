@@ -784,6 +784,18 @@ class MyServer(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(json.dumps([]).encode('utf-8'))
 
+        if len(peticion) == 1 and peticion[0] == "registrarincidencia":
+            self.data_string = self.rfile.read(int(self.headers['Content-Length']))
+            data = json.loads(self.data_string)
+            #print(data)
+            cursor.execute('''INSERT INTO web_logs_incidencias (vigilante_id, vigilante_nombre, fecha, hora, contrato, tipo_incidencia, explicacion)
+            VALUES (%s, %s, %s, %s, %s, %s, %s);''', (data['vigilante_id'], data['vigilante_nombre'], data['fecha'], data['hora'], data['contrato'], data['tipo_incidencia'], data['explicacion']))
+            conn.commit()
+            self.send_response(200)
+            self.send_header(keyword='Content-type', value='application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps([]).encode('utf-8'))
+
         if len(peticion) == 2 and peticion[1] == "cerrandoacceso":
             self.send_response(200)
             self.send_header("Content-type", "utf-8")
