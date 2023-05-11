@@ -971,17 +971,17 @@ while True:
 
                     if nro_logs_incidentes_local>0:
 
-                        for logincidente in logsIncidentes_local:
+                        for logIncidente in logsIncidentes_local:
                             # if not logVisitante in listaLogsVisitantesServidor:
                             # print(logVisitante)
-                            vigilante_id=logVisitante[0]
-                            vigilante_nombre=logVisitante[1]
-                            fecha=logVisitante[2]
-                            hora=logVisitante[3]
-                            tipo_incidente=logVisitante[4]
-                            clasificacion_incidente=logVisitante[5]
-                            comentario=logVisitante[6]
-                            descripcion=logVisitante[7]
+                            vigilante_id=logIncidente[0]
+                            vigilante_nombre=logIncidente[1]
+                            fecha=logIncidente[2]
+                            hora=logIncidente[3]
+                            tipo_incidente=logIncidente[4]
+                            clasificacion_incidente=logIncidente[5]
+                            comentario=logIncidente[6]
+                            descripcion=logIncidente[7]
                             anadirLogJson = {
                                 "vigilante_nombre": vigilante_nombre,
                                 "vigilante_id": vigilante_id,
@@ -997,8 +997,8 @@ while True:
                             json=anadirLogJson, auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
                             # print(peticion.status_code)
                             cursorlocal.execute('''UPDATE web_logs_incidentes SET subido='t' WHERE 
-                            vigilante_id=%s AND vigilante_nombre=%s AND fecha=%s AND hora=%s AND explicacion=%s''', 
-                            (vigilante_id, vigilante_nombre, fecha.isoformat(), hora.isoformat(), explicacion))
+                            vigilante_id=%s AND vigilante_nombre=%s AND fecha=%s AND hora=%s AND comentario=%s''', 
+                            (vigilante_id, vigilante_nombre, fecha.isoformat(), hora.isoformat(), comentario))
                             connlocal.commit()
                 except Exception as e:
                     print(f"{e} - fallo total en Log de incidentes")
