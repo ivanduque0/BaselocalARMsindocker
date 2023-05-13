@@ -242,6 +242,30 @@ descripcion_rele18=os.environ.get('RAZON_RELE18')
 descripcion_rele19=os.environ.get('RAZON_RELE19')
 descripcion_rele20=os.environ.get('RAZON_RELE20')
 
+######################################
+#############MINOR IDs################
+#######################################
+minorid_acceso1=os.environ.get('MINORID_ACCESO1')
+minorid_acceso2=os.environ.get('MINORID_ACCESO2')
+minorid_acceso3=os.environ.get('MINORID_ACCESO3')
+minorid_acceso4=os.environ.get('MINORID_ACCESO4')
+minorid_acceso5=os.environ.get('MINORID_ACCESO5')
+minorid_acceso6=os.environ.get('MINORID_ACCESO6')
+minorid_acceso7=os.environ.get('MINORID_ACCESO7')
+minorid_acceso8=os.environ.get('MINORID_ACCESO8')
+minorid_acceso9=os.environ.get('MINORID_ACCESO9')
+minorid_acceso10=os.environ.get('MINORID_ACCESO10')
+minorid_acceso11=os.environ.get('MINORID_ACCESO11')
+minorid_acceso12=os.environ.get('MINORID_ACCESO12')
+minorid_acceso13=os.environ.get('MINORID_ACCESO13')
+minorid_acceso14=os.environ.get('MINORID_ACCESO14')
+minorid_acceso15=os.environ.get('MINORID_ACCESO15')
+minorid_acceso16=os.environ.get('MINORID_ACCESO16')
+minorid_acceso17=os.environ.get('MINORID_ACCESO17')
+minorid_acceso18=os.environ.get('MINORID_ACCESO18')
+minorid_acceso19=os.environ.get('MINORID_ACCESO19')
+minorid_acceso20=os.environ.get('MINORID_ACCESO20')
+
 dispositivos=[captahuella1, captahuella2, captahuella3, captahuella4, captahuella5,
               captahuella6, captahuella7, captahuella8, captahuella9, captahuella10,
               captahuella11, captahuella12, captahuella3, captahuella14, captahuella15,
@@ -372,6 +396,28 @@ accesos_dispositivos_dict ={acceso1:descripcion_acceso1,
                             acceso20:descripcion_acceso20
                             }
 
+accesos_minorid_dict ={acceso1:minorid_acceso1, 
+                            acceso2:minorid_acceso2, 
+                            acceso3:minorid_acceso3, 
+                            acceso4:minorid_acceso4,
+                            acceso5:minorid_acceso5, 
+                            acceso6:minorid_acceso6, 
+                            acceso7:minorid_acceso7, 
+                            acceso8:minorid_acceso8,
+                            acceso9:minorid_acceso9, 
+                            acceso10:minorid_acceso10, 
+                            acceso11:minorid_acceso11, 
+                            acceso12:minorid_acceso12,
+                            acceso13:minorid_acceso13, 
+                            acceso14:minorid_acceso14, 
+                            acceso15:minorid_acceso15, 
+                            acceso16:minorid_acceso16,
+                            acceso17:minorid_acceso17, 
+                            acceso18:minorid_acceso18, 
+                            acceso19:minorid_acceso19, 
+                            acceso20:minorid_acceso20
+                            }
+
 accesos_dict = {acceso1:"1", 
                 acceso2:"2", 
                 acceso3:"3", 
@@ -449,9 +495,14 @@ while True:
                     descripcion = accesos_dispositivos_dict[dispositivoAcceso]
                     acceso = accesos_dict[dispositivoAcceso]
                     estado = '0'
-                    minor_id=random.randint(1, 65535)
-                    cursorlocal.execute('INSERT INTO web_dispositivos (dispositivo, descripcion, estado, acceso, minor_id) values(%s, %s, %s, %s, %s)',(dispositivoAcceso, descripcion, estado, acceso, minor_id))
-                    connlocal.commit()
+                    minorid_existente=accesos_minorid_dict[dispositivoAcceso]
+                    if minor_id_existente:
+                        cursorlocal.execute('INSERT INTO web_dispositivos (dispositivo, descripcion, estado, acceso, minor_id) values(%s, %s, %s, %s, %s)',(dispositivoAcceso, descripcion, estado, acceso, minor_id_existente))
+                        connlocal.commit()
+                    else:
+                        minor_id=random.randint(1, 65535)
+                        cursorlocal.execute('INSERT INTO web_dispositivos (dispositivo, descripcion, estado, acceso, minor_id) values(%s, %s, %s, %s, %s)',(dispositivoAcceso, descripcion, estado, acceso, minor_id))
+                        connlocal.commit()
 
 
                     
