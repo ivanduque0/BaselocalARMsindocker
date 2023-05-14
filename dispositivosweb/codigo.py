@@ -200,19 +200,12 @@ while True:
 
                     dispositivosServidor=[]
                     for consultajson in request_json:
-                        tuplaDispositivoIndividual=(consultajson['dispositivo'],consultajson['descripcion'], consultajson['estado'], consultajson['acceso'], consultajson['minor_id'],)
+                        tuplaDispositivoIndividual=(consultajson['dispositivo'],consultajson['descripcion'], consultajson['estado'], consultajson['acceso'] if (consultajson['acceso']!=None) else "", consultajson['minor_id'],)
                         dispositivosServidor.append(tuplaDispositivoIndividual)
 
                     if len(dispositivosServidor) != len(dispositivos_local):
                         request_json = requests.delete(url=f'{URL_API}eliminartodosdispositivosapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
                         if request_json.status_code == 200:
-
-                            request_json = requests.get(url=f'{URL_API}obtenerdispositivosapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10).json()
-
-                            dispositivosServidor=[]
-                            for consultajson in request_json:
-                                tuplaDispositivoIndividual=(consultajson['dispositivo'],consultajson['descripcion'], consultajson['estado'], consultajson['acceso'], consultajson['minor_id'],)
-                                dispositivosServidor.append(tuplaDispositivoIndividual)
 
                             for dispositivolocal in dispositivos_local:
                                 # try:
