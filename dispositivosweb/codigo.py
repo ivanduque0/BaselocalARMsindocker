@@ -205,6 +205,7 @@ while True:
 
                     if len(dispositivosServidor) != len(dispositivos_local):
                         request_json = requests.delete(url=f'{URL_API}eliminartodosdispositivosapi/{CONTRATO}/', auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
+                        dispositivosServidor=[]
                         if request_json.status_code == 200:
 
                             for dispositivolocal in dispositivos_local:
