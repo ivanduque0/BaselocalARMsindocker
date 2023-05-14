@@ -495,7 +495,7 @@ while True:
                     descripcion = accesos_dispositivos_dict[dispositivoAcceso]
                     acceso = accesos_dict[dispositivoAcceso]
                     estado = '0'
-                    minorid_existente=accesos_minorid_dict[dispositivoAcceso]
+                    minor_id_existente=accesos_minorid_dict[dispositivoAcceso]
                     if minor_id_existente:
                         cursorlocal.execute('INSERT INTO web_dispositivos (dispositivo, descripcion, estado, acceso, minor_id) values(%s, %s, %s, %s, %s)',(dispositivoAcceso, descripcion, estado, acceso, minor_id_existente))
                         connlocal.commit()

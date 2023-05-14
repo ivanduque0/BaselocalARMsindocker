@@ -12,6 +12,7 @@ load_dotenv(dotenv_path=dotenv_path)
 CONTRATO=os.environ.get("CONTRATO")
 CONTRATO_ID=os.environ.get("CONTRATO_ID")
 URL_API=os.environ.get("URL_API")
+TEMP_DIRECTORY=os.environ.get("TEMP_DIRECTORY")
 connlocal = None
 connheroku = None
 cursorheroku=None
@@ -226,7 +227,17 @@ while True:
                                     descripcion=dispositivolocal[1]
                                     estado=dispositivolocal[2]
                                     acceso=dispositivolocal[3]
-                                    minor_id=dispositivolocal[4]
+                                    
+                                    if descripcion=="SERVIDOR LOCAL":
+                                        with open(TEMP_DIRECTORY) as f:
+                                            temp = f.read()
+                                            temp=temp[:2]
+                                            minor_id=int(temp)
+                                            cursorlocal.execute('UPDATE web_dispositivos SET minor_id=%s WHERE dispositivo=%s', (minor_id, dispositivo))
+                                            connlocal.commit()
+                                    else:
+                                        minor_id=dispositivolocal[4]
+
                                     agregarDispositivoJson = {
                                         "dispositivo": dispositivo,
                                         "descripcion": descripcion,
