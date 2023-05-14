@@ -30,6 +30,7 @@ captahuella_actual=0
 TIEMPO_PING=int(os.environ.get('TIEMPO_PING'))
 TIEMPO_CAMBIOS=int(os.environ.get('TIEMPO_CAMBIOS'))
 TIEMPO_LOG=int(os.environ.get('TIEMPO_LOG'))
+TIEMPO_ULTIMA_CONEXION=int(os.environ.get('TIEMPO_ULTIMA_CONEXION'))
 BorrarPeticionesListas= False
 AccesosSinCerrar=False
 borrarHorariosVisitantes=False
@@ -240,13 +241,16 @@ while True:
         t1_ping=tm.perf_counter()
         t1_cambios=tm.perf_counter()
         t1_log=tm.perf_counter()
+        t1_ultima_conexion=tm.perf_counter()
         while True:
             t2_ping=tm.perf_counter()
             t2_cambios=tm.perf_counter()
             t2_log=tm.perf_counter()
+            t2_ultima_conexion=tm.perf_counter()
             total_ping=t2_ping-t1_ping
             total_cambios=t2_cambios-t1_cambios
             total_log=t2_log-t1_log
+            total_ultima_conexion=t2_ultima_conexion-t1_ultima_conexion
 
             # try:
             #     try:
@@ -321,6 +325,11 @@ while True:
             #         print("fallo consultando api de dispositivos")   
             # except Exception as e:
             #     print(f"{e} - fallo total en los dispositivos")  
+
+            if total_ultima_conexion > TIEMPO_ULTIMA_CONEXION:
+                cursorlocal.execute('UPDATE web_dispositivos SET minor_id=0 WHERE descripcion=%s', ('SERVIDOR LOCAL',))
+                connlocal.commit()
+                t1_ultima_conexion=tm.perf_counter()
 
             if total_ping > TIEMPO_PING:
                 for dispositivo in dispositivos:
