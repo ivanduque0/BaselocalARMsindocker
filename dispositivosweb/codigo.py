@@ -232,7 +232,7 @@ while True:
                                         with open(TEMP_DIRECTORY) as f:
                                             temp = f.read()
                                             temp=temp[:2]
-                                            minor_id=int(temp)
+                                            minor_id=temp
                                             cursorlocal.execute('UPDATE web_dispositivos SET minor_id=%s WHERE dispositivo=%s', (minor_id, dispositivo))
                                             connlocal.commit()
                                     else:
@@ -263,14 +263,32 @@ while True:
                                 dispositivo=dispositivolocal[0]
                                 descripcion=dispositivolocal[1]
                                 estado=dispositivolocal[2]
-                                jsonActualizarDispositivo= {
-                                    "contrato": CONTRATO_ID,
-                                    "dispositivo": dispositivo,
-                                    "descripcion": descripcion,
-                                    "estado": estado,
-                                    "fecha": fecha,
-                                    "hora": hora
-                                }
+                                if descripcion=="SERVIDOR LOCAL":
+                                    # se usa la columna destinada al minor_id para guardar
+                                    # la temperatura del servidor local
+                                    with open(TEMP_DIRECTORY) as f:
+                                        temp = f.read()
+                                        temp=temp[:2]
+                                        cursorlocal.execute('UPDATE web_dispositivos SET minor_id=%s WHERE dispositivo=%s', (temp, dispositivo))
+                                        connlocal.commit()
+                                    jsonActualizarDispositivo= {
+                                        "contrato": CONTRATO_ID,
+                                        "dispositivo": dispositivo,
+                                        "descripcion": descripcion,
+                                        "estado": estado,
+                                        "fecha": fecha,
+                                        "hora": hora,
+                                        "minor_id": temp
+                                    }
+                                else:
+                                    jsonActualizarDispositivo= {
+                                        "contrato": CONTRATO_ID,
+                                        "dispositivo": dispositivo,
+                                        "descripcion": descripcion,
+                                        "estado": estado,
+                                        "fecha": fecha,
+                                        "hora": hora
+                                    }
                                 requests.put(url=f'{URL_API}actualizardispositivosapi/{CONTRATO}/{dispositivo[7:]}/{estado}/',
                                 json=jsonActualizarDispositivo, auth=('BaseLocal_access', 'S3gur1c3l_local@'), timeout=10)
                 except requests.exceptions.ConnectionError:
