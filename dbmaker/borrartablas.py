@@ -33,6 +33,7 @@ while True:
         cursorlocal.execute('DROP TABLE IF EXISTS web_logs_usuarios')
         cursorlocal.execute('DROP TABLE IF EXISTS web_logs_vigilantes')
         cursorlocal.execute('DROP TABLE IF EXISTS web_logs_visitantes')
+        cursorlocal.execute('DROP TABLE IF EXISTS web_logs_incidentes')
         cursorlocal.execute('DROP TABLE IF EXISTS web_horariospermitidos')
         cursorlocal.execute('DROP TABLE IF EXISTS dias_acumulados')
         cursorlocal.execute('DROP TABLE IF EXISTS web_dispositivos')
